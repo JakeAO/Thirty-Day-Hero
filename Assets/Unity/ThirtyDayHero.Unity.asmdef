@@ -1,0 +1,15 @@
+{
+    "name": "SadPumpkin.Games.ThirtyDayHero.Unity",
+    "references": [
+        "GUID:2bcfcf82f42e60447a522dd9723912ea"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
