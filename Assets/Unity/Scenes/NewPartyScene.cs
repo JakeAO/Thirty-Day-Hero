@@ -2,18 +2,7 @@
 
 namespace Unity.Scenes
 {
-    public class NewPartyScene : MonoBehaviour
+    public class NewPartyScene : SceneRootBase
     {
-        // Start is called before the first frame update
-        void Start()
-        {
-        
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-        
-        }
     }
 }

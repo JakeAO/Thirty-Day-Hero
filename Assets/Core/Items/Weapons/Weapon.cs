@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using Core.Abilities;
 using Core.Etc;
-using SadPumpkin.Util.CombatEngine.Abilities;
 using SadPumpkin.Util.CombatEngine.Action;
 using SadPumpkin.Util.CombatEngine.Actor;
 
@@ -11,17 +11,24 @@ namespace Core.Items.Weapons
 {
     public class Weapon : IWeapon
     {
-        public uint Id { get; }
-        public string Name { get; }
-        public string Desc { get; }
-        public ItemType ItemType { get; }
-        public WeaponType WeaponType { get; }
-        public IAbility AttackAbility { get; }
-        public IReadOnlyCollection<IAbility> AddedAbilities { get; }
+        public uint Id { get; set; }
+        public string Name { get; set; }
+        public string Desc { get; set; }
+        public string ArtPath { get; set; }
+        public uint BaseValue { get; set; }
+        public RarityCategory Rarity { get; set; }
+        public ItemType ItemType { get; set; }
+        public WeaponType WeaponType { get; set; }
+        public IAbility AttackAbility { get; set; }
+        public IReadOnlyCollection<IAbility> AddedAbilities { get; set; }
 
         public Weapon()
-            : this(0,
-                string.Empty, string.Empty,
+            : this(0u,
+                string.Empty,
+                string.Empty,
+                string.Empty,
+                0u,
+                RarityCategory.Invalid,
                 WeaponType.Invalid,
                 null,
                 null)
@@ -30,7 +37,11 @@ namespace Core.Items.Weapons
 
         public Weapon(
             uint id,
-            string name, string desc,
+            string name,
+            string desc,
+            string artPath,
+            uint baseValue,
+            RarityCategory rarity,
             WeaponType weaponType,
             IAbility attackAbility,
             IReadOnlyCollection<IAbility> addedAbilities)
@@ -38,6 +49,9 @@ namespace Core.Items.Weapons
             Id = id;
             Name = name;
             Desc = desc;
+            ArtPath = artPath;
+            BaseValue = baseValue;
+            Rarity = rarity;
             ItemType = ItemType.Weapon;
             WeaponType = weaponType;
             AttackAbility = attackAbility;

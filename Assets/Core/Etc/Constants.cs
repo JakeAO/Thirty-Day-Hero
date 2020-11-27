@@ -7,11 +7,22 @@ namespace Core.Etc
         public static readonly IReadOnlyDictionary<RankPriority, float> PRIORITY_WEIGHT =
             new Dictionary<RankPriority, float>()
             {
+                {RankPriority.Invalid, 0f},
                 {RankPriority.A, 9f},
                 {RankPriority.B, 7f},
                 {RankPriority.C, 6f},
                 {RankPriority.D, 4.5f},
                 {RankPriority.F, 3f},
+            };
+
+        public static readonly IReadOnlyDictionary<RarityCategory, float> RARITY_WEIGHT =
+            new Dictionary<RarityCategory, float>()
+            {
+                {RarityCategory.Invalid, 0f},
+                {RarityCategory.Common, 100f},
+                {RarityCategory.Uncommon, 50f},
+                {RarityCategory.Rare, 25f},
+                {RarityCategory.Legendary, 10f}
             };
 
         public const uint ACTION = 10000;

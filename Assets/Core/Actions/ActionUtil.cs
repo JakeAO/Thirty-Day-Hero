@@ -1,7 +1,7 @@
 using System.Collections.Generic;
+using Core.Abilities;
 using Core.Etc;
 using SadPumpkin.Util.CombatEngine;
-using SadPumpkin.Util.CombatEngine.Abilities;
 using SadPumpkin.Util.CombatEngine.Action;
 using SadPumpkin.Util.CombatEngine.Actor;
 using SadPumpkin.Util.TrackableIds;

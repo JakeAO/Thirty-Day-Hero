@@ -2,18 +2,7 @@
 
 namespace Unity.Scenes
 {
-    public class CombatScene : MonoBehaviour
+    public class CombatScene : SceneRootBase
     {
-        // Start is called before the first frame update
-        void Start()
-        {
-        
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-        
-        }
     }
 }

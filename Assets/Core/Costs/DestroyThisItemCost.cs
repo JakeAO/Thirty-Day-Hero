@@ -4,7 +4,7 @@ using Core.Items;
 using SadPumpkin.Util.CombatEngine;
 using SadPumpkin.Util.CombatEngine.Actor;
 using SadPumpkin.Util.CombatEngine.CostCalculators;
-using IPlayerCharacterActor = Core.Actors.IPlayerCharacterActor;
+using IPlayerCharacterActor = Core.Actors.Player.IPlayerCharacterActor;
 
 namespace Core.Costs
 {

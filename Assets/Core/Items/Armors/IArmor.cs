@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Core.Etc;
-using Core.Items.Weapons;
 
 namespace Core.Items.Armors
 {

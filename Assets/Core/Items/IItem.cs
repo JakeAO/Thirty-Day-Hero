@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using Core.Abilities;
 using Core.Etc;
 using SadPumpkin.Util.CombatEngine;
-using SadPumpkin.Util.CombatEngine.Abilities;
 using SadPumpkin.Util.CombatEngine.Action;
 using SadPumpkin.Util.CombatEngine.Actor;
+
 using ICharacterActor = Core.Actors.ICharacterActor;
 
 namespace Core.Items
@@ -12,6 +13,9 @@ namespace Core.Items
     {
         string Name { get; }
         string Desc { get; }
+        string ArtPath { get; }
+        uint BaseValue { get; }
+        RarityCategory Rarity { get; }
         ItemType ItemType { get; }
         IReadOnlyCollection<IAbility> AddedAbilities { get; }
 

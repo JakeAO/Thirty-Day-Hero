@@ -1,5 +1,4 @@
-﻿using SadPumpkin.Util.CombatEngine.Abilities;
-using SadPumpkin.Util.CombatEngine.CostCalculators;
+﻿using SadPumpkin.Util.CombatEngine.CostCalculators;
 using SadPumpkin.Util.CombatEngine.EffectCalculators;
 using SadPumpkin.Util.CombatEngine.RequirementCalculators;
 using SadPumpkin.Util.CombatEngine.TargetCalculators;
@@ -8,14 +7,14 @@ namespace Core.Abilities
 {
     public class Ability : IAbility
     {
-        public uint Id { get; }
-        public string Name { get; }
-        public string Desc { get; }
-        public uint Speed { get; }
-        public IRequirementCalc Requirements { get; }
-        public ICostCalc Cost { get; }
-        public ITargetCalc Target { get; }
-        public IEffectCalc Effect { get; }
+        public uint Id { get; set; }
+        public string Name { get; set; }
+        public string Desc { get; set; }
+        public uint Speed { get; set; }
+        public IRequirementCalc Requirements { get; set; }
+        public ICostCalc Cost { get; set; }
+        public ITargetCalc Target { get; set; }
+        public IEffectCalc Effect { get; set; }
 
         public Ability(
             uint id,

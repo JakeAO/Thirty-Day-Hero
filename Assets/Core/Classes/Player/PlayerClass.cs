@@ -1,0 +1,66 @@
+﻿using System.Collections.Generic;
+using Core.Abilities;
+using Core.EquipMap;
+using Core.Etc;
+using Core.Naming;
+using Core.StatMap;
+
+namespace Core.Classes.Player
+{
+    public class PlayerClass : IPlayerClass
+    {
+        public uint Id { get; set; }
+        public string Name { get; set; }
+        public string Desc { get; set; }
+        public RarityCategory Rarity { get; set; }
+        public INameGenerator NameGenerator { get; set; }
+        public IStatMapBuilder StartingStats { get; set; }
+        public IStatMapIncrementor LevelUpStats { get; set; }
+        public IReadOnlyDictionary<uint, IReadOnlyCollection<IAbility>> AbilitiesPerLevel { get; set; }
+        public IReadOnlyDictionary<DamageType, float> IntrinsicDamageModification { get; set; }
+        public WeaponType WeaponProficiency { get; set; }
+        public ArmorType ArmorProficiency { get; set; }
+        public IEquipMapBuilder StartingEquipment { get; set; }
+
+        public PlayerClass(
+            uint id,
+            string name,
+            string desc,
+            INameGenerator nameGenerator,
+            IStatMapBuilder startingStats,
+            IStatMapIncrementor levelUpStats,
+            IReadOnlyDictionary<uint, IReadOnlyCollection<IAbility>> abilitiesPerLevel,
+            IReadOnlyDictionary<DamageType, float> intrinsicDamageModification,
+            WeaponType weaponProficiency,
+            ArmorType armorProficiency,
+            IEquipMapBuilder startingEquipment)
+        {
+            Id = id;
+            Name = name;
+            Desc = desc;
+            NameGenerator = nameGenerator;
+            StartingStats = startingStats;
+            LevelUpStats = levelUpStats;
+            AbilitiesPerLevel = abilitiesPerLevel;
+            IntrinsicDamageModification = intrinsicDamageModification;
+            WeaponProficiency = weaponProficiency;
+            ArmorProficiency = armorProficiency;
+            StartingEquipment = startingEquipment;
+        }
+
+        public IReadOnlyCollection<IAbility> GetAllAbilities(uint level)
+        {
+            List<IAbility> abilities = new List<IAbility>(10);
+
+            for (uint i = 0; i <= level; i++)
+            {
+                if (AbilitiesPerLevel.TryGetValue(i, out var abilitiesForLevel))
+                {
+                    abilities.AddRange(abilitiesForLevel);
+                }
+            }
+
+            return abilities;
+        }
+    }
+}

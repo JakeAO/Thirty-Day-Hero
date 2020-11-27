@@ -2,7 +2,7 @@
 using Core.Items.Weapons;
 using SadPumpkin.Util.CombatEngine.Actor;
 using SadPumpkin.Util.CombatEngine.RequirementCalculators;
-using IPlayerCharacterActor = Core.Actors.IPlayerCharacterActor;
+using IPlayerCharacterActor = Core.Actors.Player.IPlayerCharacterActor;
 
 namespace Core.Requirements
 {

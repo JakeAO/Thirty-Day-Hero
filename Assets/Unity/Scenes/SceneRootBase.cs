@@ -5,16 +5,28 @@ namespace Unity.Scenes
 {
     public abstract class SceneRootBase : MonoBehaviour, ISceneRoot
     {
+        public IContext Context { get; protected set; }
 
-        public IContext Context { get; }
         public void InjectContext(IContext context)
         {
-            throw new System.NotImplementedException();
+            Context = context;
+
+            OnInject();
         }
-    
+
         public void Dispose()
         {
-            throw new System.NotImplementedException();
+            OnDispose();
+
+            Context = null;
+        }
+
+        protected virtual void OnInject()
+        {
+        }
+
+        protected virtual void OnDispose()
+        {
         }
     }
 }

@@ -1,41 +1,42 @@
 ﻿using System;
-using Core.Classes;
+using Core.Actors.Enemy;
+using Core.Actors.Player;
+using Core.Classes.Enemy;
+using Core.Classes.Player;
 using Core.EquipMap;
 using Core.Etc;
 using Core.StatMap;
+using SadPumpkin.Util.TrackableIds;
 
 namespace Core.Actors
 {
     public static class ClassUtil
     {
         private static readonly Random RANDOM = new Random();
+        private static readonly UintGenerator ID_GENERATOR = new UintGenerator(10000);
 
-        private static uint _nextId = 10000;
-        public static uint NextId => ++_nextId;
-
-        public static Character CreateCharacter(
-            uint id, uint partyId,
-            string name,
-            ICharacterClass characterClass,
+        public static EnemyCharacter CreateEnemy(
+            uint partyId,
+            IEnemyClass enemyClass,
             uint level = 1)
         {
-            IStatMap stats = characterClass.StartingStats.Generate(RANDOM);
+            IStatMap stats = enemyClass.StartingStats.Generate(RANDOM);
             for (uint i = 1; i < level; i++)
             {
                 stats.ModifyStat(StatType.LVL, 1);
-                stats = characterClass.LevelUpStats.Increment(stats, RANDOM);
+                stats = enemyClass.LevelUpStats.Increment(stats, RANDOM);
             }
 
-            return new Character(
-                id, partyId,
-                name,
-                characterClass,
+            return new EnemyCharacter(
+                ID_GENERATOR.GetNext(), 
+                partyId,
+                enemyClass.NameGenerator.GetName(),
+                enemyClass,
                 stats);
         }
 
-        public static PlayerCharacter CreatePlayerCharacter(
-            uint id, uint partyId,
-            string name,
+        public static PlayerCharacter CreatePlayer(
+            uint partyId,
             IPlayerClass playerClass,
             uint level = 1)
         {
@@ -49,8 +50,9 @@ namespace Core.Actors
             IEquipMap equipment = playerClass.StartingEquipment.Generate(RANDOM);
 
             return new PlayerCharacter(
-                id, partyId,
-                name,
+                ID_GENERATOR.GetNext(), 
+                partyId,
+                playerClass.NameGenerator.GetName(),
                 playerClass,
                 stats,
                 equipment);

@@ -1,5 +1,5 @@
-﻿using Core.Etc;
-using SadPumpkin.Util.CombatEngine.Abilities;
+﻿using Core.Abilities;
+using Core.Etc;
 
 namespace Core.Items.Weapons
 {
