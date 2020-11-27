@@ -1,10 +1,16 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Core.Abilities;
 using Core.Classes.Enemy;
+using Core.Effects;
 using Core.Etc;
+using Core.Naming;
+using Core.StatMap;
 using Newtonsoft.Json;
+using SadPumpkin.Util.CombatEngine.CostCalculators;
+using SadPumpkin.Util.CombatEngine.RequirementCalculators;
+using SadPumpkin.Util.CombatEngine.TargetCalculators;
 using SadPumpkin.Util.LootTable;
 
 namespace Core.Database
@@ -13,25 +19,28 @@ namespace Core.Database
     {
         public static EnemyClassDatabase LoadFromDisk(string directoryPath, JsonSerializerSettings jsonSettings)
         {
-            if (string.IsNullOrWhiteSpace(directoryPath))
-                throw new ArgumentException("Provided directory path was null or empty.");
-            if (!Directory.Exists(directoryPath))
-                throw new ArgumentException($"Provided directory path does not exist: {directoryPath}");
-
             List<IEnemyClass> data = new List<IEnemyClass>();
 
-            DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
-            foreach (FileInfo fileInfo in directoryInfo.EnumerateFiles(".json", SearchOption.AllDirectories))
+            if (Directory.Exists(directoryPath))
             {
-                using (StreamReader streamReader = fileInfo.OpenText())
+                DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
+                foreach (FileInfo fileInfo in directoryInfo.EnumerateFiles(".json", SearchOption.AllDirectories))
                 {
-                    string allText = streamReader.ReadToEnd();
-                    IEnemyClass enemyClass = JsonConvert.DeserializeObject<IEnemyClass>(allText, jsonSettings);
-                    if (enemyClass != null)
+                    using (StreamReader streamReader = fileInfo.OpenText())
                     {
-                        data.Add(enemyClass);
+                        string allText = streamReader.ReadToEnd();
+                        IEnemyClass enemyClass = JsonConvert.DeserializeObject<IEnemyClass>(allText, jsonSettings);
+                        if (enemyClass != null)
+                        {
+                            data.Add(enemyClass);
+                        }
                     }
                 }
+            }
+
+            if (data.Count == 0)
+            {
+                data.AddRange(HackDefinitions.Get());
             }
 
             return new EnemyClassDatabase(data);
@@ -74,6 +83,54 @@ namespace Core.Database
             return _allData.TryGetValue(id, out var result)
                 ? result
                 : null;
+        }
+
+        private static class HackDefinitions
+        {
+            public static IEnumerable<IEnemyClass> Get()
+            {
+                yield return new EnemyClass(
+                    Constants.CLASS_MONSTER,
+                    "Goblin",
+                    "I'm a goblin",
+                    new TxtNameGenerator(new string[] {"Doug"}),
+                    new Dictionary<DamageType, float>(),
+                    new StatMapBuilder(
+                        RankPriority.A,
+                        RankPriority.C,
+                        RankPriority.B,
+                        RankPriority.D,
+                        RankPriority.F,
+                        RankPriority.D),
+                    new StatMapIncrementor(
+                        RankPriority.A,
+                        RankPriority.C,
+                        RankPriority.B,
+                        RankPriority.D,
+                        RankPriority.F,
+                        RankPriority.C),
+                    new Dictionary<uint, IReadOnlyCollection<IAbility>>()
+                    {
+                        {
+                            0, new IAbility[]
+                            {
+                                new Ability(
+                                    Constants.ABILITY_ATTACK + 1,
+                                    "Goblin Punch",
+                                    "The goblin does a punch.",
+                                    100u,
+                                    NoRequirements.Instance,
+                                    NoCost.Instance,
+                                    SingleEnemyTargetCalculator.Instance,
+                                    new DamageEffect(
+                                        DamageType.Normal,
+                                        source => 5 + source.Stats[StatType.STR] / source.Stats[StatType.LVL],
+                                        "[5 + STR/LVL] Normal Damage"))
+                            }
+                        }
+                    }
+                );
+            }
         }
     }
 }

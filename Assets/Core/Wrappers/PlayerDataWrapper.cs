@@ -7,7 +7,7 @@ namespace Core.Wrappers
 {
     public class PlayerDataWrapper
     {
-        public static string DataPath(string userId) => $"players/{userId}.json";
+        public static string DataPath(string userId) => $"{userId}.json";
 
         public readonly ISignal Updated;
 

@@ -2,6 +2,7 @@
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using SadPumpkin.Util.Signals;
 
 namespace Core.JSON
 {
@@ -11,6 +12,7 @@ namespace Core.JSON
         {
             JsonProperty property = base.CreateProperty(member, memberSerialization);
 
+            // Only serialize collections if they are not empty.
             if (typeof(IEnumerable).IsAssignableFrom(property.PropertyType))
             {
                 property.ShouldSerialize = obj =>
@@ -30,6 +32,13 @@ namespace Core.JSON
 
                     return anyElements;
                 };
+            }
+
+            // Don't serialize/deserialize Signals, what would that even mean.
+            if (typeof(ISignal).IsAssignableFrom(property.PropertyType))
+            {
+                property.ShouldSerialize = obj => false;
+                property.ShouldDeserialize = obj => false;
             }
 
             return property;

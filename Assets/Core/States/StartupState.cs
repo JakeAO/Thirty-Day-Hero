@@ -1,17 +1,33 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Core.CombatSettings;
 using Core.Database;
 using Core.Etc;
 using Core.JSON;
+using Core.Wrappers;
 using Newtonsoft.Json;
 using SadPumpkin.Util.Context;
+using SadPumpkin.Util.StateMachine;
 using SadPumpkin.Util.StateMachine.States;
 
 namespace Core.States
 {
+    /// <summary>
+    /// Initial state of the game flow.
+    /// <remarks>
+    /// - Initialize global utilities and add them to context
+    /// - Load JSON databases from disk
+    /// - Attempt to load player JSON from disk, otherwise create
+    /// - Attempt to load party JSON from disk
+    /// - Transition to next state:
+    ///   - If party JSON exists, transition to PreGameState
+    ///   - Else transition to CreatePartyState
+    /// </remarks>
+    /// </summary>
+
     public class StartupState : IState
     {
         public void PerformSetup(IContext context, IState previousState)
@@ -33,11 +49,30 @@ namespace Core.States
             context.Set(jsonSettings);
 
             // Pull PathUtility and begin loading process
-            LoadDatabases(context);
+            PathUtility pathUtility = context.Get<PathUtility>();
+            LoadDatabases(context, pathUtility);
 
             // Create and insert CombatSettingsGenerator
             CombatSettingsGenerator combatSettingsGenerator = new CombatSettingsGenerator(context.Get<EnemyGroupWrapperDatabase>());
             context.Set(combatSettingsGenerator);
+
+            // Load/Create PlayerData
+            PlayerDataWrapper playerDataWrapper = LoadPlayerData(context, pathUtility);
+
+            // Load PartyData
+            PartyDataWrapper partyDataWrapper = LoadPartyData(context, pathUtility, playerDataWrapper);
+
+            // Transition to next state
+            if (partyDataWrapper != null)
+            {
+                // goto PreGameState
+                context.Get<IStateMachine>().ChangeState<PreGameState>();
+            }
+            else
+            {
+                // goto CreatePartyState
+                context.Get<IStateMachine>().ChangeState<CreatePartyState>();
+            }
         }
 
         public void PerformTeardown(IContext context, IState nextState)
@@ -59,9 +94,8 @@ namespace Core.States
                 .ToList();
         }
 
-        private void LoadDatabases(IContext context)
+        private static void LoadDatabases(IContext context, PathUtility pathUtility)
         {
-            PathUtility pathUtility = context.Get<PathUtility>();
             JsonSerializerSettings jsonSettings = context.Get<JsonSerializerSettings>();
 
             // Load Abilities first, since they're the most relied upon
@@ -93,6 +127,61 @@ namespace Core.States
             // Finally load EnemyGroups, which rely upon Enemies
             EnemyGroupWrapperDatabase enemyGroupWrapperDatabase = EnemyGroupWrapperDatabase.LoadFromDisk(pathUtility.EnemyGroupPath, jsonSettings);
             context.Set(enemyGroupWrapperDatabase);
+        }
+
+        private static PlayerDataWrapper LoadPlayerData(IContext context, PathUtility pathUtility)
+        {
+            JsonSerializerSettings jsonSettings = context.Get<JsonSerializerSettings>();
+
+            PlayerDataWrapper playerDataWrapper = null;
+
+            Directory.CreateDirectory(pathUtility.SavePath);
+            string playerDataPath = Path.Combine(pathUtility.SavePath, PlayerDataWrapper.DataPath(pathUtility.ActivePlayerId));
+            if (File.Exists(playerDataPath))
+            {
+                string playerDataText = File.ReadAllText(playerDataPath);
+                playerDataWrapper = JsonConvert.DeserializeObject<PlayerDataWrapper>(playerDataText, jsonSettings);
+            }
+            else
+            {
+                playerDataWrapper = new PlayerDataWrapper();
+                File.WriteAllText(playerDataPath, JsonConvert.SerializeObject(playerDataWrapper, jsonSettings));
+            }
+
+            if (playerDataWrapper == null)
+            {
+                throw new InvalidDataException($"Content of PlayerData file could not be read properly: {playerDataPath}");
+            }
+
+            context.Set(playerDataWrapper);
+            return playerDataWrapper;
+        }
+
+        private static PartyDataWrapper LoadPartyData(IContext context, PathUtility pathUtility, PlayerDataWrapper playerData)
+        {
+            JsonSerializerSettings jsonSettings = context.Get<JsonSerializerSettings>();
+
+            if (playerData.ActivePartyId == 0u)
+                return null;
+
+            Directory.CreateDirectory(pathUtility.SavePath);
+            string partyDataPath = PartyDataWrapper.DataPath(pathUtility.ActivePlayerId, playerData.ActivePartyId);
+            if (!File.Exists(partyDataPath))
+            {
+                throw new InvalidDataException($"Active PartyData file does not exist: {partyDataPath}");
+            }
+
+            string partyDataText = File.ReadAllText(partyDataPath);
+            PartyDataWrapper partyDataWrapper = JsonConvert.DeserializeObject<PartyDataWrapper>(partyDataText, jsonSettings);
+
+            if (partyDataWrapper == null)
+            {
+                throw new InvalidDataException($"Content of PartyData file could not be read properly: {partyDataPath}");
+            }
+
+            context.Set(partyDataWrapper);
+
+            return partyDataWrapper;
         }
     }
 }

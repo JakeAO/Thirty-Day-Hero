@@ -8,7 +8,6 @@ namespace Core.Abilities
 {
     public interface IAbility : IIdTracked
     {
-        uint Id { get; }
         string Name { get; }
         string Desc { get; }
         uint Speed { get; }

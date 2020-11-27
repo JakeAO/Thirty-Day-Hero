@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,23 +12,21 @@ namespace Core.Database
     {
         public static EnemyGroupWrapperDatabase LoadFromDisk(string directoryPath, JsonSerializerSettings jsonSettings)
         {
-            if (string.IsNullOrWhiteSpace(directoryPath))
-                throw new ArgumentException("Provided directory path was null or empty.");
-            if (!Directory.Exists(directoryPath))
-                throw new ArgumentException($"Provided directory path does not exist: {directoryPath}");
-
             List<EnemyGroupWrapper> data = new List<EnemyGroupWrapper>();
 
-            DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
-            foreach (FileInfo fileInfo in directoryInfo.EnumerateFiles(".json", SearchOption.AllDirectories))
+            if (Directory.Exists(directoryPath))
             {
-                using (StreamReader streamReader = fileInfo.OpenText())
+                DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
+                foreach (FileInfo fileInfo in directoryInfo.EnumerateFiles(".json", SearchOption.AllDirectories))
                 {
-                    string allText = streamReader.ReadToEnd();
-                    EnemyGroupWrapper enemyGroup = JsonConvert.DeserializeObject<EnemyGroupWrapper>(allText, jsonSettings);
-                    if (enemyGroup != null)
+                    using (StreamReader streamReader = fileInfo.OpenText())
                     {
-                        data.Add(enemyGroup);
+                        string allText = streamReader.ReadToEnd();
+                        EnemyGroupWrapper enemyGroup = JsonConvert.DeserializeObject<EnemyGroupWrapper>(allText, jsonSettings);
+                        if (enemyGroup != null)
+                        {
+                            data.Add(enemyGroup);
+                        }
                     }
                 }
             }

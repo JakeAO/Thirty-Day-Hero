@@ -10,7 +10,7 @@ namespace Core.Wrappers
 {
     public class PartyDataWrapper
     {
-        public static string DataPath(string userId, uint partyId) => $"parties/{userId}/{partyId}.json";
+        public static string DataPath(string userId, uint partyId) => $"{userId}/{partyId}.json";
 
         public readonly ISignal UpdateSignal;
 

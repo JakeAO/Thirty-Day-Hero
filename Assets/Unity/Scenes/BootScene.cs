@@ -18,6 +18,8 @@ namespace Unity.Scenes
 
             // Create and add PathUtility
             PathUtility pathUtility = new PathUtility(
+                "localUser",
+                Path.Combine(Application.persistentDataPath, "SaveData"),
                 Path.Combine(Application.streamingAssetsPath, "Definitions", "Ability"),
                 Path.Combine(Application.streamingAssetsPath, "Definitions", "PlayerClass"),
                 Path.Combine(Application.streamingAssetsPath, "Definitions", "EnemyClass"),
@@ -30,6 +32,7 @@ namespace Unity.Scenes
 
             StateChanged stateChangedSignal = new StateChanged();
             Context.Set(stateChangedSignal);
+            stateChangedSignal.Listen(newState => Debug.Log($"[StateMachine] Changed state to {newState.GetType()}"));
 
             // Create and add state machine
             IStateMachine stateMachine = new StateMachine(Context, stateChangedSignal);

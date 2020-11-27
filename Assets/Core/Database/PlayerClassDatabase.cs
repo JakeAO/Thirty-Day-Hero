@@ -1,11 +1,20 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
+using Core.Abilities;
 using Core.Classes.Player;
+using Core.Effects;
+using Core.EquipMap;
 using Core.Etc;
+using Core.Items;
+using Core.Items.Armors;
+using Core.Items.Weapons;
+using Core.Naming;
+using Core.StatMap;
 using Newtonsoft.Json;
+using SadPumpkin.Util.CombatEngine.CostCalculators;
+using SadPumpkin.Util.CombatEngine.RequirementCalculators;
+using SadPumpkin.Util.CombatEngine.TargetCalculators;
 using SadPumpkin.Util.LootTable;
 
 namespace Core.Database
@@ -14,25 +23,28 @@ namespace Core.Database
     {
         public static PlayerClassDatabase LoadFromDisk(string directoryPath, JsonSerializerSettings jsonSettings)
         {
-            if (string.IsNullOrWhiteSpace(directoryPath))
-                throw new ArgumentException("Provided directory path was null or empty.");
-            if (!Directory.Exists(directoryPath))
-                throw new ArgumentException($"Provided directory path does not exist: {directoryPath}");
-
             List<IPlayerClass> data = new List<IPlayerClass>();
 
-            DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
-            foreach (FileInfo fileInfo in directoryInfo.EnumerateFiles(".json", SearchOption.AllDirectories))
+            if (Directory.Exists(directoryPath))
             {
-                using (StreamReader streamReader = fileInfo.OpenText())
+                DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
+                foreach (FileInfo fileInfo in directoryInfo.EnumerateFiles(".json", SearchOption.AllDirectories))
                 {
-                    string allText = streamReader.ReadToEnd();
-                    IPlayerClass playerClass = JsonConvert.DeserializeObject<IPlayerClass>(allText, jsonSettings);
-                    if (playerClass != null)
+                    using (StreamReader streamReader = fileInfo.OpenText())
                     {
-                        data.Add(playerClass);
+                        string allText = streamReader.ReadToEnd();
+                        IPlayerClass playerClass = JsonConvert.DeserializeObject<IPlayerClass>(allText, jsonSettings);
+                        if (playerClass != null)
+                        {
+                            data.Add(playerClass);
+                        }
                     }
                 }
+            }
+
+            if (data.Count == 0)
+            {
+                data.AddRange(HackDefinitions.Get());
             }
 
             return new PlayerClassDatabase(data);
@@ -76,6 +88,69 @@ namespace Core.Database
             return _allData.TryGetValue(id, out var result)
                 ? result
                 : null;
+        }
+
+        private static class HackDefinitions
+        {
+            public static IEnumerable<IPlayerClass> Get()
+            {
+                yield return new PlayerClass(
+                    Constants.CLASS_PLAYER,
+                    "Soldier",
+                    "I'm a soldier",
+                    new TxtNameGenerator(new string[] {"Gary"}),
+                    new StatMapBuilder(
+                        RankPriority.A,
+                        RankPriority.C,
+                        RankPriority.B,
+                        RankPriority.D,
+                        RankPriority.F,
+                        RankPriority.D),
+                    new StatMapIncrementor(
+                        RankPriority.A,
+                        RankPriority.C,
+                        RankPriority.B,
+                        RankPriority.D,
+                        RankPriority.F,
+                        RankPriority.C),
+                    new Dictionary<uint, IReadOnlyCollection<IAbility>>(),
+                    new Dictionary<DamageType, float>(),
+                    WeaponType.Sword,
+                    ArmorType.Light,
+                    new EquipMapBuilder(
+                        new Dictionary<IWeapon, RankPriority>()
+                        {
+                            {
+                                new Weapon(
+                                    Constants.WEAPON_SWORD,
+                                    "Sword",
+                                    "I'm a Sword",
+                                    "Assets/Art/Items/weapon/sword/sword_01.png",
+                                    100u,
+                                    RarityCategory.Common,
+                                    WeaponType.Sword,
+                                    new Ability(
+                                        Constants.ABILITY_ATTACK,
+                                        "Attack",
+                                        "Swing that sword.",
+                                        100,
+                                        NoRequirements.Instance,
+                                        NoCost.Instance,
+                                        SingleEnemyTargetCalculator.Instance,
+                                        new DamageEffect(
+                                            DamageType.Normal,
+                                            source => 10 + source.Stats[StatType.STR] / source.Stats[StatType.LVL],
+                                            "[10 + STR/LVL] Normal Damage")),
+                                    new IAbility[0]),
+                                RankPriority.A
+
+                            }
+                        },
+                        new Dictionary<IArmor, RankPriority>(),
+                        new Dictionary<IItem, RankPriority>(),
+                        new Dictionary<IItem, RankPriority>())
+                );
+            }
         }
     }
 }

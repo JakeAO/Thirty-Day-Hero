@@ -2,6 +2,10 @@ namespace Core.Etc
 {
     public class PathUtility
     {
+        public readonly string ActivePlayerId;
+        
+        public readonly string SavePath;
+
         public readonly string AbilityPath;
         public readonly string PlayerClassPath;
         public readonly string EnemyClassPath;
@@ -12,6 +16,8 @@ namespace Core.Etc
         public readonly string ArmorDefinitionPath;
 
         public PathUtility(
+            string activePlayerId,
+            string savePath,
             string abilityPath,
             string playerClassPath,
             string enemyClassPath,
@@ -21,6 +27,8 @@ namespace Core.Etc
             string weaponDefinitionPath,
             string armorDefinitionPath)
         {
+            ActivePlayerId = activePlayerId;
+            SavePath = savePath;
             AbilityPath = abilityPath;
             PlayerClassPath = playerClassPath;
             EnemyClassPath = enemyClassPath;
