@@ -4,6 +4,7 @@ using Core.Etc;
 using Core.States;
 using SadPumpkin.Util.Context;
 using SadPumpkin.Util.StateMachine;
+using SadPumpkin.Util.StateMachine.Signals;
 using UnityEngine;
 
 namespace Unity.Scenes
@@ -27,9 +28,14 @@ namespace Unity.Scenes
                 Path.Combine(Application.streamingAssetsPath, "Definitions", "Armor"));
             Context.Set(pathUtility);
 
+            StateChanged stateChangedSignal = new StateChanged();
+            Context.Set(stateChangedSignal);
+
             // Create and add state machine
-            IStateMachine stateMachine = new StateMachine(Context);
+            IStateMachine stateMachine = new StateMachine(Context, stateChangedSignal);
             Context.Set(stateMachine);
+
+            Context.Set(new SceneController(stateChangedSignal));
 
             // Initialize StartupState
             stateMachine.ChangeState<StartupState>();
@@ -51,12 +57,12 @@ namespace Unity.Scenes
                 {
                     if(GUILayout.Button("Yes"))
                     {
-                        UnityEngine.Debug.Log("USE PARTY DATA, LOAD GAME HUB");
+                        Context.Get<IStateMachine>().ChangeState<GameHubState>();
                     }
 
                     if(GUILayout.Button("No"))
                     {
-                        UnityEngine.Debug.Log("LOAD PARTY CREATION");
+                        Context.Get<IStateMachine>().ChangeState<CreatePartyState>();
                     }
                 }
                 GUILayout.EndHorizontal();
