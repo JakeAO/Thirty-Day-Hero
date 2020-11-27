@@ -38,5 +38,29 @@ namespace Unity.Scenes
         {
             throw new InvalidOperationException($"{nameof(BootScene)} cannot be injected into, it is supposed to be the very first state!");
         }
+
+        private Rect _debugRect = new Rect(10, 10, 150, 150);
+        private void OnGUI()
+        {
+            GUILayout.BeginArea(_debugRect, GUI.skin.box);
+            {
+                GUILayout.Label("Debug flow:");
+                GUILayout.Label("Do you have a party?");
+                GUILayout.BeginHorizontal();
+                {
+                    if(GUILayout.Button("Yes"))
+                    {
+                        UnityEngine.Debug.Log("USE PARTY DATA, LOAD GAME HUB");
+                    }
+
+                    if(GUILayout.Button("No"))
+                    {
+                        UnityEngine.Debug.Log("LOAD PARTY CREATION");
+                    }
+                }
+                GUILayout.EndHorizontal();
+            }
+            GUILayout.EndArea();
+        }
     }
 }
