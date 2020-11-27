@@ -1,11 +1,12 @@
-﻿using SadPumpkin.Util.CombatEngine.CostCalculators;
+﻿using SadPumpkin.Util.CombatEngine;
+using SadPumpkin.Util.CombatEngine.CostCalculators;
 using SadPumpkin.Util.CombatEngine.EffectCalculators;
 using SadPumpkin.Util.CombatEngine.RequirementCalculators;
 using SadPumpkin.Util.CombatEngine.TargetCalculators;
 
 namespace Core.Abilities
 {
-    public interface IAbility
+    public interface IAbility : IIdTracked
     {
         uint Id { get; }
         string Name { get; }

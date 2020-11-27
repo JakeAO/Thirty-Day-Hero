@@ -17,6 +17,7 @@ namespace Unity.Scenes
 
             // Create and add PathUtility
             PathUtility pathUtility = new PathUtility(
+                Path.Combine(Application.streamingAssetsPath, "Definitions", "Ability"),
                 Path.Combine(Application.streamingAssetsPath, "Definitions", "PlayerClass"),
                 Path.Combine(Application.streamingAssetsPath, "Definitions", "EnemyClass"),
                 Path.Combine(Application.streamingAssetsPath, "Definitions", "CalamityClass"),

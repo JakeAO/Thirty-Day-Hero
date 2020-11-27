@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Core.CombatSettings;
 using Core.Database;
 using Core.Etc;
@@ -28,7 +27,7 @@ namespace Core.States
             {
                 TypeNameHandling = TypeNameHandling.Auto,
                 ContractResolver = new NewtonsoftContractResolver(),
-                Converters = FindAllJsonConverters(),
+                Converters = FindAllParameterlessJsonConverters(),
                 Error = (sender, args) => Console.WriteLine($"[ERROR] {sender} -> {args.ErrorContext} ({args.CurrentObject})")
             };
             context.Set(jsonSettings);
@@ -46,7 +45,7 @@ namespace Core.States
 
         }
 
-        private IList<JsonConverter> FindAllJsonConverters()
+        private IList<JsonConverter> FindAllParameterlessJsonConverters()
         {
             return Assembly.GetAssembly(GetType())
                 .GetTypes()
@@ -65,26 +64,35 @@ namespace Core.States
             PathUtility pathUtility = context.Get<PathUtility>();
             JsonSerializerSettings jsonSettings = context.Get<JsonSerializerSettings>();
 
+            // Load Abilities first, since they're the most relied upon
+            AbilityDatabase abilityDatabase = AbilityDatabase.LoadFromDisk(pathUtility.AbilityPath, jsonSettings);
+            context.Set(abilityDatabase);
+            jsonSettings.Converters.Add(new AbilityJsonConverter(abilityDatabase));
+
+            // Then load Items, since they're relied upon fairly often
+            ItemDatabase itemDatabase = ItemDatabase.LoadFromDisk(pathUtility.ItemDefinitionPath, jsonSettings);
+            WeaponDatabase weaponDatabase = WeaponDatabase.LoadFromDisk(pathUtility.WeaponDefinitionPath, jsonSettings);
+            ArmorDatabase armorDatabase = ArmorDatabase.LoadFromDisk(pathUtility.ArmorDefinitionPath, jsonSettings);
+            context.Set(itemDatabase);
+            context.Set(weaponDatabase);
+            context.Set(armorDatabase);
+            jsonSettings.Converters.Add(new ItemJsonConverter(itemDatabase));
+            jsonSettings.Converters.Add(new WeaponJsonConverter(weaponDatabase));
+            jsonSettings.Converters.Add(new ArmorJsonConverter(armorDatabase));
+
+            // Then load Classes, which are rarely relied upon
             PlayerClassDatabase playerClassDatabase = PlayerClassDatabase.LoadFromDisk(pathUtility.PlayerClassPath, jsonSettings);
-            context.Set(playerClassDatabase);
-
             EnemyClassDatabase enemyClassDatabase = EnemyClassDatabase.LoadFromDisk(pathUtility.EnemyClassPath, jsonSettings);
-            context.Set(enemyClassDatabase);
-
             CalamityClassDatabase calamityClassDatabase = CalamityClassDatabase.LoadFromDisk(pathUtility.CalamityClassPath, jsonSettings);
+            context.Set(playerClassDatabase);
+            context.Set(enemyClassDatabase);
             context.Set(calamityClassDatabase);
+            jsonSettings.Converters.Add(new PlayerClassConverter(playerClassDatabase));
+            jsonSettings.Converters.Add(new EnemyClassConverter(enemyClassDatabase, calamityClassDatabase));
 
+            // Finally load EnemyGroups, which rely upon Enemies
             EnemyGroupWrapperDatabase enemyGroupWrapperDatabase = EnemyGroupWrapperDatabase.LoadFromDisk(pathUtility.EnemyGroupPath, jsonSettings);
             context.Set(enemyGroupWrapperDatabase);
-
-            ItemDatabase itemDatabase = ItemDatabase.LoadFromDisk(pathUtility.ItemDefinitionPath, jsonSettings);
-            context.Set(itemDatabase);
-
-            WeaponDatabase weaponDatabase = WeaponDatabase.LoadFromDisk(pathUtility.WeaponDefinitionPath, jsonSettings);
-            context.Set(weaponDatabase);
-
-            ArmorDatabase armorDatabase = ArmorDatabase.LoadFromDisk(pathUtility.ArmorDefinitionPath, jsonSettings);
-            context.Set(armorDatabase);
         }
     }
 }
