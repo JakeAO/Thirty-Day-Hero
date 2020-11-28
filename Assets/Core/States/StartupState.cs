@@ -94,7 +94,7 @@ namespace Core.States
                     GoToCreateParty);
             }
 
-            if (SharedContext.TryGet(out PartyDataWrapper _))
+            if (SharedContext.TryGet(out PlayerDataWrapper _))
             {
                 yield return new EventOption(
                     "Reset All Data",
