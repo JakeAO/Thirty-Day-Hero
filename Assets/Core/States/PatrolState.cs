@@ -1,4 +1,5 @@
 using SadPumpkin.Util.Context;
+using SadPumpkin.Util.StateMachine;
 using SadPumpkin.Util.StateMachine.States;
 
 namespace Core.States
@@ -7,17 +8,19 @@ namespace Core.States
     {
         public void PerformSetup(IContext context, IState previousState)
         {
-            throw new System.NotImplementedException();
+            
         }
 
         public void PerformContent(IContext context)
         {
-            throw new System.NotImplementedException();
+            //auto-default to combat
+            //maybe we built in a way to identify/try to escape?
+            context.Get<IStateMachine>().ChangeState<Combat.CombatSetupState>();
         }
 
         public void PerformTeardown(IContext context, IState nextState)
         {
-            throw new System.NotImplementedException();
+            
         }
     }
 }

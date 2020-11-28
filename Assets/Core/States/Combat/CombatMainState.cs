@@ -7,17 +7,17 @@ namespace Core.States.Combat
     {
         public void PerformSetup(IContext context, IState previousState)
         {
-            throw new System.NotImplementedException();
+            
         }
 
         public void PerformContent(IContext context)
         {
-            throw new System.NotImplementedException();
+            
         }
 
         public void PerformTeardown(IContext context, IState nextState)
         {
-            throw new System.NotImplementedException();
+            
         }
     }
 }
