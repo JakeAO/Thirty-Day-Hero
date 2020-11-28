@@ -1,7 +1,12 @@
 using System.Collections.Generic;
 using System.IO;
 using Core.Abilities;
+using Core.Effects;
+using Core.Etc;
 using Newtonsoft.Json;
+using SadPumpkin.Util.CombatEngine.CostCalculators;
+using SadPumpkin.Util.CombatEngine.RequirementCalculators;
+using SadPumpkin.Util.CombatEngine.TargetCalculators;
 
 namespace Core.Database
 {
@@ -28,9 +33,14 @@ namespace Core.Database
                 }
             }
 
+            if (data.Count == 0)
+            {
+                data.AddRange(HackDefinitions.Get());
+            }
+
             return new AbilityDatabase(data);
         }
-        
+
         private readonly SortedDictionary<uint, IAbility> _allData = new SortedDictionary<uint, IAbility>();
 
         public AbilityDatabase(IReadOnlyCollection<IAbility> allData)
@@ -51,6 +61,26 @@ namespace Core.Database
             return _allData.TryGetValue(id, out var result)
                 ? result
                 : null;
+        }
+
+        private static class HackDefinitions
+        {
+            public static IEnumerable<IAbility> Get()
+            {
+                yield return
+                    new Ability(
+                        Constants.ABILITY_ATTACK,
+                        "Attack",
+                        "Swing that sword.",
+                        100,
+                        NoRequirements.Instance,
+                        NoCost.Instance,
+                        SingleEnemyTargetCalculator.Instance,
+                        new DamageEffect(
+                            DamageType.Normal,
+                            source => 10 + source.Stats[StatType.STR] / source.Stats[StatType.LVL],
+                            "[10 + STR/LVL] Normal Damage"));
+            }
         }
     }
 }

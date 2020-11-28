@@ -31,6 +31,11 @@ namespace Core.Database
                 }
             }
 
+            if (data.Count == 0)
+            {
+                data.AddRange(HackDefinitions.Get());
+            }
+
             return new EnemyGroupWrapperDatabase(data);
         }
 
@@ -72,6 +77,14 @@ namespace Core.Database
             return _allData.TryGetValue(id, out var result)
                 ? result
                 : null;
+        }
+
+        private static class HackDefinitions
+        {
+            public static IEnumerable<EnemyGroupWrapper> Get()
+            {
+                yield return new EnemyGroupWrapper();
+            }
         }
     }
 }

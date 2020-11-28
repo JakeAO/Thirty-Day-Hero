@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Core.Abilities;
 using Core.Etc;
 using Core.Items;
 using Newtonsoft.Json;
@@ -29,6 +30,11 @@ namespace Core.Database
                         }
                     }
                 }
+            }
+
+            if (data.Count == 0)
+            {
+                data.AddRange(HackDefinitions.Get());
             }
 
             return new ItemDatabase(data);
@@ -72,6 +78,22 @@ namespace Core.Database
             return _allData.TryGetValue(id, out var result)
                 ? result
                 : null;
+        }
+
+        private static class HackDefinitions
+        {
+            public static IEnumerable<IItem> Get()
+            {
+                yield return new Item(
+                    Constants.ITEM_LOOT,
+                    "Bag of Fish",
+                    "It's a bag of wet fish, get over it.",
+                    "",
+                    1u,
+                    RarityCategory.Common,
+                    ItemType.Loot,
+                    new IAbility[0]);
+            }
         }
     }
 }

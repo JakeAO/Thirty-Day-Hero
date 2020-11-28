@@ -11,6 +11,8 @@ namespace Unity.Scenes
 {
     public class BootScene : SceneRootBase
     {
+        private StartupState _state = null;
+
         private void Start()
         {
             // Create context
@@ -41,12 +43,33 @@ namespace Unity.Scenes
             Context.Set(new SceneController(Context));
 
             // Initialize StartupState
-            stateMachine.ChangeState<StartupState>();
+            _state = new StartupState();
+            stateMachine.ChangeState(_state);
         }
 
         protected override void OnInject()
         {
             throw new InvalidOperationException($"{nameof(BootScene)} cannot be injected into, it is supposed to be the very first state!");
+        }
+
+        private void OnGUI()
+        {
+            GUILayout.BeginArea(new Rect(10, 10, 150, 150), GUI.skin.box);
+            {
+                GUILayout.Label("Debug flow:");
+                if (_state == null)
+                {
+                    GUILayout.Label("Loading...");
+                }
+                else
+                {
+                    if (GUILayout.Button("Continue"))
+                    {
+                        _state.Continue();
+                    }
+                }
+            }
+            GUILayout.EndArea();
         }
     }
 }

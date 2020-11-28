@@ -25,6 +25,13 @@ namespace Core.Etc
                 {RarityCategory.Legendary, 10f}
             };
 
+        public const uint PARTY_SIZE_MIN = 1;
+        public const uint PARTY_SIZE_MAX = 3;
+        public const uint CREATE_PARTY_POOL_SIZE = 5;
+
+        public const uint CALAMITY_LEVEL = 20u;
+        public const uint DAYS_TO_PREPARE = 30u;
+        
         public const uint ACTION = 10000;
         public const uint ACTION_WAIT = 19999;
         

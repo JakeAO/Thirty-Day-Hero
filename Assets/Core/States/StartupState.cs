@@ -30,8 +30,12 @@ namespace Core.States
 
     public class StartupState : IState
     {
+        private IContext _context = null;
+
         public void PerformSetup(IContext context, IState previousState)
         {
+            _context = context;
+
             if (!(previousState is NullState))
                 throw new ArgumentException($"{nameof(StartupState)} should never be entered from any other state.");
         }
@@ -61,23 +65,26 @@ namespace Core.States
 
             // Load PartyData
             PartyDataWrapper partyDataWrapper = LoadPartyData(context, pathUtility, playerDataWrapper);
-
-            // Transition to next state
-            if (partyDataWrapper != null)
-            {
-                // goto PreGameState
-                context.Get<IStateMachine>().ChangeState<PreGameState>();
-            }
-            else
-            {
-                // goto CreatePartyState
-                context.Get<IStateMachine>().ChangeState<CreatePartyState>();
-            }
         }
 
         public void PerformTeardown(IContext context, IState nextState)
         {
 
+        }
+
+        public void Continue()
+        {
+            // Transition to next state
+            if (_context.TryGet(out PartyDataWrapper _))
+            {
+                // goto PreGameState
+                _context.Get<IStateMachine>().ChangeState<PreGameState>();
+            }
+            else
+            {
+                // goto CreatePartyState
+                _context.Get<IStateMachine>().ChangeState<CreatePartyState>();
+            }
         }
 
         private IList<JsonConverter> FindAllParameterlessJsonConverters()
@@ -133,10 +140,10 @@ namespace Core.States
         {
             JsonSerializerSettings jsonSettings = context.Get<JsonSerializerSettings>();
 
-            PlayerDataWrapper playerDataWrapper = null;
+            PlayerDataWrapper playerDataWrapper;
 
             Directory.CreateDirectory(pathUtility.SavePath);
-            string playerDataPath = Path.Combine(pathUtility.SavePath, PlayerDataWrapper.DataPath(pathUtility.ActivePlayerId));
+            string playerDataPath = pathUtility.GetPlayerDataPath();
             if (File.Exists(playerDataPath))
             {
                 string playerDataText = File.ReadAllText(playerDataPath);
@@ -165,7 +172,7 @@ namespace Core.States
                 return null;
 
             Directory.CreateDirectory(pathUtility.SavePath);
-            string partyDataPath = PartyDataWrapper.DataPath(pathUtility.ActivePlayerId, playerData.ActivePartyId);
+            string partyDataPath = pathUtility.GetPartyDataPath(playerData.ActivePartyId);
             if (!File.Exists(partyDataPath))
             {
                 throw new InvalidDataException($"Active PartyData file does not exist: {partyDataPath}");

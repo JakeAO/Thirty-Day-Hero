@@ -1,9 +1,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Core.Abilities;
+using Core.Effects;
 using Core.Etc;
 using Core.Items.Weapons;
 using Newtonsoft.Json;
+using SadPumpkin.Util.CombatEngine.CostCalculators;
+using SadPumpkin.Util.CombatEngine.RequirementCalculators;
+using SadPumpkin.Util.CombatEngine.TargetCalculators;
 using SadPumpkin.Util.LootTable;
 
 namespace Core.Database
@@ -29,6 +34,11 @@ namespace Core.Database
                         }
                     }
                 }
+            }
+
+            if (data.Count == 0)
+            {
+                data.AddRange(HackDefinitions.Get());
             }
 
             return new WeaponDatabase(data);
@@ -72,6 +82,34 @@ namespace Core.Database
             return _allData.TryGetValue(id, out var result)
                 ? result
                 : null;
+        }
+
+        private static class HackDefinitions
+        {
+            public static IEnumerable<IWeapon> Get()
+            {
+                yield return new Weapon(
+                    Constants.WEAPON_SWORD,
+                    "Sword",
+                    "I'm a Sword",
+                    "Assets/Art/Items/weapon/sword/sword_01.png",
+                    100u,
+                    RarityCategory.Common,
+                    WeaponType.Sword,
+                    new Ability(
+                        Constants.ABILITY_ATTACK,
+                        "Attack",
+                        "Swing that sword.",
+                        100,
+                        NoRequirements.Instance,
+                        NoCost.Instance,
+                        SingleEnemyTargetCalculator.Instance,
+                        new DamageEffect(
+                            DamageType.Normal,
+                            source => 10 + source.Stats[StatType.STR] / source.Stats[StatType.LVL],
+                            "[10 + STR/LVL] Normal Damage")),
+                    new IAbility[0]);
+            }
         }
     }
 }

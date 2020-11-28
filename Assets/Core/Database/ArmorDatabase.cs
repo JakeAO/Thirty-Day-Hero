@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Core.Abilities;
 using Core.Etc;
 using Core.Items.Armors;
 using Newtonsoft.Json;
@@ -29,6 +30,11 @@ namespace Core.Database
                         }
                     }
                 }
+            }
+
+            if (data.Count == 0)
+            {
+                data.AddRange(HackDefinitions.Get());
             }
 
             return new ArmorDatabase(data);
@@ -72,6 +78,27 @@ namespace Core.Database
             return _allData.TryGetValue(id, out var result)
                 ? result
                 : null;
+        }
+
+        private static class HackDefinitions
+        {
+            public static IEnumerable<IArmor> Get()
+            {
+                yield return new Armor(
+                    Constants.ARMOR_LIGHT,
+                    "Leather Armor",
+                    "Simple boiled leather armor.",
+                    "Assets/Art/Items/armor/light/chest_08.png",
+                    100u,
+                    RarityCategory.Common,
+                    ArmorType.Light,
+                    new Dictionary<DamageType, float>()
+                    {
+                        {DamageType.Normal, 0.95f},
+                        {DamageType.Wind, 0.80f}
+                    },
+                    new IAbility[0]);
+            }
         }
     }
 }

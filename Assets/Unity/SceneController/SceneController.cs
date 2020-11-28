@@ -30,12 +30,7 @@ namespace Unity.Scenes
 
         public void Dispose()
         {
-            if(_context != null)
-            {
-                _context.Get<StateChanged>().Unlisten(OnStateChanged);
-            }
-
-            SceneManager.sceneLoaded -= OnSceneLoaded;
+            _stateChangedSignal?.Unlisten(OnStateChanged);
         }
 
         private void OnStateChanged(IState newState)

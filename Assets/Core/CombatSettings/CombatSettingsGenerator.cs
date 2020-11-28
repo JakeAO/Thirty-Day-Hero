@@ -62,7 +62,7 @@ namespace Core.CombatSettings
             List<EnemyCharacter> enemies = new List<EnemyCharacter>(enemyTypes.Count);
             foreach (IEnemyClass enemyDefinition in enemyTypes)
             {
-                var newEnemy = ClassUtil.CreateEnemy(
+                var newEnemy = ActorUtil.CreateEnemy(
                     partyId,
                     enemyDefinition);
                 enemies.Add(newEnemy);

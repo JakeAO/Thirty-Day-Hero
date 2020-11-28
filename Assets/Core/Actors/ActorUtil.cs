@@ -10,7 +10,7 @@ using SadPumpkin.Util.TrackableIds;
 
 namespace Core.Actors
 {
-    public static class ClassUtil
+    public static class ActorUtil
     {
         private static readonly Random RANDOM = new Random();
         private static readonly UintGenerator ID_GENERATOR = new UintGenerator(10000);

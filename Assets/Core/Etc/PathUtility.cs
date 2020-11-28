@@ -1,9 +1,12 @@
+using System.IO;
+using Core.Wrappers;
+
 namespace Core.Etc
 {
     public class PathUtility
     {
         public readonly string ActivePlayerId;
-        
+
         public readonly string SavePath;
 
         public readonly string AbilityPath;
@@ -37,6 +40,16 @@ namespace Core.Etc
             ItemDefinitionPath = itemDefinitionPath;
             WeaponDefinitionPath = weaponDefinitionPath;
             ArmorDefinitionPath = armorDefinitionPath;
+        }
+
+        public string GetPlayerDataPath()
+        {
+            return Path.Combine(SavePath, PlayerDataWrapper.DataPath(ActivePlayerId));
+        }
+
+        public string GetPartyDataPath(uint partyId)
+        {
+            return Path.Combine(SavePath, PartyDataWrapper.DataPath(ActivePlayerId, partyId));
         }
     }
 }
