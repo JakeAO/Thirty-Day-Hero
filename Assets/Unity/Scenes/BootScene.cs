@@ -1,7 +1,7 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Core.Etc;
 using Core.States;
+using Core.Wrappers;
 using SadPumpkin.Util.Context;
 using SadPumpkin.Util.StateMachine;
 using SadPumpkin.Util.StateMachine.Signals;
@@ -9,14 +9,13 @@ using UnityEngine;
 
 namespace Unity.Scenes
 {
-    public class BootScene : SceneRootBase
+    public class BootScene : SceneRootBase<StartupState>
     {
-        private StartupState _state = null;
-
         private void Start()
         {
             // Create context
-            Context = new Context();
+            SharedContext = new Context();
+            State = new StartupState();
 
             // Create and add PathUtility
             PathUtility pathUtility = new PathUtility(
@@ -30,46 +29,27 @@ namespace Unity.Scenes
                 Path.Combine(Application.streamingAssetsPath, "Definitions", "Item"),
                 Path.Combine(Application.streamingAssetsPath, "Definitions", "Weapon"),
                 Path.Combine(Application.streamingAssetsPath, "Definitions", "Armor"));
-            Context.Set(pathUtility);
+            SharedContext.Set(pathUtility);
 
             StateChanged stateChangedSignal = new StateChanged();
-            Context.Set(stateChangedSignal);
+            SharedContext.Set(stateChangedSignal);
             stateChangedSignal.Listen(newState => Debug.Log($"[StateMachine] Changed state to {newState.GetType()}"));
 
             // Create and add state machine
-            IStateMachine stateMachine = new StateMachine(Context, stateChangedSignal);
-            Context.Set(stateMachine);
-
-            Context.Set(new SceneController(Context));
+            IStateMachine stateMachine = new StateMachine(SharedContext, stateChangedSignal);
+            SharedContext.Set(stateMachine);
 
             // Initialize StartupState
-            _state = new StartupState();
-            stateMachine.ChangeState(_state);
+            stateMachine.ChangeState(State);
+
+            // Setup SceneController AFTER changing to first state, otherwise enter an infinite loop of reloading Boot
+            SharedContext.Set(new SceneController(SharedContext));
         }
 
-        protected override void OnInject()
+        protected override void OnGUIContentForState()
         {
-            throw new InvalidOperationException($"{nameof(BootScene)} cannot be injected into, it is supposed to be the very first state!");
-        }
-
-        private void OnGUI()
-        {
-            GUILayout.BeginVertical(GUI.skin.box);
-            {
-                GUILayout.Label("Debug flow:");
-                if (_state == null)
-                {
-                    GUILayout.Label("Loading...");
-                }
-                else
-                {
-                    if (GUILayout.Button("Continue"))
-                    {
-                        _state.Continue();
-                    }
-                }
-            }
-            GUILayout.EndVertical();
+            GUILayout.Label($"Player Loaded: {SharedContext.TryGet(out PlayerDataWrapper _)}");
+            GUILayout.Label($"Party Loaded: {SharedContext.TryGet(out PartyDataWrapper _)}");
         }
     }
 }

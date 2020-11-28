@@ -1,23 +1,37 @@
-using SadPumpkin.Util.Context;
-using SadPumpkin.Util.StateMachine.States;
+using System.Collections.Generic;
+using Core.EventOptions;
+using SadPumpkin.Util.StateMachine;
 
 namespace Core.States.Combat
 {
-    public class CombatEndState : IState
+    public class CombatEndState : TDHStateBase
     {
-        public void PerformSetup(IContext context, IState previousState)
+        public override IEnumerable<IEventOption> GetOptions()
         {
-            throw new System.NotImplementedException();
+            yield return new EventOption(
+                "Continue",
+                GoToGameHub);
+            yield return new EventOption(
+                "Continue (All Dead)",
+                GoToDefeat);
+            yield return new EventOption(
+                "Continue (Calamity Vanquished)",
+                GoToVictory);
         }
 
-        public void PerformContent(IContext context)
+        private void GoToGameHub()
         {
-            throw new System.NotImplementedException();
+            SharedContext.Get<IStateMachine>().ChangeState<GameHubState>();
         }
 
-        public void PerformTeardown(IContext context, IState nextState)
+        private void GoToDefeat()
         {
-            throw new System.NotImplementedException();
+            SharedContext.Get<IStateMachine>().ChangeState<DefeatState>();
+        }
+
+        private void GoToVictory()
+        {
+            SharedContext.Get<IStateMachine>().ChangeState<VictoryState>();
         }
     }
 }

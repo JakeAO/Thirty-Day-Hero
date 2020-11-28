@@ -1,23 +1,21 @@
-using SadPumpkin.Util.Context;
-using SadPumpkin.Util.StateMachine.States;
+using System.Collections.Generic;
+using Core.EventOptions;
+using SadPumpkin.Util.StateMachine;
 
 namespace Core.States.Town
 {
-    public class TownInnState : IState
+    public class TownInnState : TDHStateBase
     {
-        public void PerformSetup(IContext context, IState previousState)
+        public override IEnumerable<IEventOption> GetOptions()
         {
-            throw new System.NotImplementedException();
+            yield return new EventOption(
+                "Leave",
+                GoToTownHub);
         }
 
-        public void PerformContent(IContext context)
+        private void GoToTownHub()
         {
-            throw new System.NotImplementedException();
-        }
-
-        public void PerformTeardown(IContext context, IState nextState)
-        {
-            throw new System.NotImplementedException();
+            SharedContext.Get<IStateMachine>().ChangeState<TownHubState>();
         }
     }
 }

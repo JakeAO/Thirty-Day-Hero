@@ -1,34 +1,32 @@
-﻿using Core.States;
-using Core.States.Town;
-using SadPumpkin.Util.StateMachine;
+﻿using Core.Actors.Player;
+using Core.Etc;
+using Core.Items;
+using Core.States;
+using Core.Wrappers;
 using UnityEngine;
 
 namespace Unity.Scenes
 {
-    public class GameHubScene : SceneRootBase
+    public class GameHubScene : SceneRootBase<GameHubState>
     {
-        private Rect _debugRect = new Rect(10, 10, 150, 150);
-        private void OnGUI()
+        protected override void OnGUIContentForState()
         {
-            GUILayout.BeginArea(_debugRect, GUI.skin.box);
+            PartyDataWrapper partyDataWrapper = SharedContext.Get<PartyDataWrapper>();
+
+            GUILayout.Label($"Party Id: {partyDataWrapper.PartyId}");
+            GUILayout.Label($"Calamity: {partyDataWrapper.Calamity.Name} ({partyDataWrapper.Calamity.Class.Name})");
+            GUILayout.Label($"Day: {partyDataWrapper.Day} ({partyDataWrapper.Time})");
+            GUILayout.Label($"Gold: {partyDataWrapper.Gold}");
+            GUILayout.Label("Party:");
+            foreach (PlayerCharacter character in partyDataWrapper.Characters)
             {
-                GUILayout.Label("Debug flow:");
-                if (GUILayout.Button("To Town"))
-                {
-                    Context.Get<IStateMachine>().ChangeState<TownHubState>();
-                }
-
-                if(GUILayout.Button("Go on patrol"))
-                {
-                    Context.Get<IStateMachine>().ChangeState<PatrolState>();
-                }
-
-                if(GUILayout.Button("[Special Event]"))
-                {
-                    UnityEngine.Debug.Log("NAV TO EVENT");
-                }
+                GUILayout.Label($"    {character.Name} (Lvl {character.Stats[StatType.LVL]} {character.Class.Name})");
             }
-            GUILayout.EndArea();
+            GUILayout.Label("Inventory:");
+            foreach (IItem item in partyDataWrapper.Inventory)
+            {
+                GUILayout.Label($"    {item.Name}");
+            }
         }
     }
 }

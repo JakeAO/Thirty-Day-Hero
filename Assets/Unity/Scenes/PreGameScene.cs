@@ -1,23 +1,26 @@
+using Core.Actors.Player;
+using Core.Etc;
 using Core.States;
-using SadPumpkin.Util.StateMachine;
+using Core.Wrappers;
 using UnityEngine;
 
 namespace Unity.Scenes
 {
-    public class PreGameScene : SceneRootBase
+    public class PreGameScene : SceneRootBase<PreGameState>
     {
-        private Rect _debugRect = new Rect(10, 10, 150, 170);
-        private void OnGUI()
+        protected override void OnGUIContentForState()
         {
-            GUILayout.BeginArea(_debugRect, GUI.skin.box);
+            PartyDataWrapper partyDataWrapper = SharedContext.Get<PartyDataWrapper>();
+
+            GUILayout.Label($"Party Id: {partyDataWrapper.PartyId}");
+            GUILayout.Label($"Calamity: {partyDataWrapper.Calamity.Name} ({partyDataWrapper.Calamity.Class.Name})");
+            GUILayout.Label($"Day: {partyDataWrapper.Day} ({partyDataWrapper.Time})");
+            GUILayout.Label($"Gold: {partyDataWrapper.Gold}");
+            GUILayout.Label("Party:");
+            foreach (PlayerCharacter character in partyDataWrapper.Characters)
             {
-                GUILayout.Label("Debug flow:");
-                if(GUILayout.Button("Continue"))
-                {
-                    Context.Get<IStateMachine>().ChangeState<GameHubState>();
-                }
+                GUILayout.Label($"    {character.Name} (Lvl {character.Stats[StatType.LVL]} {character.Class.Name})");
             }
-            GUILayout.EndArea();
         }
     }
 }

@@ -1,28 +1,32 @@
 using System;
+using System.Collections.Generic;
+using Core.EventOptions;
 using Core.Wrappers;
-using SadPumpkin.Util.Context;
+using SadPumpkin.Util.StateMachine;
 using SadPumpkin.Util.StateMachine.States;
 
 namespace Core.States
 {
-    public class PreGameState : IState
+    public class PreGameState : TDHStateBase
     {
-        public void PerformSetup(IContext context, IState previousState)
+        public override void OnEnter(IState fromState)
         {
-            if (context.Get<PlayerDataWrapper>() == null)
+            if (SharedContext.Get<PlayerDataWrapper>() == null)
                 throw new ArgumentException("Entered PreGameState without an active Player profile!");
-            if (context.Get<PartyDataWrapper>() == null)
+            if (SharedContext.Get<PartyDataWrapper>() == null)
                 throw new ArgumentException("Entered PreGameState without an active Party profile!");
         }
 
-        public void PerformContent(IContext context)
+        public override IEnumerable<IEventOption> GetOptions()
         {
-            
+            yield return new EventOption(
+                "Continue",
+                GoToGameHub);
         }
 
-        public void PerformTeardown(IContext context, IState nextState)
+        private void GoToGameHub()
         {
-            
+            SharedContext.Get<IStateMachine>().ChangeState<GameHubState>();
         }
     }
 }

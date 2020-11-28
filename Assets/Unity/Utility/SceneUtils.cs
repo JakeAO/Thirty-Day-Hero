@@ -5,7 +5,7 @@ namespace Unity.Scenes
 {
     public static class SceneUtils
     {
-        public static T GetSceneComponent<T>(this Scene scene) where T : Component
+        public static T GetSceneComponent<T>(this Scene scene)
         {
             GameObject[] objs = scene.GetRootGameObjects();
             foreach (GameObject go in objs)
@@ -17,7 +17,7 @@ namespace Unity.Scenes
                 }
             }
 
-            return null;
+            return default;
         }
     }
 }

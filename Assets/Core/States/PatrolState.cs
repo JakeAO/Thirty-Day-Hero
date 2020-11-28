@@ -1,23 +1,32 @@
-using SadPumpkin.Util.Context;
-using SadPumpkin.Util.StateMachine.States;
+using System.Collections.Generic;
+using Core.EventOptions;
+using Core.States.Combat;
+using SadPumpkin.Util.StateMachine;
 
 namespace Core.States
 {
-    public class PatrolState : IState
+    public class PatrolState : TDHStateBase
     {
-        public void PerformSetup(IContext context, IState previousState)
+        public override IEnumerable<IEventOption> GetOptions()
         {
-            throw new System.NotImplementedException();
+            yield return new EventOption(
+                "Fight",
+                GoToCombat,
+                priority: 0);
+            yield return new EventOption(
+                "Sneak Away",
+                GoToGameHub,
+                priority: 1);
         }
 
-        public void PerformContent(IContext context)
+        private void GoToCombat()
         {
-            throw new System.NotImplementedException();
+            SharedContext.Get<IStateMachine>().ChangeState<CombatSetupState>();
         }
 
-        public void PerformTeardown(IContext context, IState nextState)
+        private void GoToGameHub()
         {
-            throw new System.NotImplementedException();
+            SharedContext.Get<IStateMachine>().ChangeState<GameHubState>();
         }
     }
 }
