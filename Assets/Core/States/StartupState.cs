@@ -45,6 +45,7 @@ namespace Core.States
             // Setup JSON Settings
             JsonSerializerSettings jsonSettings = new JsonSerializerSettings()
             {
+                Formatting = Formatting.Indented,
                 TypeNameHandling = TypeNameHandling.Auto,
                 ContractResolver = new NewtonsoftContractResolver(),
                 Converters = FindAllParameterlessJsonConverters(),
@@ -117,9 +118,7 @@ namespace Core.States
             context.Set(itemDatabase);
             context.Set(weaponDatabase);
             context.Set(armorDatabase);
-            jsonSettings.Converters.Add(new ItemJsonConverter(itemDatabase));
-            jsonSettings.Converters.Add(new WeaponJsonConverter(weaponDatabase));
-            jsonSettings.Converters.Add(new ArmorJsonConverter(armorDatabase));
+            jsonSettings.Converters.Add(new ItemJsonConverter(itemDatabase, weaponDatabase, armorDatabase));
 
             // Then load Classes, which are rarely relied upon
             PlayerClassDatabase playerClassDatabase = PlayerClassDatabase.LoadFromDisk(pathUtility.PlayerClassPath, jsonSettings);

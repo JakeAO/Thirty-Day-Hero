@@ -54,7 +54,7 @@ namespace Unity.Scenes
 
         private void OnGUI()
         {
-            GUILayout.BeginArea(new Rect(10, 10, 150, 150), GUI.skin.box);
+            GUILayout.BeginVertical(GUI.skin.box);
             {
                 GUILayout.Label("Debug flow:");
                 if (_state == null)
@@ -69,7 +69,7 @@ namespace Unity.Scenes
                     }
                 }
             }
-            GUILayout.EndArea();
+            GUILayout.EndVertical();
         }
     }
 }

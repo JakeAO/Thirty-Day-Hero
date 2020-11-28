@@ -10,7 +10,11 @@ namespace Core.Actors.Player
 {
     public class PlayerCharacter : CharacterActor, IPlayerCharacterActor
     {
-        public new IPlayerClass Class => base.Class as IPlayerClass;
+        public new IPlayerClass Class
+        {
+            get => base.Class as IPlayerClass;
+            set => base.Class = value;
+        }
         public IEquipMap Equipment { get; set; }
 
         public PlayerCharacter()

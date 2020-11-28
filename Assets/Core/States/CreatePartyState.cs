@@ -108,17 +108,21 @@ namespace Core.States
             if (PartyData.Characters.Count >= Constants.PARTY_SIZE_MIN &&
                 PartyData.Characters.Count <= Constants.PARTY_SIZE_MAX)
             {
+                JsonSerializerSettings jsonSettings = _context.Get<JsonSerializerSettings>();
+
                 // Set Active Party, Save Player Data
                 PathUtility pathUtility = _context.Get<PathUtility>();
                 PlayerDataWrapper playerDataWrapper = _context.Get<PlayerDataWrapper>();
                 playerDataWrapper.SetActiveParty(PartyData.PartyId);
-                File.WriteAllText(pathUtility.GetPlayerDataPath(), JsonConvert.SerializeObject(playerDataWrapper));
+                File.WriteAllText(pathUtility.GetPlayerDataPath(), JsonConvert.SerializeObject(playerDataWrapper, jsonSettings));
 
                 // Add Party to Context
                 _context.Set(PartyData);
 
                 // Save Party Data
-                File.WriteAllText(pathUtility.GetPartyDataPath(PartyData.PartyId), JsonConvert.SerializeObject(PartyData));
+                string partyFilePath = pathUtility.GetPartyDataPath(PartyData.PartyId);
+                Directory.CreateDirectory(Path.GetDirectoryName(partyFilePath));
+                File.WriteAllText(partyFilePath, JsonConvert.SerializeObject(PartyData, jsonSettings));
 
                 // Transition to PreGameState
                 _context.Get<IStateMachine>().ChangeState<PreGameState>();

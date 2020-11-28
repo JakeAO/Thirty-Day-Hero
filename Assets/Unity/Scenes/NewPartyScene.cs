@@ -37,7 +37,7 @@ namespace Unity.Scenes
                 return result;
             }
 
-            GUILayout.BeginArea(new Rect(10, 10, 150, 150), GUI.skin.box);
+            GUILayout.BeginVertical(GUI.skin.box);
             {
                 GUILayout.Label("Debug flow:");
 
@@ -45,7 +45,7 @@ namespace Unity.Scenes
 
                 GUILayout.Label("Calamity", new GUIStyle(GUI.skin.label) {fontStyle = FontStyle.Bold});
                 GUILayout.Label($"Name: {_state.PartyData.Calamity.Name}");
-                GUILayout.Label($"Class: {_state.PartyData.Calamity.Class} ({_state.PartyData.Calamity.Class.Desc})");
+                GUILayout.Label($"Class: {_state.PartyData.Calamity.Class.Name} ({_state.PartyData.Calamity.Class.Desc})");
                 
                 GUILayout.Label($"Party ({_state.PartyData.Characters.Count}/{Constants.PARTY_SIZE_MAX})", new GUIStyle(GUI.skin.label) {fontStyle = FontStyle.Bold});
                 foreach (PlayerCharacter actorInParty in _state.PartyData.Characters)
@@ -74,7 +74,7 @@ namespace Unity.Scenes
                 }
                 GUI.enabled = true;
             }
-            GUILayout.EndArea();
+            GUILayout.EndVertical();
         }
     }
 }

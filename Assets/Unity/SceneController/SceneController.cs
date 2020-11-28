@@ -8,13 +8,13 @@ using SadPumpkin.Util.StateMachine.States;
 using SadPumpkin.Util.Context;
 
 using UnityEngine.SceneManagement;
-using UnityEngine;
 
 namespace Unity.Scenes
 {
     public class SceneController : IDisposable
     {
         private const string SCENE_NAME_NEW_PARTY = "NewParty";
+        private const string SCENE_NAME_PRE_GAME = "PreGame";
         private const string SCENE_NAME_GAME_HUB = "GameHub";
         private const string SCENE_NAME_TOWN_HUB = "Town";
 
@@ -30,13 +30,13 @@ namespace Unity.Scenes
 
         public void Dispose()
         {
-            _stateChangedSignal?.Unlisten(OnStateChanged);
+            _context?.Get<StateChanged>()?.Unlisten(OnStateChanged);
         }
 
         private void OnStateChanged(IState newState)
         {
             string sceneName = SceneNameForState(newState);
-            if(!string.IsNullOrEmpty(sceneName))
+            if (!string.IsNullOrEmpty(sceneName))
             {
                 SceneManager.LoadScene(sceneName);
             }
@@ -46,11 +46,13 @@ namespace Unity.Scenes
         {
             switch (state)
             {
-                case CreatePartyState createParty:
+                case CreatePartyState _:
                     return SCENE_NAME_NEW_PARTY;
-                case GameHubState gameHub:
+                case PreGameState _:
+                    return SCENE_NAME_PRE_GAME;
+                case GameHubState _:
                     return SCENE_NAME_GAME_HUB;
-                case TownHubState townHub:
+                case TownHubState _:
                     return SCENE_NAME_TOWN_HUB;
                 default:
                     return string.Empty;

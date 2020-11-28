@@ -6,7 +6,11 @@ namespace Core.Actors.Enemy
 {
     public class EnemyCharacter : CharacterActor, IEnemyCharacterActor
     {
-        public new IEnemyClass Class => base.Class as IEnemyClass;
+        public new IEnemyClass Class
+        {
+            get => base.Class as IEnemyClass;
+            set => base.Class = value;
+        }
 
         public EnemyCharacter()
             : this(

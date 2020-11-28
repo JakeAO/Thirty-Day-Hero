@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/Scenes/NewParty.unity
     guid: 083bb980b5e98864894e9a43bb526070
   - enabled: 1
+    path: Assets/Scenes/PreGame.unity
+    guid: 2fadff1d9914ef54c998c323e4036088
+  - enabled: 1
     path: Assets/Scenes/GameHub.unity
     guid: 351e98140113eed418b924d85c87d0bd
   - enabled: 1
