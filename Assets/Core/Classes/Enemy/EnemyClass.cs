@@ -53,4 +53,55 @@ namespace Core.Classes.Enemy
             return abilities;
         }
     }
+
+    public class Dorp : IEnemyClass
+    {
+        private const string name = "DORP";
+        public string Name => "DORP";
+
+        public string Desc => "You're not sure it can be considered intelligent";
+
+        public RarityCategory Rarity => RarityCategory.Common;
+
+        private DorpNames _nameGen = new DorpNames();
+        public INameGenerator NameGenerator => _nameGen;
+
+        public IStatMapBuilder StartingStats => new NullStatMapBuilder();
+
+        public IStatMapIncrementor LevelUpStats => new NullStatMapIncrementor();
+
+        public IReadOnlyDictionary<uint, IReadOnlyCollection<IAbility>> AbilitiesPerLevel => new Dictionary<uint, IReadOnlyCollection<IAbility>>();
+
+        public IReadOnlyDictionary<DamageType, float> IntrinsicDamageModification => new Dictionary<DamageType, float>();
+
+        public uint Id => 0;
+
+        public IReadOnlyCollection<IAbility> GetAllAbilities(uint level)
+        {
+            return new IAbility[0];
+        }
+
+        private class DorpNames : INameGenerator
+        {
+            private System.Random _rng = new System.Random();
+
+            public string GetName()
+            {
+                switch(_rng.Next(0, 4))
+                {
+                    case 0:
+                    default:
+                        return "Dorp";
+                    case 1:
+                        return "Durp";
+                    case 2:
+                        return "Derp";
+                    case 3:
+                        return "Dirp";
+                    case 4:
+                        return "Darp";
+                }
+            }
+        }
+    }
 }

@@ -12,7 +12,7 @@ namespace Core.CombatSettings
 {
     public class CombatSettingsGenerator
     {
-        private readonly Random _random = new Random();
+        private static Random _random = new Random();
 
         private readonly EnemyGroupWrapperDatabase _enemyGroupDatabase = null;
 
@@ -27,6 +27,64 @@ namespace Core.CombatSettings
         }
 
         public CombatSettings CreateFromEnemyTypes(IReadOnlyCollection<IEnemyClass> enemyTypes, CombatDifficulty difficulty, PartyDataWrapper playerParty)
+        {
+            List<EnemyCharacter> enemies = GenerateEnemies(enemyTypes, (uint)Guid.NewGuid().GetHashCode());
+            SetEnemyDifficulty(difficulty, playerParty, enemies);
+
+            return CreateFromEnemies(enemies);
+        }
+
+        public CombatSettings CreateFromEnemyGroup(EnemyGroupWrapper enemyGroup, CombatDifficulty difficulty, PartyDataWrapper playerParty)
+        {
+            return CreateFromEnemyTypes(
+                EnemyClassFromGroup(enemyGroup, difficulty, playerParty), 
+                difficulty, 
+                playerParty);
+        }
+
+        public CombatSettings CreateFromDifficulty(CombatDifficulty difficulty, PartyDataWrapper playerParty)
+        {
+            return CreateFromEnemyGroup(
+                _enemyGroupDatabase.GetRandom(),
+                difficulty,
+                playerParty);
+        }
+
+        public static IReadOnlyCollection<IEnemyClass> EnemyClassFromGroup(EnemyGroupWrapper enemyGroup, CombatDifficulty difficulty, PartyDataWrapper playerParty)
+        {
+            int enemyCount = 1;
+            switch (difficulty)
+            {
+                case CombatDifficulty.Easy:
+                    enemyCount = Math.Max(1, _random.Next(1, playerParty.Characters.Count));
+                    break;
+                case CombatDifficulty.Normal:
+                    enemyCount = Math.Max(2, _random.Next(playerParty.Characters.Count - 1, playerParty.Characters.Count + 1));
+                    break;
+                case CombatDifficulty.Hard:
+                    enemyCount = Math.Max(2, _random.Next(playerParty.Characters.Count - 1, playerParty.Characters.Count + 2));
+                    break;
+            }
+
+            IReadOnlyCollection<IEnemyClass> enemyTypes = enemyGroup.GetEnemyClasses(enemyCount);
+            return enemyTypes;
+        }
+
+        public static List<EnemyCharacter> GenerateEnemies(IReadOnlyCollection<IEnemyClass> enemyTypes, uint partyId)
+        {
+            List<EnemyCharacter> enemies = new List<EnemyCharacter>(enemyTypes.Count);
+            foreach (IEnemyClass enemyDefinition in enemyTypes)
+            {
+                var newEnemy = ActorUtil.CreateEnemy(
+                    partyId,
+                    enemyDefinition);
+                enemies.Add(newEnemy);
+            }
+
+            return enemies;
+        }
+
+        public static void SetEnemyDifficulty(CombatDifficulty difficulty, PartyDataWrapper playerParty, List<EnemyCharacter> enemies)
         {
             uint GetStatTotal(IReadOnlyCollection<ICharacterActor> actors)
             {
@@ -47,28 +105,15 @@ namespace Core.CombatSettings
                 switch (diff)
                 {
                     case CombatDifficulty.Hard:
-                        return (uint) (totalStats * 1f);
+                        return (uint)(totalStats * 1f);
                     case CombatDifficulty.Normal:
-                        return (uint) (totalStats * 0.75f);
+                        return (uint)(totalStats * 0.75f);
                     case CombatDifficulty.Easy:
                     default:
-                        return (uint) (totalStats * 0.5f);
+                        return (uint)(totalStats * 0.5f);
                 }
             }
 
-            uint partyId = (uint) Guid.NewGuid().GetHashCode();
-
-            // Generate Enemies
-            List<EnemyCharacter> enemies = new List<EnemyCharacter>(enemyTypes.Count);
-            foreach (IEnemyClass enemyDefinition in enemyTypes)
-            {
-                var newEnemy = ActorUtil.CreateEnemy(
-                    partyId,
-                    enemyDefinition);
-                enemies.Add(newEnemy);
-            }
-
-            // Scale Enemies for Difficulty
             uint totalPartyStats = GetStatTotal(playerParty.Characters);
             uint targetTotalEnemyStats = GetStatTarget(totalPartyStats, difficulty);
             uint totalEnemyStats = GetStatTotal(enemies);
@@ -80,37 +125,6 @@ namespace Core.CombatSettings
 
                 totalEnemyStats = GetStatTotal(enemies);
             }
-
-            return CreateFromEnemies(enemies);
-        }
-
-        public CombatSettings CreateFromEnemyGroup(EnemyGroupWrapper enemyGroup, CombatDifficulty difficulty, PartyDataWrapper playerParty)
-        {
-            int enemyCount = 1;
-            switch (difficulty)
-            {
-                case CombatDifficulty.Easy:
-                    enemyCount = Math.Max(1, _random.Next(1, playerParty.Characters.Count));
-                    break;
-                case CombatDifficulty.Normal:
-                    enemyCount = Math.Max(2, _random.Next(playerParty.Characters.Count - 1, playerParty.Characters.Count + 1));
-                    break;
-                case CombatDifficulty.Hard:
-                    enemyCount = Math.Max(2, _random.Next(playerParty.Characters.Count - 1, playerParty.Characters.Count + 2));
-                    break;
-            }
-
-            IReadOnlyCollection<IEnemyClass> enemyTypes = enemyGroup.GetEnemyClasses(enemyCount);
-
-            return CreateFromEnemyTypes(enemyTypes, difficulty, playerParty);
-        }
-
-        public CombatSettings CreateFromDifficulty(CombatDifficulty difficulty, PartyDataWrapper playerParty)
-        {
-            return CreateFromEnemyGroup(
-                _enemyGroupDatabase.GetRandom(),
-                difficulty,
-                playerParty);
         }
     }
 }

@@ -17,14 +17,14 @@ namespace Unity.Scenes
             CombatSettings combatSettings = SharedContext.Get<CombatSettings>();
             PartyDataWrapper partyDataWrapper = SharedContext.Get<PartyDataWrapper>();
 
-            RenderEnemies(combatSettings != null ? combatSettings.Enemies : null);
+            RenderEnemies(combatSettings.Enemies);
             RenderPartyCharacters(partyDataWrapper.Characters);
         }
 
         private void RenderEnemies(IEnumerable<IEnemyCharacterActor> enemies)
         {
             GUILayout.Label("Enemies:");
-            //RenderActors(enemies);
+            RenderActors(enemies);
         }
 
         private void RenderPartyCharacters(IEnumerable<PlayerCharacter> playerCharacters)
