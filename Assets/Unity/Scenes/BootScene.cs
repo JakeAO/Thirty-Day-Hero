@@ -38,7 +38,7 @@ namespace Unity.Scenes
             IStateMachine stateMachine = new StateMachine(Context, stateChangedSignal);
             Context.Set(stateMachine);
 
-            Context.Set(new SceneController(stateChangedSignal));
+            Context.Set(new SceneController(Context));
 
             // Initialize StartupState
             stateMachine.ChangeState<StartupState>();
@@ -47,30 +47,6 @@ namespace Unity.Scenes
         protected override void OnInject()
         {
             throw new InvalidOperationException($"{nameof(BootScene)} cannot be injected into, it is supposed to be the very first state!");
-        }
-
-        private Rect _debugRect = new Rect(10, 10, 150, 150);
-        private void OnGUI()
-        {
-            GUILayout.BeginArea(_debugRect, GUI.skin.box);
-            {
-                GUILayout.Label("Debug flow:");
-                GUILayout.Label("Do you have a party?");
-                GUILayout.BeginHorizontal();
-                {
-                    if(GUILayout.Button("Yes"))
-                    {
-                        Context.Get<IStateMachine>().ChangeState<GameHubState>();
-                    }
-
-                    if(GUILayout.Button("No"))
-                    {
-                        Context.Get<IStateMachine>().ChangeState<CreatePartyState>();
-                    }
-                }
-                GUILayout.EndHorizontal();
-            }
-            GUILayout.EndArea();
         }
     }
 }
