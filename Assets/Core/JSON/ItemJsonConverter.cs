@@ -1,17 +1,23 @@
 using System;
 using Core.Database;
 using Core.Items;
+using Core.Items.Armors;
+using Core.Items.Weapons;
 using Newtonsoft.Json;
 
 namespace Core.JSON
 {
     public class ItemJsonConverter : JsonConverter<IItem>
     {
-        private readonly ItemDatabase _database;
+        private readonly ItemDatabase _itemDatabase;
+        private readonly WeaponDatabase _weaponDatabase;
+        private readonly ArmorDatabase _armorDatabase;
 
-        public ItemJsonConverter(ItemDatabase database)
+        public ItemJsonConverter(ItemDatabase itemDatabase, WeaponDatabase weaponDatabase, ArmorDatabase armorDatabase)
         {
-            _database = database;
+            _itemDatabase = itemDatabase;
+            _weaponDatabase = weaponDatabase;
+            _armorDatabase = armorDatabase;
         }
 
         public override void WriteJson(JsonWriter writer, IItem value, JsonSerializer serializer)
@@ -22,8 +28,18 @@ namespace Core.JSON
         public override IItem ReadJson(JsonReader reader, Type objectType, IItem existingValue, bool hasExistingValue, JsonSerializer serializer)
         {
             uint id = Convert.ToUInt32(reader?.Value ?? 0);
-            IItem item = _database.GetSpecific(id);
-            return item;
+            
+            if (typeof(IWeapon).IsAssignableFrom(objectType))
+            {
+                return _weaponDatabase.GetSpecific(id);
+            }
+
+            if (typeof(IArmor).IsAssignableFrom(objectType))
+            {
+                return _armorDatabase.GetSpecific(id);
+            }
+
+            return _itemDatabase.GetSpecific(id);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Unity.Scenes
 {
     public interface ISceneRoot : IDisposable
     {
-        IContext Context { get; }
+        IContext SharedContext { get; }
 
         void InjectContext(IContext context);
     }

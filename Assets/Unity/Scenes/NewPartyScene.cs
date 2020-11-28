@@ -1,109 +1,36 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using Core.Actors.Player;
+﻿using Core.Actors.Player;
 using Core.Etc;
 using Core.States;
-using SadPumpkin.Util.StateMachine.States;
 using UnityEngine;
 
 namespace Unity.Scenes
 {
-    public class NewPartyScene : SceneRootBase
+    public class NewPartyScene : SceneRootBase<CreatePartyState>
     {
-        private CreatePartyState _state = null;
-
-        protected override void OnInject()
+        protected override void OnGUIContentForState()
         {
-            base.OnInject();
-
-            _state = Context.Get<IState>() as CreatePartyState;
-
-            if (_state == null)
-                throw new InvalidDataException($"NewPartyScene expects CreatePartyState but was injected with {_state}");
+            GUILayout.Label("Calamity", new GUIStyle(GUI.skin.label) {fontStyle = FontStyle.Bold});
+            GUILayout.Label($"Name: {State.PartyData.Calamity.Name}");
+            GUILayout.Label($"Class: {State.PartyData.Calamity.Class.Name} ({State.PartyData.Calamity.Class.Desc})");
+            GUILayout.Space(10);
+            GUILayout.Label($"Party Size: {State.PartyData.Characters.Count}/{Constants.PARTY_SIZE_MAX}");
         }
 
-        private void OnGUI()
+        protected override void OnGUIContentForContext(object context)
         {
-            bool DrawActorBox(IPlayerCharacterActor actor)
+            switch (context)
             {
-                bool result;
-                GUILayout.BeginVertical(GUI.skin.box, GUILayout.Width(150), GUILayout.Height(60));
+                case IPlayerCharacterActor actor:
                 {
-                    GUILayout.Label($"Name: {actor.Name}");
-                    GUILayout.Label($"Class: {actor.Class.Name} ({actor.Class.Desc})");
-
-                    result = GUILayout.Button("Toggle Hero");
-                }
-                GUILayout.EndVertical();
-                return result;
-            }
-
-            GUILayout.BeginVertical(GUI.skin.box, GUILayout.Width(620));
-            {
-                GUILayout.Label("Debug flow:");
-
-                uint selectedActorId = 0u;
-
-                GUILayout.Label("Calamity", new GUIStyle(GUI.skin.label) {fontStyle = FontStyle.Bold});
-                GUILayout.Label($"Name: {_state.PartyData.Calamity.Name}");
-                GUILayout.Label($"Class: {_state.PartyData.Calamity.Class} ({_state.PartyData.Calamity.Class.Desc})");
-                
-                GUILayout.Label($"Party ({_state.PartyData.Characters.Count}/{Constants.PARTY_SIZE_MAX})", new GUIStyle(GUI.skin.label) {fontStyle = FontStyle.Bold});
-                List<PlayerCharacter> party = _state.PartyData.Characters;
-                if (party.Count > 0)
-                {
-                    GUILayout.BeginHorizontal(GUI.skin.box);
+                    GUILayout.BeginVertical(GUI.skin.box);
                     {
-                        foreach (PlayerCharacter actorInParty in party)
-                        {
-                            if (DrawActorBox(actorInParty))
-                                selectedActorId = actorInParty.Id;
-                        }
-                    }
-                    GUILayout.EndHorizontal();
-                }
-                else
-                {
-                    GUILayout.BeginVertical(GUI.skin.box, GUILayout.Height(70));
-                    {
-                        GUILayout.FlexibleSpace();
-                        GUILayout.Label("No Party Characters");
-                        GUILayout.FlexibleSpace();
+                        GUILayout.Label($"Name: {actor.Name}");
+                        GUILayout.Label($"Class: {actor.Class.Name} ({actor.Class.Desc})");
                     }
                     GUILayout.EndVertical();
+                    break;
                 }
-
-                GUILayout.Label($"Hero Pool", new GUIStyle(GUI.skin.label) {fontStyle = FontStyle.Bold});
-                GUILayout.BeginHorizontal(GUI.skin.box, GUILayout.Height(65));
-                {
-                    foreach (PlayerCharacter actorInPool in _state.UnassignedCharacterPool)
-                    {
-                        if (DrawActorBox(actorInPool))
-                            selectedActorId = actorInPool.Id;
-                    }
-                }
-                GUILayout.EndHorizontal();
-                
-
-                if (selectedActorId != 0u)
-                {
-                    _state.SelectActorById(selectedActorId);
-                }
-
-                bool canSubmit = _state.PartyData.Characters.Count >= Constants.PARTY_SIZE_MIN &&
-                                 _state.PartyData.Characters.Count <= Constants.PARTY_SIZE_MAX;
-
-
-                GUI.enabled = canSubmit;
-                GUI.color = canSubmit ? Color.green : Color.white;
-                if (GUILayout.Button("Submit Party", GUILayout.Height(40)))
-                {
-                    _state.SubmitParty();
-                }
-                GUI.enabled = true;
-                GUI.color = Color.white;
             }
-            GUILayout.EndVertical();
         }
     }
 }

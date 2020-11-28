@@ -91,7 +91,7 @@ namespace Core.Database
             public static IEnumerable<IEnemyClass> Get()
             {
                 yield return new EnemyClass(
-                    Constants.CLASS_MONSTER,
+                    Constants.CLASS_CALAMITY,
                     "Double Goblin",
                     "I'm a goblin plus a goblin",
                     new TxtNameGenerator(new string[] {"Franklin"}),

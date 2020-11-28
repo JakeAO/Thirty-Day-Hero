@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Core.Items;
 using Core.Items.Armors;
 using Core.Items.Weapons;

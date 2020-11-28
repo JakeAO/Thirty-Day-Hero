@@ -1,23 +1,40 @@
-using SadPumpkin.Util.Context;
-using SadPumpkin.Util.StateMachine.States;
+using System.Collections.Generic;
+using Core.Etc;
+using Core.EventOptions;
+using Core.Wrappers;
+using SadPumpkin.Util.StateMachine;
 
 namespace Core.States
 {
-    public class DefeatState : IState
+    public class DefeatState : TDHStateBase
     {
-        public void PerformSetup(IContext context, IState previousState)
+        public override void OnContent()
         {
-            throw new System.NotImplementedException();
+            PlayerDataWrapper playerDataWrapper = SharedContext.Get<PlayerDataWrapper>();
+            PartyDataWrapper partyDataWrapper = SharedContext.Get<PartyDataWrapper>();
+
+            // Update and Save Party Data
+            partyDataWrapper.CalamityDefeated = false;
+            SaveLoadHelper.SavePartyData(SharedContext);
+
+            // Update and Save Player Data
+            playerDataWrapper.SetActiveParty(0u);
+            SaveLoadHelper.SavePlayerData(SharedContext);
+
+            // Clear Party Data
+            SharedContext.Clear<PartyDataWrapper>();
         }
 
-        public void PerformContent(IContext context)
+        public override IEnumerable<IEventOption> GetOptions()
         {
-            throw new System.NotImplementedException();
+            yield return new EventOption(
+                "New Party",
+                GoToCreateParty);
         }
 
-        public void PerformTeardown(IContext context, IState nextState)
+        private void GoToCreateParty()
         {
-            throw new System.NotImplementedException();
+            SharedContext.Get<IStateMachine>().ChangeState<CreatePartyState>();
         }
     }
 }

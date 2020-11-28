@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Core.Actors;
 using Core.Actors.Enemy;
 using Core.Actors.Player;
@@ -8,11 +7,10 @@ using Core.Classes.Enemy;
 using Core.Classes.Player;
 using Core.Database;
 using Core.Etc;
+using Core.EventOptions;
 using Core.Items;
 using Core.Signals;
 using Core.Wrappers;
-using Newtonsoft.Json;
-using SadPumpkin.Util.Context;
 using SadPumpkin.Util.StateMachine;
 using SadPumpkin.Util.StateMachine.States;
 
@@ -32,7 +30,7 @@ namespace Core.States
     ///   - Transition to GameHubState.
     /// </remarks>
     /// </summary>
-    public class CreatePartyState : IState
+    public class CreatePartyState : TDHStateBase
     {
         public PartyDataWrapper PartyData { get; private set; }
         public PartyDataUpdatedSignal PartyUpdatedSignal { get; private set; }
@@ -40,33 +38,29 @@ namespace Core.States
 
         private readonly List<PlayerCharacter> _unassignedCharacterPool = new List<PlayerCharacter>((int) Constants.CREATE_PARTY_POOL_SIZE);
 
-        private IContext _context;
-
-        public void PerformSetup(IContext context, IState previousState)
+        public override void OnEnter(IState fromState)
         {
-            _context = context;
-
-            if (context.Get<PlayerDataWrapper>() == null)
+            if (SharedContext.Get<PlayerDataWrapper>() == null)
                 throw new ArgumentException("Entered CreatePartyState without an active Player profile!");
-            if (context.Get<PartyDataWrapper>() != null)
+            if (SharedContext.Get<PartyDataWrapper>() != null)
                 throw new ArgumentException("Entered CreatePartyState with an already active Party profile!");
         }
 
-        public void PerformContent(IContext context)
+        public override void OnContent()
         {
             // Pull databases from context
-            PlayerClassDatabase playerClassDatabase = context.Get<PlayerClassDatabase>();
-            CalamityClassDatabase calamityClassDatabase = context.Get<CalamityClassDatabase>();
+            PlayerClassDatabase playerClassDatabase = SharedContext.Get<PlayerClassDatabase>();
+            CalamityClassDatabase calamityClassDatabase = SharedContext.Get<CalamityClassDatabase>();
 
             // Pull signal from context (or add)
-            if (context.TryGet(out PartyDataUpdatedSignal partyDataUpdatedSignal))
+            if (SharedContext.TryGet(out PartyDataUpdatedSignal partyDataUpdatedSignal))
             {
                 PartyUpdatedSignal = partyDataUpdatedSignal;
             }
             else
             {
                 PartyUpdatedSignal = new PartyDataUpdatedSignal();
-                context.Set(PartyUpdatedSignal);
+                SharedContext.Set(PartyUpdatedSignal);
             }
 
             // Generate new unique-ish partyId
@@ -82,46 +76,79 @@ namespace Core.States
             PartyData = new PartyDataWrapper(partyId, new PlayerCharacter[0], new IItem[0], calamityActor, PartyUpdatedSignal);
         }
 
-        public void PerformTeardown(IContext context, IState nextState)
+        public override IEnumerable<IEventOption> GetOptions()
         {
+            bool canSubmit = PartyData.Characters.Count >= Constants.PARTY_SIZE_MIN &&
+                             PartyData.Characters.Count <= Constants.PARTY_SIZE_MAX;
+            yield return new EventOption(
+                "Begin Adventure",
+                SubmitParty,
+                priority: 99,
+                disabled: !canSubmit);
 
+            foreach (PlayerCharacter character in PartyData.Characters)
+            {
+                uint characterId = character.Id;
+                yield return new EventOption(
+                    "Remove Hero",
+                    () => RemoveActorById(characterId),
+                    "Active Party",
+                    context: character);
+            }
+
+            foreach (PlayerCharacter character in _unassignedCharacterPool)
+            {
+                uint characterId = character.Id;
+                yield return new EventOption(
+                    "Add Hero",
+                    () => AddActorById(characterId),
+                    "Available Heroes",
+                    context: character);
+            }
         }
 
-        public void SelectActorById(uint actorId)
+        private void AddActorById(uint actorId)
+        {
+            if (_unassignedCharacterPool.Find(x => x.Id == actorId) is PlayerCharacter actorInPool)
+            {
+                // Add to party, remove from pool.
+                _unassignedCharacterPool.Remove(actorInPool);
+                PartyData.Characters.Add(actorInPool);
+
+                OptionsChangedSignal?.Fire(this);
+            }
+        }
+
+        private void RemoveActorById(uint actorId)
         {
             if (PartyData.Characters.Find(x => x.Id == actorId) is PlayerCharacter actorInParty)
             {
                 // Remove from party, add to pool.
                 PartyData.Characters.Remove(actorInParty);
                 _unassignedCharacterPool.Add(actorInParty);
-            }
-            else if (_unassignedCharacterPool.Find(x => x.Id == actorId) is PlayerCharacter actorInPool)
-            {
-                // Add to party, remove from pool.
-                _unassignedCharacterPool.Remove(actorInPool);
-                PartyData.Characters.Add(actorInPool);
+                
+                OptionsChangedSignal?.Fire(this);
             }
         }
 
-        public void SubmitParty()
+        private void SubmitParty()
         {
             if (PartyData.Characters.Count >= Constants.PARTY_SIZE_MIN &&
                 PartyData.Characters.Count <= Constants.PARTY_SIZE_MAX)
             {
-                // Set Active Party, Save Player Data
-                PathUtility pathUtility = _context.Get<PathUtility>();
-                PlayerDataWrapper playerDataWrapper = _context.Get<PlayerDataWrapper>();
-                playerDataWrapper.SetActiveParty(PartyData.PartyId);
-                File.WriteAllText(pathUtility.GetPlayerDataPath(), JsonConvert.SerializeObject(playerDataWrapper));
-
                 // Add Party to Context
-                _context.Set(PartyData);
+                SharedContext.Set(PartyData);
 
                 // Save Party Data
-                File.WriteAllText(pathUtility.GetPartyDataPath(PartyData.PartyId), JsonConvert.SerializeObject(PartyData));
+                SaveLoadHelper.SavePartyData(SharedContext);
+
+                // Set Active Party, Save Player Data
+                PlayerDataWrapper playerDataWrapper = SharedContext.Get<PlayerDataWrapper>();
+                playerDataWrapper.SetActiveParty(PartyData.PartyId);
+                SaveLoadHelper.SavePlayerData(SharedContext);
 
                 // Transition to PreGameState
-                _context.Get<IStateMachine>().ChangeState<PreGameState>();
+                SharedContext.Get<IStateMachine>().ChangeState<PreGameState>();
             }
         }
 

@@ -1,6 +1,7 @@
 using System;
-
+using System.Collections.Generic;
 using Core.States;
+using Core.States.Combat;
 using Core.States.Town;
 
 using SadPumpkin.Util.StateMachine.Signals;
@@ -8,16 +9,30 @@ using SadPumpkin.Util.StateMachine.States;
 using SadPumpkin.Util.Context;
 
 using UnityEngine.SceneManagement;
-using Core.States.Combat;
 
 namespace Unity.Scenes
 {
     public class SceneController : IDisposable
     {
-        private const string SCENE_NAME_NEW_PARTY = "NewParty";
-        private const string SCENE_NAME_GAME_HUB = "GameHub";
-        private const string SCENE_NAME_TOWN_HUB = "Town";
-        private const string SCENE_NAME_COMBAT = "Combat";
+        private static readonly Dictionary<Type, string> StatesToSceneNames = new Dictionary<Type, string>()
+        {
+            {typeof(StartupState), "Boot"},
+            {typeof(PreGameState), "PreGame"},
+            {typeof(CreatePartyState), "NewParty"},
+            {typeof(GameHubState), "GameHub"},
+            {typeof(RestState), "Rest"},
+            {typeof(PatrolState), "Patrol"},
+            {typeof(EncounterState), "Encounter"},
+            {typeof(TownHubState), "Town"},
+            {typeof(TownInnState), "TownInn"},
+            {typeof(TownShopState), "TownShop"},
+            {typeof(TownDojoState), "TownDojo"},
+            {typeof(CombatSetupState), "CombatSetup"},
+            {typeof(CombatMainState), "Combat"},
+            {typeof(CombatEndState), "CombatResults"},
+            {typeof(VictoryState), "Victory"},
+            {typeof(DefeatState), "Defeat"},
+        };
 
         private readonly IContext _context = null;
 
@@ -32,32 +47,13 @@ namespace Unity.Scenes
         public void Dispose()
         {
             _context?.Get<StateChanged>()?.Unlisten(OnStateChanged);
+            SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
         private void OnStateChanged(IState newState)
         {
-            string sceneName = SceneNameForState(newState);
-            if(!string.IsNullOrEmpty(sceneName))
-            {
-                SceneManager.LoadScene(sceneName);
-            }
-        }
-
-        private string SceneNameForState(IState state)
-        {
-            switch (state)
-            {
-                case CreatePartyState createParty:
-                    return SCENE_NAME_NEW_PARTY;
-                case GameHubState gameHub:
-                    return SCENE_NAME_GAME_HUB;
-                case TownHubState townHub:
-                    return SCENE_NAME_TOWN_HUB;
-                case CombatSetupState combatState:
-                    return SCENE_NAME_COMBAT;
-                default:
-                    return string.Empty;
-            }
+            StatesToSceneNames.TryGetValue(newState.GetType(), out string sceneName);
+            SceneManager.LoadScene(sceneName);
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -65,11 +61,9 @@ namespace Unity.Scenes
             if (scene.Equals(default(Scene)))
                 return;
 
-            SceneRootBase sceneRoot = scene.GetSceneComponent<SceneRootBase>();
-            if (sceneRoot == null)
-                return;
+            ISceneRoot sceneRoot = scene.GetSceneComponent<ISceneRoot>();
 
-            sceneRoot.InjectContext(_context);
+            sceneRoot?.InjectContext(_context);
         }
     }
 }

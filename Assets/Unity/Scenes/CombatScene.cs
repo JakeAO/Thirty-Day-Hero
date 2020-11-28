@@ -1,46 +1,28 @@
-﻿using Core.Actors.Enemy;
-using Core.CombatSettings;
+﻿using Core.Actors.Player;
+using Core.Etc;
 using Core.States.Combat;
-using SadPumpkin.Util.StateMachine;
-using System.Collections.Generic;
+using Core.Wrappers;
 using UnityEngine;
 
 namespace Unity.Scenes
 {
-    public class CombatScene : SceneRootBase
+    public class CombatScene : SceneRootBase<CombatMainState>
     {
-        private Rect _debugRect = new Rect(10, 10, 150, 150);
-        private void OnGUI()
+        protected override void OnGUIContentForState()
         {
-            GUILayout.BeginArea(_debugRect, GUI.skin.box);
+            // TODO Show Enemy Data
+            GUILayout.Label("Enemies:");
+            GUILayout.Label("TODO ENEMIES GO HERE");
+
+            // Show Party Data
+            PartyDataWrapper partyDataWrapper = SharedContext.Get<PartyDataWrapper>();
+
+            GUILayout.Label("Party:");
+            foreach (PlayerCharacter character in partyDataWrapper.Characters)
             {
-                GUILayout.Label("Debug flow:");
-                if (GUILayout.Button("Win (Enemy)"))
-                {
-                    CombatResults win = CombatResults.CreateSuccess(
-                        new List<IEnemyCharacterActor>(),
-                        new Core.Wrappers.PartyDataWrapper());
-
-                    Context.Get<IStateMachine>().ChangeState(new CombatEndState(win));
-                }
-
-                if (GUILayout.Button("Win (Bossfight)"))
-                {
-                    CombatResults win = CombatResults.CreateSuccess(
-                        new List<IEnemyCharacterActor>(),
-                        new Core.Wrappers.PartyDataWrapper());
-
-                    Context.Get<IStateMachine>().ChangeState(new CombatEndState(win));
-                }
-
-                if (GUILayout.Button("Lose"))
-                {
-                    CombatResults lose = CombatResults.CreateFailure();
-
-                    Context.Get<IStateMachine>().ChangeState(new CombatEndState(lose));
-                }
+                GUILayout.Label($"    {character.Name} (Lvl {character.Stats[StatType.LVL]} {character.Class.Name})\n" +
+                                $"       HP: {character.Stats[StatType.HP]}/{character.Stats[StatType.HP_Max]} | STA {character.Stats[StatType.STA]}/{character.Stats[StatType.STA_Max]}");
             }
-            GUILayout.EndArea();
         }
     }
 }

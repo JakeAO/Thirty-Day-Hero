@@ -1,23 +1,24 @@
-using SadPumpkin.Util.Context;
-using SadPumpkin.Util.StateMachine.States;
+using System.Collections.Generic;
+using Core.EventOptions;
+using SadPumpkin.Util.StateMachine;
 
 namespace Core.States.Combat
 {
-    public class CombatMainState : IState
+    public class CombatMainState : TDHStateBase
     {
-        public void PerformSetup(IContext context, IState previousState)
+        public override IEnumerable<IEventOption> GetOptions()
         {
-            
+            yield return new EventOption(
+                "Win Combat",
+                GoToCombatEnd);
+            yield return new EventOption(
+                "Lose Combat",
+                GoToCombatEnd);
         }
 
-        public void PerformContent(IContext context)
+        private void GoToCombatEnd()
         {
-            
-        }
-
-        public void PerformTeardown(IContext context, IState nextState)
-        {
-            
+            SharedContext.Get<IStateMachine>().ChangeState<CombatEndState>();
         }
     }
 }

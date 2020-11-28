@@ -1,23 +1,21 @@
-using SadPumpkin.Util.Context;
-using SadPumpkin.Util.StateMachine.States;
+using System.Collections.Generic;
+using Core.EventOptions;
+using SadPumpkin.Util.StateMachine;
 
 namespace Core.States
 {
-    public class RestState : IState
+    public class RestState : TDHStateBase
     {
-        public void PerformSetup(IContext context, IState previousState)
+        public override IEnumerable<IEventOption> GetOptions()
         {
-            throw new System.NotImplementedException();
+            yield return new EventOption(
+                "Continue",
+                GoToGameHub);
         }
 
-        public void PerformContent(IContext context)
+        private void GoToGameHub()
         {
-            throw new System.NotImplementedException();
-        }
-
-        public void PerformTeardown(IContext context, IState nextState)
-        {
-            throw new System.NotImplementedException();
+            SharedContext.Get<IStateMachine>().ChangeState<GameHubState>();
         }
     }
 }

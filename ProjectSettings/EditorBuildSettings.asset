@@ -9,20 +9,50 @@ EditorBuildSettings:
     path: Assets/Scenes/Boot.unity
     guid: 7df829c21c14c924d86221705741ab27
   - enabled: 1
-    path: Assets/Scenes/NewParty.unity
-    guid: 083bb980b5e98864894e9a43bb526070
+    path: Assets/Scenes/Combat.unity
+    guid: c45c5360cf693b547a3a580c4f195ec6
   - enabled: 1
-    path: Assets/Scenes/GameHub.unity
-    guid: 351e98140113eed418b924d85c87d0bd
+    path: Assets/Scenes/CombatResults.unity
+    guid: 9b322890f625ca74fa44b7b024c4df6a
+  - enabled: 1
+    path: Assets/Scenes/CombatSetup.unity
+    guid: 083987eebc2c7e24483020d57b868f4a
+  - enabled: 1
+    path: Assets/Scenes/Defeat.unity
+    guid: dd6e128acc758784584df7e602c1b671
   - enabled: 1
     path: Assets/Scenes/Encounter.unity
     guid: 998d73ea1deb19049abe570dc093daa2
   - enabled: 1
-    path: Assets/Scenes/Combat.unity
-    guid: c45c5360cf693b547a3a580c4f195ec6
+    path: Assets/Scenes/GameHub.unity
+    guid: 351e98140113eed418b924d85c87d0bd
+  - enabled: 1
+    path: Assets/Scenes/NewParty.unity
+    guid: 083bb980b5e98864894e9a43bb526070
+  - enabled: 1
+    path: Assets/Scenes/Patrol.unity
+    guid: 8b512529cbfc5374a9c510307a305859
+  - enabled: 1
+    path: Assets/Scenes/PreGame.unity
+    guid: 2fadff1d9914ef54c998c323e4036088
+  - enabled: 1
+    path: Assets/Scenes/Rest.unity
+    guid: d397441a7c1751c48a7b2ae76d32e193
   - enabled: 1
     path: Assets/Scenes/Town.unity
     guid: a6d599d64b7ba074082059a7c07e7864
+  - enabled: 1
+    path: Assets/Scenes/TownDojo.unity
+    guid: caa8b2e79e63bc2429994b4bec1dfdb4
+  - enabled: 1
+    path: Assets/Scenes/TownInn.unity
+    guid: 7c3de46bb727eaa44b7a8cffb6a3de96
+  - enabled: 1
+    path: Assets/Scenes/TownShop.unity
+    guid: ad21e35f5cbf4214b861868f71395248
+  - enabled: 1
+    path: Assets/Scenes/Victory.unity
+    guid: 722ff763c5b7df848921a7bfe877bf3a
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 0d55658df6880b142b17e4097449580c,
       type: 2}

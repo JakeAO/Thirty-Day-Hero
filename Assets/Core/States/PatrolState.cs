@@ -1,26 +1,32 @@
-using SadPumpkin.Util.Context;
+using System.Collections.Generic;
+using Core.EventOptions;
+using Core.States.Combat;
 using SadPumpkin.Util.StateMachine;
-using SadPumpkin.Util.StateMachine.States;
 
 namespace Core.States
 {
-    public class PatrolState : IState
+    public class PatrolState : TDHStateBase
     {
-        public void PerformSetup(IContext context, IState previousState)
+        public override IEnumerable<IEventOption> GetOptions()
         {
-            
+            yield return new EventOption(
+                "Fight",
+                GoToCombat,
+                priority: 0);
+            yield return new EventOption(
+                "Sneak Away",
+                GoToGameHub,
+                priority: 1);
         }
 
-        public void PerformContent(IContext context)
+        private void GoToCombat()
         {
-            //auto-default to combat
-            //maybe we built in a way to identify/try to escape?
-            context.Get<IStateMachine>().ChangeState<Combat.CombatSetupState>();
+            SharedContext.Get<IStateMachine>().ChangeState<CombatSetupState>();
         }
 
-        public void PerformTeardown(IContext context, IState nextState)
+        private void GoToGameHub()
         {
-            
+            SharedContext.Get<IStateMachine>().ChangeState<GameHubState>();
         }
     }
 }
