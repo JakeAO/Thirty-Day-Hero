@@ -1,5 +1,4 @@
 using SadPumpkin.Util.Context;
-using SadPumpkin.Util.StateMachine;
 using SadPumpkin.Util.StateMachine.States;
 
 namespace Core.States.Combat
@@ -8,17 +7,17 @@ namespace Core.States.Combat
     {
         public void PerformSetup(IContext context, IState previousState)
         {
-            
+            throw new System.NotImplementedException();
         }
 
         public void PerformContent(IContext context)
         {
-            context.Get<IStateMachine>().ChangeState<CombatMainState>();
+            throw new System.NotImplementedException();
         }
 
         public void PerformTeardown(IContext context, IState nextState)
         {
-            
+            throw new System.NotImplementedException();
         }
     }
 }

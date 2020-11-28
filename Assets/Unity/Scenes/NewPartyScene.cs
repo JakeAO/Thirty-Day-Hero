@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using Core.Actors.Player;
 using Core.Etc;
 using Core.States;
@@ -27,7 +26,7 @@ namespace Unity.Scenes
             bool DrawActorBox(IPlayerCharacterActor actor)
             {
                 bool result;
-                GUILayout.BeginVertical(GUI.skin.box, GUILayout.Width(150), GUILayout.Height(60));
+                GUILayout.BeginVertical(GUI.skin.box);
                 {
                     GUILayout.Label($"Name: {actor.Name}");
                     GUILayout.Label($"Class: {actor.Class.Name} ({actor.Class.Desc})");
@@ -38,7 +37,7 @@ namespace Unity.Scenes
                 return result;
             }
 
-            GUILayout.BeginVertical(GUI.skin.box, GUILayout.Width(620));
+            GUILayout.BeginArea(new Rect(10, 10, 150, 150), GUI.skin.box);
             {
                 GUILayout.Label("Debug flow:");
 
@@ -49,61 +48,33 @@ namespace Unity.Scenes
                 GUILayout.Label($"Class: {_state.PartyData.Calamity.Class} ({_state.PartyData.Calamity.Class.Desc})");
                 
                 GUILayout.Label($"Party ({_state.PartyData.Characters.Count}/{Constants.PARTY_SIZE_MAX})", new GUIStyle(GUI.skin.label) {fontStyle = FontStyle.Bold});
-                List<PlayerCharacter> party = _state.PartyData.Characters;
-                if (party.Count > 0)
+                foreach (PlayerCharacter actorInParty in _state.PartyData.Characters)
                 {
-                    GUILayout.BeginHorizontal(GUI.skin.box);
-                    {
-                        foreach (PlayerCharacter actorInParty in party)
-                        {
-                            if (DrawActorBox(actorInParty))
-                                selectedActorId = actorInParty.Id;
-                        }
-                    }
-                    GUILayout.EndHorizontal();
-                }
-                else
-                {
-                    GUILayout.BeginVertical(GUI.skin.box, GUILayout.Height(70));
-                    {
-                        GUILayout.FlexibleSpace();
-                        GUILayout.Label("No Party Characters");
-                        GUILayout.FlexibleSpace();
-                    }
-                    GUILayout.EndVertical();
+                    if (DrawActorBox(actorInParty))
+                        selectedActorId = actorInParty.Id;
                 }
 
                 GUILayout.Label($"Hero Pool", new GUIStyle(GUI.skin.label) {fontStyle = FontStyle.Bold});
-                GUILayout.BeginHorizontal(GUI.skin.box, GUILayout.Height(65));
+                foreach (PlayerCharacter actorInPool in _state.UnassignedCharacterPool)
                 {
-                    foreach (PlayerCharacter actorInPool in _state.UnassignedCharacterPool)
-                    {
-                        if (DrawActorBox(actorInPool))
-                            selectedActorId = actorInPool.Id;
-                    }
+                    if (DrawActorBox(actorInPool))
+                        selectedActorId = actorInPool.Id;
                 }
-                GUILayout.EndHorizontal();
-                
 
                 if (selectedActorId != 0u)
                 {
                     _state.SelectActorById(selectedActorId);
                 }
 
-                bool canSubmit = _state.PartyData.Characters.Count >= Constants.PARTY_SIZE_MIN &&
-                                 _state.PartyData.Characters.Count <= Constants.PARTY_SIZE_MAX;
-
-
-                GUI.enabled = canSubmit;
-                GUI.color = canSubmit ? Color.green : Color.white;
-                if (GUILayout.Button("Submit Party", GUILayout.Height(40)))
+                GUI.enabled = _state.PartyData.Characters.Count >= Constants.PARTY_SIZE_MIN &&
+                              _state.PartyData.Characters.Count <= Constants.PARTY_SIZE_MAX;
+                if (GUILayout.Button("Submit Party"))
                 {
                     _state.SubmitParty();
                 }
                 GUI.enabled = true;
-                GUI.color = Color.white;
             }
-            GUILayout.EndVertical();
+            GUILayout.EndArea();
         }
     }
 }

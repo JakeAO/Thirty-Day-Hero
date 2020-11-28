@@ -8,7 +8,7 @@ using SadPumpkin.Util.StateMachine.States;
 using SadPumpkin.Util.Context;
 
 using UnityEngine.SceneManagement;
-using Core.States.Combat;
+using UnityEngine;
 
 namespace Unity.Scenes
 {
@@ -17,7 +17,6 @@ namespace Unity.Scenes
         private const string SCENE_NAME_NEW_PARTY = "NewParty";
         private const string SCENE_NAME_GAME_HUB = "GameHub";
         private const string SCENE_NAME_TOWN_HUB = "Town";
-        private const string SCENE_NAME_COMBAT = "Combat";
 
         private readonly IContext _context = null;
 
@@ -31,7 +30,7 @@ namespace Unity.Scenes
 
         public void Dispose()
         {
-            _context?.Get<StateChanged>()?.Unlisten(OnStateChanged);
+            _stateChangedSignal?.Unlisten(OnStateChanged);
         }
 
         private void OnStateChanged(IState newState)
@@ -53,8 +52,6 @@ namespace Unity.Scenes
                     return SCENE_NAME_GAME_HUB;
                 case TownHubState townHub:
                     return SCENE_NAME_TOWN_HUB;
-                case CombatSetupState combatState:
-                    return SCENE_NAME_COMBAT;
                 default:
                     return string.Empty;
             }

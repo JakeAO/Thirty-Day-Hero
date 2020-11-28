@@ -13,19 +13,16 @@ namespace Unity.Scenes
             GUILayout.BeginArea(_debugRect, GUI.skin.box);
             {
                 GUILayout.Label("Debug flow:");
-                //Town
                 if (GUILayout.Button("To Town"))
                 {
                     Context.Get<IStateMachine>().ChangeState<TownHubState>();
                 }
 
-                //Combat
                 if(GUILayout.Button("Go on patrol"))
                 {
                     Context.Get<IStateMachine>().ChangeState<PatrolState>();
                 }
 
-                //Encounter
                 if(GUILayout.Button("[Special Event]"))
                 {
                     UnityEngine.Debug.Log("NAV TO EVENT");
