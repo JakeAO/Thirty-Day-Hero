@@ -1,18 +1,20 @@
 ﻿using Core.Etc;
-using Core.Items.Armors;
 using SadPumpkin.Util.CombatEngine.Actor;
 using SadPumpkin.Util.CombatEngine.RequirementCalculators;
+
 using IPlayerCharacterActor = Core.Actors.Player.IPlayerCharacterActor;
 
 namespace Core.Requirements
 {
     public class EquippedArmorRequirement : IRequirementCalc
     {
-        private readonly ArmorType _armorType = ArmorType.Invalid;
+        public ArmorType RequiredType { get; set; }
 
-        public EquippedArmorRequirement(ArmorType armorType)
+        public string Description => $"{RequiredType} Armor Equipped";
+
+        public EquippedArmorRequirement(ArmorType requiredType)
         {
-            _armorType = armorType;
+            RequiredType = requiredType;
         }
 
         public bool MeetsRequirement(IInitiativeActor actor)
@@ -20,7 +22,7 @@ namespace Core.Requirements
             if (actor is IPlayerCharacterActor playerCharacter)
             {
                 ArmorType equippedType = playerCharacter.Equipment.Armor?.ArmorType ?? ArmorType.Invalid;
-                return (equippedType & _armorType) == equippedType;
+                return RequiredType.HasFlag(equippedType);
             }
 
             return false;

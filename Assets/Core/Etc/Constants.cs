@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Core.Etc
 {
@@ -25,6 +26,23 @@ namespace Core.Etc
                 {RarityCategory.Legendary, 10f}
             };
 
+        public const uint BASE_REROLL_RANK_BOUNDARY = 10;
+        public const uint REROLL_RANK_BOUNDARY_GROWTH = 5;
+
+        public const uint STARTING_STAT_TOTAL = 60;
+        public const uint STARTING_STAT_MIN = 3;
+
+        public const uint STARTING_HP_MULTIPLIER = 10;
+        public const uint STARTING_STA_MULTIPLIER = 10;
+
+        public const uint LEVEL_STAT_TOTAL = 12;
+        public const uint LEVEL_STAT_MIN = 0;
+
+        public const uint LEVEL_HP_MULTIPLIER = 10;
+        public const uint LEVEL_STA_MULTIPLIER = 10;
+
+        public static uint MaxStatAtLevel(uint level) => (uint) Math.Round(STARTING_STAT_MIN + level * LEVEL_STAT_TOTAL * 0.7f);
+        
         public const uint PARTY_SIZE_MIN = 1;
         public const uint PARTY_SIZE_MAX = 3;
         public const uint CREATE_PARTY_POOL_SIZE = 5;

@@ -9,6 +9,8 @@ namespace Core.Requirements
     public class CriticalHealthRequirement : IRequirementCalc
     {
         public static readonly CriticalHealthRequirement Instance = new CriticalHealthRequirement();
+
+        public string Description => $"Critical Health";
         
         public bool MeetsRequirement(IInitiativeActor actor)
         {

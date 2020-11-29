@@ -12,6 +12,8 @@ namespace Core.Costs
         public StatType Type { get; set; }
         public uint Amount { get; set; }
 
+        public string Description => $"-{Amount} {Type}";
+
         public StatCost()
             : this(StatType.Invalid, 0u)
         {
@@ -33,11 +35,6 @@ namespace Core.Costs
         {
             if (entity is ICharacterActor character)
                 character.Stats.ModifyStat(Type, (int) -Amount);
-        }
-
-        public string Description()
-        {
-            return $"{Amount} {Type}";
         }
     }
 }

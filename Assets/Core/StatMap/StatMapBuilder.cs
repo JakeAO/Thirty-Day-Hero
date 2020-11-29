@@ -6,12 +6,6 @@ namespace Core.StatMap
 {
     public class StatMapBuilder : IStatMapBuilder
     {
-        public const uint DEFAULT_TOTAL = 60;
-        public const uint DEFAULT_MIN = 3;
-
-        private const uint STARTING_HP_PER_CON = 10;
-        private const uint STARTING_STA_PER_WEIGHTED_STAT = 10;
-
         private readonly uint _statTotal;
         private readonly uint _statMin;
         private readonly IReadOnlyDictionary<StatType, RankPriority> _statPriorities = null;
@@ -23,8 +17,8 @@ namespace Core.StatMap
             RankPriority intPri,
             RankPriority magPri,
             RankPriority chaPri,
-            uint statTotal = DEFAULT_TOTAL,
-            uint statMin = DEFAULT_MIN)
+            uint statTotal = Constants.STARTING_STAT_TOTAL,
+            uint statMin = Constants.STARTING_STAT_MIN)
         {
             _statPriorities = new Dictionary<StatType, RankPriority>()
             {
@@ -71,10 +65,10 @@ namespace Core.StatMap
                 }
             }
 
-            uint startingHp = STARTING_HP_PER_CON * startingStats[StatType.CON];
+            uint startingHp = Constants.STARTING_HP_MULTIPLIER * startingStats[StatType.CON];
             uint maxAtkStat = Math.Max(Math.Max(startingStats[StatType.STR], startingStats[StatType.DEX]), startingStats[StatType.MAG]);
             uint maxAtkStatAvgWithInt = (maxAtkStat + startingStats[StatType.INT]) / 2;
-            uint startingSta = STARTING_STA_PER_WEIGHTED_STAT * maxAtkStatAvgWithInt;
+            uint startingSta = Constants.STARTING_STA_MULTIPLIER * maxAtkStatAvgWithInt;
 
             startingStats[StatType.HP_Max] = startingStats[StatType.HP] = startingHp;
             startingStats[StatType.STA_Max] = startingStats[StatType.STA] = startingSta;

@@ -20,10 +20,10 @@ namespace Unity.Editor.DataDrawers
                 GUILayout.BeginHorizontal();
                 {
                     GUILayout.Label(value.GetType().Name, new GUIStyle(GUI.skin.label) {fontStyle = FontStyle.Bold});
-                    GUILayout.Label(value.Description(), new GUIStyle(GUI.skin.label) {fontStyle = FontStyle.Italic});
+                    GUILayout.Label($"\"Cost: {value.Description}\"", new GUIStyle(GUI.skin.label) {fontStyle = FontStyle.Italic});
                 }
                 GUILayout.EndHorizontal();
-                
+
                 switch (value)
                 {
                     case StatCost statCost:
@@ -33,17 +33,18 @@ namespace Unity.Editor.DataDrawers
                         break;
                     }
                     case DestroyThisItemCost destroyThisItemCost:
+                    case NoCost noCost:
                     {
                         EditorGUILayout.HelpBox(
                             "No configuration available.",
                             MessageType.Info);
                         break;
                     }
-                    case NoCost noCost:
+                    default:
                     {
                         EditorGUILayout.HelpBox(
-                            "No configuration available.",
-                            MessageType.Info);
+                            "Unhandled Type!.",
+                            MessageType.Error);
                         break;
                     }
                 }

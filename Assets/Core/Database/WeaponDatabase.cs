@@ -22,12 +22,12 @@ namespace Core.Database
             if (Directory.Exists(directoryPath))
             {
                 DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
-                foreach (FileInfo fileInfo in directoryInfo.EnumerateFiles(".json", SearchOption.AllDirectories))
+                foreach (FileInfo fileInfo in directoryInfo.EnumerateFiles("*.json", SearchOption.AllDirectories))
                 {
                     using (StreamReader streamReader = fileInfo.OpenText())
                     {
                         string allText = streamReader.ReadToEnd();
-                        IWeapon weapon = JsonConvert.DeserializeObject<IWeapon>(allText, jsonSettings);
+                        IWeapon weapon = JsonConvert.DeserializeObject<Weapon>(allText, jsonSettings);
                         if (weapon != null)
                         {
                             data.Add(weapon);
@@ -104,10 +104,10 @@ namespace Core.Database
                         NoRequirements.Instance,
                         NoCost.Instance,
                         SingleEnemyTargetCalculator.Instance,
-                        new DamageEffect(
-                            DamageType.Normal,
-                            source => 10 + source.Stats[StatType.STR] / source.Stats[StatType.LVL],
-                            "[10 + STR/LVL] Normal Damage")),
+                        new StatEffect(
+                            StatType.HP,
+                            10,
+                            5)),
                     new IAbility[0]);
             }
         }

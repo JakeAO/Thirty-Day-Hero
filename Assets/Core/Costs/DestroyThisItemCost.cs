@@ -11,6 +11,8 @@ namespace Core.Costs
 {
     public class DestroyThisItemCost : ICostCalc
     {
+        public string Description => "Consumes Source Item";
+
         public bool CanAfford(IInitiativeActor entity, IIdTracked actionSource)
         {
             if (entity is IPlayerCharacterActor playerCharacter &&
@@ -48,11 +50,6 @@ namespace Core.Costs
                     }
                 }
             }
-        }
-
-        public string Description()
-        {
-            return "Consumes Item";
         }
     }
 }

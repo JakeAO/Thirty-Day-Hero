@@ -1,10 +1,11 @@
 {
-    "name": "Tests",
+    "name": "SadPumpkin.Games.ThirtyDayHero.Unity.Editor.Tests",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
+        "SadPumpkin.Games.ThirtyDayHero.Core",
         "SadPumpkin.Games.ThirtyDayHero.Unity",
-        "SadPumpkin.Games.ThirtyDayHero.Core"
+        "SadPumpkin.Games.ThirtyDayHero.Unity.Editor"
     ],
     "includePlatforms": [
         "Editor"

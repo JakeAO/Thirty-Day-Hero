@@ -18,12 +18,12 @@ namespace Core.Database
             if (Directory.Exists(directoryPath))
             {
                 DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
-                foreach (FileInfo fileInfo in directoryInfo.EnumerateFiles(".json", SearchOption.AllDirectories))
+                foreach (FileInfo fileInfo in directoryInfo.EnumerateFiles("*.json", SearchOption.AllDirectories))
                 {
                     using (StreamReader streamReader = fileInfo.OpenText())
                     {
                         string allText = streamReader.ReadToEnd();
-                        IItem item = JsonConvert.DeserializeObject<IItem>(allText, jsonSettings);
+                        IItem item = JsonConvert.DeserializeObject<Item>(allText, jsonSettings);
                         if (item != null)
                         {
                             data.Add(item);
