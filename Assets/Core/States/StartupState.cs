@@ -41,20 +41,11 @@ namespace Core.States
 
         public override void OnContent()
         {
-            // Setup JSON Settings
-            JsonSerializerSettings jsonSettings = new JsonSerializerSettings()
-            {
-                Formatting = Formatting.Indented,
-                TypeNameHandling = TypeNameHandling.Auto,
-                ContractResolver = new NewtonsoftContractResolver(),
-                Converters = FindAllParameterlessJsonConverters(),
-                Error = (sender, args) => Console.WriteLine($"[ERROR] {sender} -> {args.ErrorContext} ({args.CurrentObject})")
-            };
-            SharedContext.Set(jsonSettings);
+            // Load JsonSettings
+            DataLoadHelper.LoadJsonSettings(SharedContext);
 
             // Pull PathUtility and begin loading process
-            PathUtility pathUtility = SharedContext.Get<PathUtility>();
-            LoadDatabases(SharedContext, pathUtility);
+            DataLoadHelper.LoadDatabases(SharedContext);
 
             // Create and insert CombatSettingsGenerator
             CombatSettingsGenerator combatSettingsGenerator = new CombatSettingsGenerator(SharedContext.Get<EnemyGroupWrapperDatabase>());
@@ -145,53 +136,6 @@ namespace Core.States
             SharedContext.Clear<PartyDataWrapper>();
 
             OptionsChangedSignal?.Fire(this);
-        }
-
-        private static IList<JsonConverter> FindAllParameterlessJsonConverters()
-        {
-            return Assembly.GetAssembly(typeof(NewtonsoftContractResolver))
-                .GetTypes()
-                .Where(x =>
-                    !x.IsAbstract &&
-                    x.IsClass &&
-                    typeof(JsonConverter).IsAssignableFrom(x) &&
-                    x.GetConstructor(Type.EmptyTypes) != null)
-                .Select(x => (JsonConverter) x.GetConstructor(Type.EmptyTypes)?.Invoke(new object[0]))
-                .Where(x => x != null)
-                .ToList();
-        }
-
-        private static void LoadDatabases(IContext context, PathUtility pathUtility)
-        {
-            JsonSerializerSettings jsonSettings = context.Get<JsonSerializerSettings>();
-
-            // Load Abilities first, since they're the most relied upon
-            AbilityDatabase abilityDatabase = AbilityDatabase.LoadFromDisk(pathUtility.AbilityPath, jsonSettings);
-            context.Set(abilityDatabase);
-            jsonSettings.Converters.Add(new AbilityJsonConverter(abilityDatabase));
-
-            // Then load Items, since they're relied upon fairly often
-            ItemDatabase itemDatabase = ItemDatabase.LoadFromDisk(pathUtility.ItemDefinitionPath, jsonSettings);
-            WeaponDatabase weaponDatabase = WeaponDatabase.LoadFromDisk(pathUtility.WeaponDefinitionPath, jsonSettings);
-            ArmorDatabase armorDatabase = ArmorDatabase.LoadFromDisk(pathUtility.ArmorDefinitionPath, jsonSettings);
-            context.Set(itemDatabase);
-            context.Set(weaponDatabase);
-            context.Set(armorDatabase);
-            jsonSettings.Converters.Add(new ItemJsonConverter(itemDatabase, weaponDatabase, armorDatabase));
-
-            // Then load Classes, which are rarely relied upon
-            PlayerClassDatabase playerClassDatabase = PlayerClassDatabase.LoadFromDisk(pathUtility.PlayerClassPath, jsonSettings);
-            EnemyClassDatabase enemyClassDatabase = EnemyClassDatabase.LoadFromDisk(pathUtility.EnemyClassPath, jsonSettings);
-            CalamityClassDatabase calamityClassDatabase = CalamityClassDatabase.LoadFromDisk(pathUtility.CalamityClassPath, jsonSettings);
-            context.Set(playerClassDatabase);
-            context.Set(enemyClassDatabase);
-            context.Set(calamityClassDatabase);
-            jsonSettings.Converters.Add(new PlayerClassConverter(playerClassDatabase));
-            jsonSettings.Converters.Add(new EnemyClassConverter(enemyClassDatabase, calamityClassDatabase));
-
-            // Finally load EnemyGroups, which rely upon Enemies
-            EnemyGroupWrapperDatabase enemyGroupWrapperDatabase = EnemyGroupWrapperDatabase.LoadFromDisk(pathUtility.EnemyGroupPath, jsonSettings);
-            context.Set(enemyGroupWrapperDatabase);
         }
 
         private static PlayerDataWrapper LoadPlayerData(IContext context)

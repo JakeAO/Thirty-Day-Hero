@@ -1,16 +1,22 @@
 ﻿using Core.Etc;
-using Core.StatMap;
 using SadPumpkin.Util.CombatEngine;
 using SadPumpkin.Util.CombatEngine.Actor;
 using SadPumpkin.Util.CombatEngine.CostCalculators;
+
 using ICharacterActor = Core.Actors.ICharacterActor;
 
 namespace Core.Costs
 {
     public class StatCost : ICostCalc
     {
-        public StatType Type { get; }
-        public uint Amount { get; }
+        public StatType Type { get; set; }
+        public uint Amount { get; set; }
+
+        public StatCost()
+            : this(StatType.Invalid, 0u)
+        {
+            
+        }
 
         public StatCost(StatType type, uint amount)
         {

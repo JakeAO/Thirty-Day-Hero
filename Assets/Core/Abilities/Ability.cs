@@ -16,6 +16,20 @@ namespace Core.Abilities
         public ITargetCalc Target { get; set; }
         public IEffectCalc Effect { get; set; }
 
+        public Ability()
+            : this(
+                0u,
+                string.Empty,
+                string.Empty,
+                0u,
+                NoRequirements.Instance,
+                NoCost.Instance,
+                SelfTargetCalculator.Instance,
+                NoEffect.Instance)
+        {
+
+        }
+
         public Ability(
             uint id,
             string name, string desc,
