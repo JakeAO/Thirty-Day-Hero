@@ -47,8 +47,22 @@ namespace Unity.Scenes
 
         private void RenderActor(ICharacterActor actor)
         {
+            GUI.color = ActorColor(actor);
             GUILayout.Label($"    {actor.Name} (Lvl {actor.Stats[StatType.LVL]} {actor.Class.Name})\n" +
                                 $"       HP: {actor.Stats[StatType.HP]}/{actor.Stats[StatType.HP_Max]} | STA {actor.Stats[StatType.STA]}/{actor.Stats[StatType.STA_Max]}");
+            GUI.color = Color.white;
+        }
+
+        private UnityEngine.Color ActorColor(ICharacterActor actor)
+        {
+            if(actor == State.ActivePlayer)
+            {
+                return Color.green;
+            }
+            else
+            {
+                return Color.white;
+            }
         }
     }
 }
