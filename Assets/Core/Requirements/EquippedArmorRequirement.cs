@@ -12,6 +12,12 @@ namespace Core.Requirements
 
         public string Description => $"{RequiredType} Armor Equipped";
 
+        public EquippedArmorRequirement()
+            : this(ArmorType.Invalid)
+        {
+            
+        }
+        
         public EquippedArmorRequirement(ArmorType requiredType)
         {
             RequiredType = requiredType;

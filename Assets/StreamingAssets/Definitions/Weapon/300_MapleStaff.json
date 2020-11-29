@@ -1,0 +1,11 @@
+{
+  "Id": 300,
+  "Name": "Maple Staff",
+  "Desc": "A heavy staff made of wood.",
+  "ArtPath": "Assets/Art/Items/weapon/staff/staff_7.png",
+  "BaseValue": 20,
+  "Rarity": 1,
+  "ItemType": 1,
+  "WeaponType": 32,
+  "AttackAbility": 1
+}

@@ -1,0 +1,59 @@
+{
+  "Id": 100,
+  "Name": "Orc Scout",
+  "Desc": "A smaller wearing little in terms of clothes or armor.",
+  "ArtPath": "Assets/Art/Battlers/Orc Axe Warrior.png",
+  "Rarity": 1,
+  "NameGenerator": {
+    "$type": "Core.Naming.FileNameGenerator, SadPumpkin.Games.ThirtyDayHero.Core",
+    "FilePath": "Assets/StreamingAssets/Definitions/Names/OrcNames.txt"
+  },
+  "StartingStats": {
+    "$type": "Core.StatMap.StatMapBuilder, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Total": 30,
+    "MinPerStat": 3,
+    "Priorities": {
+      "STR": 3,
+      "DEX": 2,
+      "CON": 3,
+      "INT": 3,
+      "MAG": 3,
+      "CHA": 3
+    }
+  },
+  "LevelUpStats": {
+    "$type": "Core.StatMap.StatMapIncrementor, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Total": 7,
+    "MinPerStat": 0,
+    "Priorities": {
+      "STR": 3,
+      "DEX": 2,
+      "CON": 3,
+      "INT": 3,
+      "MAG": 3,
+      "CHA": 3
+    }
+  },
+  "AbilitiesPerLevel": {
+    "$type": "System.Collections.Generic.Dictionary`2[[System.UInt32, mscorlib],[System.Collections.Generic.IReadOnlyCollection`1[[Core.Abilities.IAbility, SadPumpkin.Games.ThirtyDayHero.Core]], mscorlib]], mscorlib",
+    "0": {
+      "$type": "System.Collections.Generic.List`1[[Core.Abilities.IAbility, SadPumpkin.Games.ThirtyDayHero.Core]], mscorlib",
+      "$values": [
+        1,
+        4
+      ]
+    },
+    "3": {
+      "$type": "System.Collections.Generic.List`1[[Core.Abilities.IAbility, SadPumpkin.Games.ThirtyDayHero.Core]], mscorlib",
+      "$values": [
+        10000
+      ]
+    },
+    "5": {
+      "$type": "System.Collections.Generic.List`1[[Core.Abilities.IAbility, SadPumpkin.Games.ThirtyDayHero.Core]], mscorlib",
+      "$values": [
+        10001
+      ]
+    }
+  }
+}

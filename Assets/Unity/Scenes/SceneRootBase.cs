@@ -12,6 +12,8 @@ namespace Unity.Scenes
         public IContext SharedContext { get; protected set; }
         public T State { get; protected set; }
 
+        private Vector2 _scrollPos = Vector2.zero;
+        
         public void InjectContext(IContext context)
         {
             SharedContext = context;
@@ -44,6 +46,7 @@ namespace Unity.Scenes
                 {
                     if (State != null)
                     {
+                        _scrollPos = GUILayout.BeginScrollView(_scrollPos);
                         GUILayout.BeginHorizontal(GUI.skin.box);
                         {
                             foreach (var eventGroup in State
@@ -99,6 +102,7 @@ namespace Unity.Scenes
                             }
                         }
                         GUILayout.EndHorizontal();
+                        GUILayout.EndScrollView();
                     }
                     else
                     {

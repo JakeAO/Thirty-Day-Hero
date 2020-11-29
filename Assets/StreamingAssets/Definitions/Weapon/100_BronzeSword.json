@@ -1,0 +1,11 @@
+{
+  "Id": 100,
+  "Name": "Bronze Sword",
+  "Desc": "A simple sword of bronze.",
+  "ArtPath": "Assets/Art/Items/weapon/greatsword/sword_03.png",
+  "BaseValue": 10,
+  "Rarity": 1,
+  "ItemType": 1,
+  "WeaponType": 1,
+  "AttackAbility": 1
+}

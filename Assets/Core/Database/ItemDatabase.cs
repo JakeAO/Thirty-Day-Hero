@@ -32,11 +32,6 @@ namespace Core.Database
                 }
             }
 
-            if (data.Count == 0)
-            {
-                data.AddRange(HackDefinitions.Get());
-            }
-
             return new ItemDatabase(data);
         }
 
@@ -80,20 +75,9 @@ namespace Core.Database
                 : null;
         }
 
-        private static class HackDefinitions
+        public IEnumerable<IItem> EnumerateAll()
         {
-            public static IEnumerable<IItem> Get()
-            {
-                yield return new Item(
-                    Constants.ITEM_LOOT,
-                    "Bag of Fish",
-                    "It's a bag of wet fish, get over it.",
-                    "",
-                    1u,
-                    RarityCategory.Common,
-                    ItemType.Loot,
-                    new IAbility[0]);
-            }
+            return _allData.Values;
         }
     }
 }

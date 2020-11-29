@@ -6,6 +6,11 @@ namespace Core.EquipMap
     {
         public static readonly NullEquipMapBuilder Instance = new NullEquipMapBuilder();
 
+        private NullEquipMapBuilder()
+        {
+            
+        }
+        
         public IEquipMap Generate(Random random)
         {
             return new EquipMap();

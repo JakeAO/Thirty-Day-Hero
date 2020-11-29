@@ -1,0 +1,11 @@
+{
+  "Id": 101,
+  "Name": "Iron Sword",
+  "Desc": "A well-crafted sword of iron.",
+  "ArtPath": "Assets/Art/Items/weapon/sword/sword_01.png",
+  "BaseValue": 50,
+  "Rarity": 1,
+  "ItemType": 1,
+  "WeaponType": 1,
+  "AttackAbility": 2
+}

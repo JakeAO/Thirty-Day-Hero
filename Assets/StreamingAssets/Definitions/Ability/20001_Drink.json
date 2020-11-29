@@ -1,0 +1,24 @@
+{
+  "Id": 20001,
+  "Name": "Drink",
+  "Desc": "Drink the potion to restore a moderate amount of HP.",
+  "Speed": 80,
+  "Requirements": {
+    "$type": "SadPumpkin.Util.CombatEngine.RequirementCalculators.NoRequirements, CombatEngine"
+  },
+  "Cost": {
+    "$type": "Core.Costs.DestroyThisItemCost, SadPumpkin.Games.ThirtyDayHero.Core"
+  },
+  "Target": {
+    "$type": "SadPumpkin.Util.CombatEngine.TargetCalculators.SelfTargetCalculator, CombatEngine"
+  },
+  "Effect": {
+    "$type": "Core.Effects.StatEffect, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Stat": 1,
+    "EffectType": 0,
+    "BaseAmount": 10,
+    "VariableAmount": 20,
+    "ScalingStat": 0,
+    "ScalingRank": 0
+  }
+}

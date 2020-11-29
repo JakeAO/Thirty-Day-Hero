@@ -1,0 +1,14 @@
+{
+  "Id": 300,
+  "Name": "Half Plate",
+  "Desc": "Armor made of thick metal plates.",
+  "ArtPath": "Assets/Art/Items/armor/heavy/chest_71.png",
+  "BaseValue": 200,
+  "Rarity": 2,
+  "ItemType": 2,
+  "ArmorType": 4,
+  "DamageModifiers": {
+    "$type": "System.Collections.Generic.Dictionary`2[[Core.Etc.DamageType, SadPumpkin.Games.ThirtyDayHero.Core],[System.Single, mscorlib]], mscorlib",
+    "Normal": 0.6
+  }
+}

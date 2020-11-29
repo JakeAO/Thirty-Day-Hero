@@ -35,12 +35,7 @@ namespace Core.Database
                     }
                 }
             }
-
-            if (data.Count == 0)
-            {
-                data.AddRange(HackDefinitions.Get());
-            }
-
+            
             return new WeaponDatabase(data);
         }
 
@@ -84,32 +79,9 @@ namespace Core.Database
                 : null;
         }
 
-        private static class HackDefinitions
+        public IEnumerable<IWeapon> EnumerateAll()
         {
-            public static IEnumerable<IWeapon> Get()
-            {
-                yield return new Weapon(
-                    Constants.WEAPON_SWORD,
-                    "Sword",
-                    "I'm a Sword",
-                    "Assets/Art/Items/weapon/sword/sword_01.png",
-                    100u,
-                    RarityCategory.Common,
-                    WeaponType.Sword,
-                    new Ability(
-                        Constants.ABILITY_ATTACK,
-                        "Attack",
-                        "Swing that sword.",
-                        100,
-                        NoRequirements.Instance,
-                        NoCost.Instance,
-                        SingleEnemyTargetCalculator.Instance,
-                        new StatEffect(
-                            StatType.HP,
-                            10,
-                            5)),
-                    new IAbility[0]);
-            }
+            return _allData.Values;
         }
     }
 }

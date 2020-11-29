@@ -1,0 +1,14 @@
+{
+  "Id": 100,
+  "Name": "Cloth Tunic",
+  "Desc": "A simple cloth tunic that provides little protection.",
+  "ArtPath": "Assets/Art/Items/armor/light/chest_01.png",
+  "BaseValue": 10,
+  "Rarity": 1,
+  "ItemType": 2,
+  "ArmorType": 1,
+  "DamageModifiers": {
+    "$type": "System.Collections.Generic.Dictionary`2[[Core.Etc.DamageType, SadPumpkin.Games.ThirtyDayHero.Core],[System.Single, mscorlib]], mscorlib",
+    "Normal": 0.95
+  }
+}

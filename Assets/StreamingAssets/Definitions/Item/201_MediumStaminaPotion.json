@@ -1,0 +1,15 @@
+{
+  "Id": 201,
+  "Name": "Medium Stamina Potion",
+  "Desc": "A medium bottle containing bluish fluid.",
+  "ArtPath": "Assets/Art/Items/item/consumable/consumable_47.png",
+  "BaseValue": 90,
+  "Rarity": 1,
+  "ItemType": 8,
+  "AddedAbilities": {
+    "$type": "System.Collections.Generic.List`1[[Core.Abilities.IAbility, SadPumpkin.Games.ThirtyDayHero.Core]], mscorlib",
+    "$values": [
+      20004
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "Id": 101,
+  "Name": "Orc Warband",
+  "Desc": "A proper orcish warband on the march.",
+  "Rarity": 2,
+  "EnemyTypes": [
+    100,
+    101,
+    100,
+    101,
+    102
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "Id": 102,
+  "Name": "Curaga",
+  "Desc": "Holy light restores a great deal of vitality to the target",
+  "Speed": 100,
+  "Requirements": {
+    "$type": "SadPumpkin.Util.CombatEngine.RequirementCalculators.NoRequirements, CombatEngine"
+  },
+  "Cost": {
+    "$type": "Core.Costs.StatCost, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Type": 3,
+    "Amount": 25
+  },
+  "Target": {
+    "$type": "SadPumpkin.Util.CombatEngine.TargetCalculators.SingleAllyTargetCalculator, CombatEngine"
+  },
+  "Effect": {
+    "$type": "Core.Effects.StatEffect, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Stat": 1,
+    "EffectType": 0,
+    "BaseAmount": 40,
+    "VariableAmount": 60,
+    "ScalingStat": 9,
+    "ScalingRank": 1
+  }
+}

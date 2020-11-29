@@ -1,0 +1,11 @@
+{
+  "Id": 102,
+  "Name": "Steel Sword",
+  "Desc": "A sturdy sword made from high quality steel.",
+  "ArtPath": "Assets/Art/Items/weapon/greatsword/sword_07.png",
+  "BaseValue": 150,
+  "Rarity": 2,
+  "ItemType": 1,
+  "WeaponType": 1,
+  "AttackAbility": 3
+}

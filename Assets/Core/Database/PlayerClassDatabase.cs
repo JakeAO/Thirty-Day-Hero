@@ -41,12 +41,7 @@ namespace Core.Database
                     }
                 }
             }
-
-            if (data.Count == 0)
-            {
-                data.AddRange(HackDefinitions.Get());
-            }
-
+            
             return new PlayerClassDatabase(data);
         }
 
@@ -90,67 +85,9 @@ namespace Core.Database
                 : null;
         }
 
-        private static class HackDefinitions
+        public IEnumerable<IPlayerClass> EnumerateAll()
         {
-            public static IEnumerable<IPlayerClass> Get()
-            {
-                yield return new PlayerClass(
-                    Constants.CLASS_PLAYER,
-                    "Soldier",
-                    "I'm a soldier",
-                    new TxtNameGenerator(new string[] {"Gary"}),
-                    new StatMapBuilder(
-                        RankPriority.A,
-                        RankPriority.C,
-                        RankPriority.B,
-                        RankPriority.D,
-                        RankPriority.F,
-                        RankPriority.D),
-                    new StatMapIncrementor(
-                        RankPriority.A,
-                        RankPriority.C,
-                        RankPriority.B,
-                        RankPriority.D,
-                        RankPriority.F,
-                        RankPriority.C),
-                    new Dictionary<uint, IReadOnlyCollection<IAbility>>(),
-                    new Dictionary<DamageType, float>(),
-                    WeaponType.Sword,
-                    ArmorType.Light,
-                    new EquipMapBuilder(
-                        new Dictionary<IWeapon, RankPriority>()
-                        {
-                            {
-                                new Weapon(
-                                    Constants.WEAPON_SWORD,
-                                    "Sword",
-                                    "I'm a Sword",
-                                    "Assets/Art/Items/weapon/sword/sword_01.png",
-                                    100u,
-                                    RarityCategory.Common,
-                                    WeaponType.Sword,
-                                    new Ability(
-                                        Constants.ABILITY_ATTACK,
-                                        "Attack",
-                                        "Swing that sword.",
-                                        100,
-                                        NoRequirements.Instance,
-                                        NoCost.Instance,
-                                        SingleEnemyTargetCalculator.Instance,
-                                        new StatEffect(
-                                            StatType.HP,
-                                            10,
-                                            5)),
-                                    new IAbility[0]),
-                                RankPriority.A
-
-                            }
-                        },
-                        new Dictionary<IArmor, RankPriority>(),
-                        new Dictionary<IItem, RankPriority>(),
-                        new Dictionary<IItem, RankPriority>())
-                );
-            }
+            return _allData.Values;
         }
     }
 }

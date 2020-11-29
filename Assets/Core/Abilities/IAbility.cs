@@ -1,4 +1,5 @@
-﻿using SadPumpkin.Util.CombatEngine;
+﻿using Core.Etc;
+using SadPumpkin.Util.CombatEngine;
 using SadPumpkin.Util.CombatEngine.CostCalculators;
 using SadPumpkin.Util.CombatEngine.EffectCalculators;
 using SadPumpkin.Util.CombatEngine.RequirementCalculators;
@@ -6,10 +7,8 @@ using SadPumpkin.Util.CombatEngine.TargetCalculators;
 
 namespace Core.Abilities
 {
-    public interface IAbility : IIdTracked
+    public interface IAbility : IIdTracked, INamed
     {
-        string Name { get; }
-        string Desc { get; }
         uint Speed { get; }
         IRequirementCalc Requirements { get; }
         ICostCalc Cost { get; }

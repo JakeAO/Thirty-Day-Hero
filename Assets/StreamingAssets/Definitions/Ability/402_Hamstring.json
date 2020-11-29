@@ -1,0 +1,41 @@
+{
+  "Id": 402,
+  "Name": "Hamstring",
+  "Desc": "Aim of the enemy's legs to deal damage and reduce their speed.",
+  "Speed": 100,
+  "Requirements": {
+    "$type": "Core.Requirements.EquippedWeaponRequirement, SadPumpkin.Games.ThirtyDayHero.Core",
+    "RequiredType": 149
+  },
+  "Cost": {
+    "$type": "Core.Costs.StatCost, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Type": 3,
+    "Amount": 20
+  },
+  "Target": {
+    "$type": "SadPumpkin.Util.CombatEngine.TargetCalculators.SingleEnemyTargetCalculator, CombatEngine"
+  },
+  "Effect": {
+    "$type": "Core.Effects.CombinedEffect, SadPumpkin.Games.ThirtyDayHero.Core",
+    "ChildEffects": [
+      {
+        "$type": "Core.Effects.StatEffect, SadPumpkin.Games.ThirtyDayHero.Core",
+        "Stat": 1,
+        "EffectType": 1,
+        "BaseAmount": -5,
+        "VariableAmount": -20,
+        "ScalingStat": 6,
+        "ScalingRank": 3
+      },
+      {
+        "$type": "Core.Effects.StatEffect, SadPumpkin.Games.ThirtyDayHero.Core",
+        "Stat": 6,
+        "EffectType": 1,
+        "BaseAmount": 0,
+        "VariableAmount": -5,
+        "ScalingStat": 5,
+        "ScalingRank": 3
+      }
+    ]
+  }
+}

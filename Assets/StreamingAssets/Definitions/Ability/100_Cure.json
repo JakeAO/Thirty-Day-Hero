@@ -1,0 +1,26 @@
+{
+  "Id": 100,
+  "Name": "Cure",
+  "Desc": "Holy light restores vitality to the target",
+  "Speed": 100,
+  "Requirements": {
+    "$type": "SadPumpkin.Util.CombatEngine.RequirementCalculators.NoRequirements, CombatEngine"
+  },
+  "Cost": {
+    "$type": "Core.Costs.StatCost, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Type": 3,
+    "Amount": 5
+  },
+  "Target": {
+    "$type": "SadPumpkin.Util.CombatEngine.TargetCalculators.SingleAllyTargetCalculator, CombatEngine"
+  },
+  "Effect": {
+    "$type": "Core.Effects.StatEffect, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Stat": 1,
+    "EffectType": 0,
+    "BaseAmount": 5,
+    "VariableAmount": 15,
+    "ScalingStat": 9,
+    "ScalingRank": 3
+  }
+}

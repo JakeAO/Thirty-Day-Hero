@@ -7,10 +7,8 @@ using SadPumpkin.Util.CombatEngine;
 
 namespace Core.Classes
 {
-    public interface IClass : IIdTracked
+    public interface IClass : IIdTracked, INamed
     {
-        string Name { get; }
-        string Desc { get; }
         RarityCategory Rarity { get; }
         INameGenerator NameGenerator { get; }
         IStatMapBuilder StartingStats { get; }

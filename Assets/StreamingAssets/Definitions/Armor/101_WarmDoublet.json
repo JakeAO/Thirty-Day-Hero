@@ -1,0 +1,16 @@
+{
+  "Id": 101,
+  "Name": "Warm Doublet",
+  "Desc": "A warm tunic that provides ample protection from the elements.",
+  "ArtPath": "Assets/Art/Items/armor/light/chest_04.png",
+  "BaseValue": 100,
+  "Rarity": 1,
+  "ItemType": 2,
+  "ArmorType": 1,
+  "DamageModifiers": {
+    "$type": "System.Collections.Generic.Dictionary`2[[Core.Etc.DamageType, SadPumpkin.Games.ThirtyDayHero.Core],[System.Single, mscorlib]], mscorlib",
+    "Normal": 0.9,
+    "Water": 0.7,
+    "Wind": 0.7
+  }
+}

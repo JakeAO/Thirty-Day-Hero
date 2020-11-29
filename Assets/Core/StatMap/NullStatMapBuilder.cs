@@ -6,6 +6,11 @@ namespace Core.StatMap
     {
         public static readonly NullStatMapBuilder Instance = new NullStatMapBuilder();
 
+        private NullStatMapBuilder()
+        {
+            
+        }
+        
         public IStatMap Generate(Random random)
         {
             return new StatMap();

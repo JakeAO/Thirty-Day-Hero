@@ -1,0 +1,70 @@
+{
+  "Id": 100,
+  "Name": "Orc Chieftain",
+  "Desc": "A powerful orcish clan chieftain.",
+  "ArtPath": "Assets/Art/Battlers/Boss Orc Chief Grunt.png",
+  "Rarity": 1,
+  "NameGenerator": {
+    "$type": "Core.Naming.ListNameGenerator, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Names": [
+      "Grunt",
+      "Molog",
+      "Sal'togga",
+      "Del'togga",
+      "Sor'togga"
+    ]
+  },
+  "StartingStats": {
+    "$type": "Core.StatMap.StatMapBuilder, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Total": 30,
+    "MinPerStat": 3,
+    "Priorities": {
+      "STR": 1,
+      "DEX": 3,
+      "CON": 3,
+      "INT": 3,
+      "MAG": 3,
+      "CHA": 3
+    }
+  },
+  "LevelUpStats": {
+    "$type": "Core.StatMap.StatMapIncrementor, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Total": 7,
+    "MinPerStat": 0,
+    "Priorities": {
+      "STR": 2,
+      "DEX": 3,
+      "CON": 3,
+      "INT": 3,
+      "MAG": 3,
+      "CHA": 3
+    }
+  },
+  "AbilitiesPerLevel": {
+    "$type": "System.Collections.Generic.SortedDictionary`2[[System.UInt32, mscorlib],[System.Collections.Generic.IReadOnlyCollection`1[[Core.Abilities.IAbility, SadPumpkin.Games.ThirtyDayHero.Core]], mscorlib]], System",
+    "0": {
+      "$type": "System.Collections.Generic.List`1[[Core.Abilities.IAbility, SadPumpkin.Games.ThirtyDayHero.Core]], mscorlib",
+      "$values": [
+        1,
+        4,
+        10001
+      ]
+    },
+    "5": {
+      "$type": "System.Collections.Generic.List`1[[Core.Abilities.IAbility, SadPumpkin.Games.ThirtyDayHero.Core]], mscorlib",
+      "$values": [
+        2,
+        5,
+        10000
+      ]
+    },
+    "10": {
+      "$type": "System.Collections.Generic.List`1[[Core.Abilities.IAbility, SadPumpkin.Games.ThirtyDayHero.Core]], mscorlib",
+      "$values": [
+        3,
+        6,
+        301
+      ]
+    }
+  }
+}

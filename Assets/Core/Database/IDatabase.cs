@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using SadPumpkin.Util.CombatEngine;
 
 namespace Core.Database
@@ -6,5 +7,6 @@ namespace Core.Database
     {
         T GetRandom();
         T GetSpecific(uint id);
+        IEnumerable<T> EnumerateAll();
     }
 }

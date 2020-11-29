@@ -11,6 +11,7 @@ namespace Core.Classes.Enemy
         public uint Id { get; set; }
         public string Name { get; set; }
         public string Desc { get; set; }
+        public string ArtPath { get; set; }
         public RarityCategory Rarity { get; set; }
         public INameGenerator NameGenerator { get; set; }
         public IReadOnlyDictionary<DamageType, float> IntrinsicDamageModification { get; set; }
@@ -18,10 +19,25 @@ namespace Core.Classes.Enemy
         public IStatMapIncrementor LevelUpStats { get; set; }
         public IReadOnlyDictionary<uint, IReadOnlyCollection<IAbility>> AbilitiesPerLevel { get; set; }
 
+        public EnemyClass()
+            : this(
+                0u,
+                string.Empty,
+                string.Empty,
+                string.Empty,
+                NullNameGenerator.Instance,
+                new Dictionary<DamageType, float>(),
+                NullStatMapBuilder.Instance,
+                NullStatMapIncrementor.Instance,
+                new Dictionary<uint, IReadOnlyCollection<IAbility>>())
+        {
+        }
+
         public EnemyClass(
             uint id,
             string name,
             string desc,
+            string artPath,
             INameGenerator nameGenerator,
             IDictionary<DamageType, float> intrinsicDamageModification,
             IStatMapBuilder startingStats,
@@ -31,6 +47,7 @@ namespace Core.Classes.Enemy
             Id = id;
             Name = name;
             Desc = desc;
+            ArtPath = artPath;
             NameGenerator = nameGenerator;
             StartingStats = startingStats;
             LevelUpStats = levelUpStats;
@@ -60,15 +77,16 @@ namespace Core.Classes.Enemy
         public string Name => "DORP";
 
         public string Desc => "You're not sure it can be considered intelligent";
+        public string ArtPath => "";
 
         public RarityCategory Rarity => RarityCategory.Common;
 
         private DorpNames _nameGen = new DorpNames();
         public INameGenerator NameGenerator => _nameGen;
 
-        public IStatMapBuilder StartingStats => new NullStatMapBuilder();
+        public IStatMapBuilder StartingStats => NullStatMapBuilder.Instance;
 
-        public IStatMapIncrementor LevelUpStats => new NullStatMapIncrementor();
+        public IStatMapIncrementor LevelUpStats => NullStatMapIncrementor.Instance;
 
         public IReadOnlyDictionary<uint, IReadOnlyCollection<IAbility>> AbilitiesPerLevel => new Dictionary<uint, IReadOnlyCollection<IAbility>>();
 

@@ -1,0 +1,26 @@
+{
+  "Id": 206,
+  "Name": "Stone",
+  "Desc": "A small rock hurtles at your opponent.",
+  "Speed": 100,
+  "Requirements": {
+    "$type": "SadPumpkin.Util.CombatEngine.RequirementCalculators.NoRequirements, CombatEngine"
+  },
+  "Cost": {
+    "$type": "Core.Costs.StatCost, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Type": 3,
+    "Amount": 5
+  },
+  "Target": {
+    "$type": "SadPumpkin.Util.CombatEngine.TargetCalculators.SingleEnemyTargetCalculator, CombatEngine"
+  },
+  "Effect": {
+    "$type": "Core.Effects.StatEffect, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Stat": 1,
+    "EffectType": 16,
+    "BaseAmount": -10,
+    "VariableAmount": -10,
+    "ScalingStat": 9,
+    "ScalingRank": 3
+  }
+}

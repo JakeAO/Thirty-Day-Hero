@@ -1,0 +1,24 @@
+{
+  "Id": 2,
+  "Name": "Attack (STR)",
+  "Desc": "A standard weapon attack.",
+  "Speed": 100,
+  "Requirements": {
+    "$type": "SadPumpkin.Util.CombatEngine.RequirementCalculators.NoRequirements, CombatEngine"
+  },
+  "Cost": {
+    "$type": "SadPumpkin.Util.CombatEngine.CostCalculators.NoCost, CombatEngine"
+  },
+  "Target": {
+    "$type": "SadPumpkin.Util.CombatEngine.TargetCalculators.SingleEnemyTargetCalculator, CombatEngine"
+  },
+  "Effect": {
+    "$type": "Core.Effects.StatEffect, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Stat": 1,
+    "EffectType": 1,
+    "BaseAmount": -5,
+    "VariableAmount": -10,
+    "ScalingStat": 5,
+    "ScalingRank": 3
+  }
+}

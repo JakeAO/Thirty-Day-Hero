@@ -22,6 +22,22 @@ namespace Core.Classes.Player
         public ArmorType ArmorProficiency { get; set; }
         public IEquipMapBuilder StartingEquipment { get; set; }
 
+        public PlayerClass()
+            : this(
+                0u,
+                string.Empty,
+                string.Empty,
+                NullNameGenerator.Instance,
+                NullStatMapBuilder.Instance,
+                NullStatMapIncrementor.Instance,
+                new Dictionary<uint, IReadOnlyCollection<IAbility>>(),
+                new Dictionary<DamageType, float>(),
+                WeaponType.Invalid,
+                ArmorType.Invalid,
+                NullEquipMapBuilder.Instance)
+        {
+        }
+
         public PlayerClass(
             uint id,
             string name,

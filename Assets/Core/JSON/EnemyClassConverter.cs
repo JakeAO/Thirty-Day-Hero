@@ -1,4 +1,5 @@
 using System;
+using Core.Classes.Calamity;
 using Core.Classes.Enemy;
 using Core.Database;
 using Newtonsoft.Json;
@@ -46,8 +47,14 @@ namespace Core.JSON
             {
                 // We're reading a reference to the object.
                 uint id = Convert.ToUInt32(reader?.Value ?? 0);
-                IEnemyClass item = _enemyDatabase.GetSpecific(id) ?? _calamityDatabase.GetSpecific(id);
-                return item;
+                if (objectType.IsAssignableFrom(typeof(ICalamityClass)))
+                {
+                    ICalamityClass result = _calamityDatabase.GetSpecific(id);
+                    if (result != null)
+                        return result;
+                }
+
+                return _enemyDatabase.GetSpecific(id);
             }
         }
     }

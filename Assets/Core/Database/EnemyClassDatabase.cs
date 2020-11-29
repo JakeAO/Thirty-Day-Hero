@@ -38,11 +38,6 @@ namespace Core.Database
                 }
             }
 
-            if (data.Count == 0)
-            {
-                data.AddRange(HackDefinitions.Get());
-            }
-
             return new EnemyClassDatabase(data);
         }
 
@@ -85,52 +80,9 @@ namespace Core.Database
                 : null;
         }
 
-        private static class HackDefinitions
+        public IEnumerable<IEnemyClass> EnumerateAll()
         {
-            public static IEnumerable<IEnemyClass> Get()
-            {
-                yield return new EnemyClass(
-                    Constants.CLASS_MONSTER,
-                    "Goblin",
-                    "I'm a goblin",
-                    new TxtNameGenerator(new string[] {"Doug"}),
-                    new Dictionary<DamageType, float>(),
-                    new StatMapBuilder(
-                        RankPriority.A,
-                        RankPriority.C,
-                        RankPriority.B,
-                        RankPriority.D,
-                        RankPriority.F,
-                        RankPriority.D),
-                    new StatMapIncrementor(
-                        RankPriority.A,
-                        RankPriority.C,
-                        RankPriority.B,
-                        RankPriority.D,
-                        RankPriority.F,
-                        RankPriority.C),
-                    new Dictionary<uint, IReadOnlyCollection<IAbility>>()
-                    {
-                        {
-                            0, new IAbility[]
-                            {
-                                new Ability(
-                                    Constants.ABILITY_ATTACK + 1,
-                                    "Goblin Punch",
-                                    "The goblin does a punch.",
-                                    100u,
-                                    NoRequirements.Instance,
-                                    NoCost.Instance,
-                                    SingleEnemyTargetCalculator.Instance,
-                                    new StatEffect(
-                                        StatType.HP,
-                                        5,
-                                        5))
-                            }
-                        }
-                    }
-                );
-            }
+            return _allData.Values;
         }
     }
 }

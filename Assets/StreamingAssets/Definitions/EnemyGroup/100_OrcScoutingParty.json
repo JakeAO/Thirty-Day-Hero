@@ -1,0 +1,12 @@
+{
+  "Id": 100,
+  "Name": "Orc Scouting Party",
+  "Desc": "A roaming band of orcish scouts.",
+  "Rarity": 1,
+  "EnemyTypes": [
+    100,
+    100,
+    100,
+    101
+  ]
+}

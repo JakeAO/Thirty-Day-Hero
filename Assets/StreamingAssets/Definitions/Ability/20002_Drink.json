@@ -1,0 +1,24 @@
+{
+  "Id": 20002,
+  "Name": "Drink",
+  "Desc": "Drink the potion to restore a large amount of HP.",
+  "Speed": 80,
+  "Requirements": {
+    "$type": "SadPumpkin.Util.CombatEngine.RequirementCalculators.NoRequirements, CombatEngine"
+  },
+  "Cost": {
+    "$type": "Core.Costs.DestroyThisItemCost, SadPumpkin.Games.ThirtyDayHero.Core"
+  },
+  "Target": {
+    "$type": "SadPumpkin.Util.CombatEngine.TargetCalculators.SelfTargetCalculator, CombatEngine"
+  },
+  "Effect": {
+    "$type": "Core.Effects.StatEffect, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Stat": 1,
+    "EffectType": 0,
+    "BaseAmount": 30,
+    "VariableAmount": 40,
+    "ScalingStat": 0,
+    "ScalingRank": 0
+  }
+}

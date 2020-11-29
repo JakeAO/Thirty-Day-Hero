@@ -29,17 +29,17 @@ namespace Core.Etc
         public const uint BASE_REROLL_RANK_BOUNDARY = 10;
         public const uint REROLL_RANK_BOUNDARY_GROWTH = 5;
 
-        public const uint STARTING_STAT_TOTAL = 60;
+        public const uint STARTING_STAT_TOTAL = 30;
         public const uint STARTING_STAT_MIN = 3;
 
-        public const uint STARTING_HP_MULTIPLIER = 10;
-        public const uint STARTING_STA_MULTIPLIER = 10;
+        public const uint STARTING_HP_MULTIPLIER = 5;
+        public const uint STARTING_STA_MULTIPLIER = 5;
 
-        public const uint LEVEL_STAT_TOTAL = 12;
+        public const uint LEVEL_STAT_TOTAL = 7;
         public const uint LEVEL_STAT_MIN = 0;
 
-        public const uint LEVEL_HP_MULTIPLIER = 10;
-        public const uint LEVEL_STA_MULTIPLIER = 10;
+        public const uint LEVEL_HP_MULTIPLIER = 3;
+        public const uint LEVEL_STA_MULTIPLIER = 3;
 
         public static uint MaxStatAtLevel(uint level) => (uint) Math.Round(STARTING_STAT_MIN + level * LEVEL_STAT_TOTAL * 0.7f);
         
@@ -47,40 +47,10 @@ namespace Core.Etc
         public const uint PARTY_SIZE_MAX = 3;
         public const uint CREATE_PARTY_POOL_SIZE = 5;
 
-        public const uint CALAMITY_LEVEL = 20u;
+        public const uint CALAMITY_LEVEL = 10u;
         public const uint DAYS_TO_PREPARE = 30u;
         
         public const uint ACTION = 10000;
         public const uint ACTION_WAIT = 19999;
-        
-        public const uint WEAPON_SWORD = 60000;
-        public const uint WEAPON_GREATSWORD = 61000;
-        public const uint WEAPON_AXE = 62000;
-        public const uint WEAPON_GREATEAXE = 63000;
-        public const uint WEAPON_SPEAR = 64000;
-        public const uint WEAPON_STAFF = 65000;
-        public const uint WEAPON_ROD = 66000;
-        public const uint WEAPON_BOW = 67000;
-        public const uint WEAPON_FIST = 68000;
-
-        public const uint ARMOR_LIGHT = 70000;
-        public const uint ARMOR_MEDIUM = 71000;
-        public const uint ARMOR_HEAVY = 72000;
-
-        public const uint ITEM_CONSUMABLE = 80000;
-        public const uint ITEM_TRINKET = 81000;
-        public const uint ITEM_LOOT = 82000;
-
-        public const uint CLASS_PLAYER = 90000;
-        public const uint CLASS_CALAMITY = 91000;
-        public const uint CLASS_MONSTER = 92000;
-
-        public const uint ENEMY_GROUP = 95000;
-
-        public const uint ABILITY_ATTACK = 100000;
-        public const uint ABILITY_SKILL = 101000;
-        public const uint ABILITY_SPELL = 102000;
-        public const uint ABILITY_MONSTER = 103000;
-        public const uint ABILITY_ITEM = 104000;
     }
 }

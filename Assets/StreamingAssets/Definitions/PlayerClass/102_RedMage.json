@@ -1,0 +1,100 @@
+{
+  "Id": 102,
+  "Name": "Red Mage",
+  "Desc": "A crafty mage who dabbles in all but excels at none.",
+  "Rarity": 2,
+  "NameGenerator": {
+    "$type": "Core.Naming.FileNameGenerator, SadPumpkin.Games.ThirtyDayHero.Core",
+    "FilePath": "Assets/StreamingAssets/Definitions/Names/HumanNames.txt"
+  },
+  "StartingStats": {
+    "$type": "Core.StatMap.StatMapBuilder, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Total": 30,
+    "MinPerStat": 3,
+    "Priorities": {
+      "STR": 4,
+      "DEX": 2,
+      "CON": 4,
+      "INT": 3,
+      "MAG": 2,
+      "CHA": 3
+    }
+  },
+  "LevelUpStats": {
+    "$type": "Core.StatMap.StatMapIncrementor, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Total": 7,
+    "MinPerStat": 0,
+    "Priorities": {
+      "STR": 3,
+      "DEX": 2,
+      "CON": 3,
+      "INT": 3,
+      "MAG": 2,
+      "CHA": 3
+    }
+  },
+  "AbilitiesPerLevel": {
+    "$type": "System.Collections.Generic.Dictionary`2[[System.UInt32, mscorlib],[System.Collections.Generic.IReadOnlyCollection`1[[Core.Abilities.IAbility, SadPumpkin.Games.ThirtyDayHero.Core]], mscorlib]], mscorlib",
+    "2": {
+      "$type": "System.Collections.Generic.List`1[[Core.Abilities.IAbility, SadPumpkin.Games.ThirtyDayHero.Core]], mscorlib",
+      "$values": [
+        206
+      ]
+    },
+    "3": {
+      "$type": "System.Collections.Generic.List`1[[Core.Abilities.IAbility, SadPumpkin.Games.ThirtyDayHero.Core]], mscorlib",
+      "$values": [
+        100
+      ]
+    },
+    "4": {
+      "$type": "System.Collections.Generic.List`1[[Core.Abilities.IAbility, SadPumpkin.Games.ThirtyDayHero.Core]], mscorlib",
+      "$values": [
+        209
+      ]
+    },
+    "6": {
+      "$type": "System.Collections.Generic.List`1[[Core.Abilities.IAbility, SadPumpkin.Games.ThirtyDayHero.Core]], mscorlib",
+      "$values": [
+        203
+      ]
+    },
+    "7": {
+      "$type": "System.Collections.Generic.List`1[[Core.Abilities.IAbility, SadPumpkin.Games.ThirtyDayHero.Core]], mscorlib",
+      "$values": [
+        200
+      ]
+    }
+  },
+  "WeaponProficiency": 112,
+  "ArmorProficiency": 1,
+  "StartingEquipment": {
+    "$type": "Core.EquipMap.EquipMapBuilder, SadPumpkin.Games.ThirtyDayHero.Core",
+    "StartingWeapon": [
+      {
+        "Item1": 300,
+        "Item2": 3
+      },
+      {
+        "Item1": 400,
+        "Item2": 3
+      }
+    ],
+    "StartingArmor": [
+      {
+        "Item1": 100,
+        "Item2": 3
+      }
+    ],
+    "StartingItemA": [
+      {
+        "Item1": 100,
+        "Item2": 3
+      },
+      {
+        "Item1": 200,
+        "Item2": 3
+      }
+    ]
+  }
+}

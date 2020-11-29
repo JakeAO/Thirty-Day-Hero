@@ -1,0 +1,26 @@
+{
+  "Id": 201,
+  "Name": "Fira",
+  "Desc": "A large bolt of fire scorches your enemy.",
+  "Speed": 100,
+  "Requirements": {
+    "$type": "SadPumpkin.Util.CombatEngine.RequirementCalculators.NoRequirements, CombatEngine"
+  },
+  "Cost": {
+    "$type": "Core.Costs.StatCost, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Type": 3,
+    "Amount": 15
+  },
+  "Target": {
+    "$type": "SadPumpkin.Util.CombatEngine.TargetCalculators.SingleEnemyTargetCalculator, CombatEngine"
+  },
+  "Effect": {
+    "$type": "Core.Effects.StatEffect, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Stat": 1,
+    "EffectType": 2,
+    "BaseAmount": -20,
+    "VariableAmount": -30,
+    "ScalingStat": 9,
+    "ScalingRank": 2
+  }
+}

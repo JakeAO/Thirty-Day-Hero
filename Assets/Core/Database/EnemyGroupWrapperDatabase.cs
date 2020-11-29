@@ -31,11 +31,6 @@ namespace Core.Database
                 }
             }
 
-            if (data.Count == 0)
-            {
-                data.AddRange(HackDefinitions.Get());
-            }
-
             return new EnemyGroupWrapperDatabase(data);
         }
 
@@ -79,12 +74,9 @@ namespace Core.Database
                 : null;
         }
 
-        private static class HackDefinitions
+        public IEnumerable<EnemyGroupWrapper> EnumerateAll()
         {
-            public static IEnumerable<EnemyGroupWrapper> Get()
-            {
-                yield return new EnemyGroupWrapper();
-            }
+            return _allData.Values;
         }
     }
 }

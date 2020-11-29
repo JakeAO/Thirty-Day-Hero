@@ -1,0 +1,27 @@
+{
+  "Id": 401,
+  "Name": "Backstab",
+  "Desc": "Attempt to catch the enemy off guard and deal massive damage.",
+  "Speed": 100,
+  "Requirements": {
+    "$type": "Core.Requirements.EquippedWeaponRequirement, SadPumpkin.Games.ThirtyDayHero.Core",
+    "RequiredType": 1
+  },
+  "Cost": {
+    "$type": "Core.Costs.StatCost, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Type": 3,
+    "Amount": 20
+  },
+  "Target": {
+    "$type": "SadPumpkin.Util.CombatEngine.TargetCalculators.SingleEnemyTargetCalculator, CombatEngine"
+  },
+  "Effect": {
+    "$type": "Core.Effects.StatEffect, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Stat": 1,
+    "EffectType": 1,
+    "BaseAmount": -1,
+    "VariableAmount": -99,
+    "ScalingStat": 6,
+    "ScalingRank": 1
+  }
+}

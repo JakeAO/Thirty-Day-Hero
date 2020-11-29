@@ -9,48 +9,56 @@ namespace Core.EquipMap
 {
     public class EquipMapBuilder : IEquipMapBuilder
     {
-        private readonly IReadOnlyDictionary<IWeapon, RankPriority> _startingWeapon = null;
-        private readonly IReadOnlyDictionary<IArmor, RankPriority> _startingArmor = null;
-        private readonly IReadOnlyDictionary<IItem, RankPriority> _startingItemA = null;
-        private readonly IReadOnlyDictionary<IItem, RankPriority> _startingItemB = null;
+        public List<(IWeapon, RankPriority)> StartingWeapon { get; set; }
+        public List<(IArmor, RankPriority)> StartingArmor { get; set; }
+        public List<(IItem, RankPriority)> StartingItemA { get; set; }
+        public List<(IItem, RankPriority)> StartingItemB { get; set; }
+
+        public EquipMapBuilder()
+        {
+            StartingWeapon = new List<(IWeapon, RankPriority)>();
+            StartingArmor = new List<(IArmor, RankPriority)>();
+            StartingItemA = new List<(IItem, RankPriority)>();
+            StartingItemB = new List<(IItem, RankPriority)>();
+        }
 
         public EquipMapBuilder(
-            IDictionary<IWeapon, RankPriority> startingWeapon,
-            IDictionary<IArmor, RankPriority> startingArmor,
-            IDictionary<IItem, RankPriority> startingItemA,
-            IDictionary<IItem, RankPriority> startingItemB
+            IReadOnlyCollection<(IWeapon, RankPriority)> startingWeapon,
+            IReadOnlyCollection<(IArmor, RankPriority)> startingArmor,
+            IReadOnlyCollection<(IItem, RankPriority)> startingItemA,
+            IReadOnlyCollection<(IItem, RankPriority)> startingItemB
         )
         {
-            _startingWeapon = new Dictionary<IWeapon, RankPriority>(startingWeapon);
-            _startingArmor = new Dictionary<IArmor, RankPriority>(startingArmor);
-            _startingItemA = new Dictionary<IItem, RankPriority>(startingItemA);
-            _startingItemB = new Dictionary<IItem, RankPriority>(startingItemB);
+            StartingWeapon = new List<(IWeapon, RankPriority)>(startingWeapon);
+            StartingArmor = new List<(IArmor, RankPriority)>(startingArmor);
+            StartingItemA = new List<(IItem, RankPriority)>(startingItemA);
+            StartingItemB = new List<(IItem, RankPriority)>(startingItemB);
         }
 
         public IEquipMap Generate(Random random)
         {
             return new EquipMap(
-                GetRandomItem(_startingWeapon, random),
-                GetRandomItem(_startingArmor, random),
-                GetRandomItem(_startingItemA, random),
-                GetRandomItem(_startingItemB, random));
+                GetRandomItem(StartingWeapon, random),
+                GetRandomItem(StartingArmor, random),
+                GetRandomItem(StartingItemA, random),
+                GetRandomItem(StartingItemB, random));
         }
 
-        private static T GetRandomItem<T>(IReadOnlyDictionary<T, RankPriority> dict, Random rand) where T : IItem
+        private static T GetRandomItem<T>(IReadOnlyCollection<(T, RankPriority)> dict, Random rand) where T : IItem
         {
             double totalPriority = 0d;
-            foreach (RankPriority statPriority in dict.Values)
+            foreach ((T _, RankPriority priority) in dict)
             {
-                totalPriority += Constants.PRIORITY_WEIGHT[statPriority];
+                totalPriority += Constants.PRIORITY_WEIGHT[priority];
             }
 
             double randVal = rand.NextDouble() * totalPriority;
-            foreach (var priorityKvp in dict)
+            foreach ((T item, RankPriority priority) in dict)
             {
-                randVal -= Constants.PRIORITY_WEIGHT[priorityKvp.Value];
+                randVal -= Constants.PRIORITY_WEIGHT[priority];
                 if (randVal <= 0)
                 {
-                    return priorityKvp.Key;
+                    return item;
                 }
             }
 

@@ -6,9 +6,23 @@ namespace Core.StatMap
 {
     public class StatMapIncrementor : IStatMapIncrementor
     {
-        private readonly uint _statTotal;
-        private readonly uint _statMin;
-        private readonly IReadOnlyDictionary<StatType, RankPriority> _statPriorities = null;
+        public uint Total { get; set; }
+        public uint MinPerStat { get; set; }
+        public Dictionary<StatType, RankPriority> Priorities { get; set; }
+
+        public StatMapIncrementor()
+            : this(
+                RankPriority.C,
+                RankPriority.C,
+                RankPriority.C,
+                RankPriority.C,
+                RankPriority.C,
+                RankPriority.C,
+                Constants.LEVEL_STAT_TOTAL,
+                Constants.LEVEL_STAT_MIN)
+        {
+
+        }
 
         public StatMapIncrementor(
             RankPriority strPri,
@@ -18,9 +32,9 @@ namespace Core.StatMap
             RankPriority magPri,
             RankPriority chaPri,
             uint statTotal = Constants.LEVEL_STAT_TOTAL,
-            uint statMin = Constants.LEVEL_STAT_MIN)
+            uint minPerStat = Constants.LEVEL_STAT_MIN)
         {
-            _statPriorities = new Dictionary<StatType, RankPriority>()
+            Priorities = new Dictionary<StatType, RankPriority>()
             {
                 {StatType.STR, strPri},
                 {StatType.DEX, dexPri},
@@ -29,32 +43,33 @@ namespace Core.StatMap
                 {StatType.MAG, magPri},
                 {StatType.CHA, chaPri},
             };
-            _statTotal = statTotal - statMin * 6;
-            _statMin = statMin;
+            Total = statTotal;
+            MinPerStat = minPerStat;
         }
 
         public IStatMap Increment(IStatMap statMap, Random random)
         {
             Dictionary<StatType, uint> statChanges = new Dictionary<StatType, uint>()
             {
-                {StatType.STR, _statMin},
-                {StatType.DEX, _statMin},
-                {StatType.CON, _statMin},
-                {StatType.INT, _statMin},
-                {StatType.MAG, _statMin},
-                {StatType.CHA, _statMin},
+                {StatType.STR, MinPerStat},
+                {StatType.DEX, MinPerStat},
+                {StatType.CON, MinPerStat},
+                {StatType.INT, MinPerStat},
+                {StatType.MAG, MinPerStat},
+                {StatType.CHA, MinPerStat},
             };
 
             double totalPriority = 0d;
-            foreach (RankPriority statPriority in _statPriorities.Values)
+            foreach (RankPriority statPriority in Priorities.Values)
             {
                 totalPriority += Constants.PRIORITY_WEIGHT[statPriority];
             }
 
-            for (int i = 0; i < _statTotal; i++)
+            uint totalToAdd = Total - MinPerStat * 6;
+            for (int i = 0; i < totalToAdd; i++)
             {
                 double randVal = random.NextDouble() * totalPriority;
-                foreach (var priorityKvp in _statPriorities)
+                foreach (var priorityKvp in Priorities)
                 {
                     randVal -= Constants.PRIORITY_WEIGHT[priorityKvp.Value];
                     if (randVal <= 0)

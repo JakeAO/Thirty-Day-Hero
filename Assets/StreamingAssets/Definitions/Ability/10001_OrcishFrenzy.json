@@ -1,0 +1,76 @@
+{
+  "Id": 10001,
+  "Name": "Orcish Frenzy",
+  "Desc": "A frenzied chant that emboldens the Orc.",
+  "Speed": 10,
+  "Requirements": {
+    "$type": "Core.Requirements.CriticalHealthRequirement, SadPumpkin.Games.ThirtyDayHero.Core"
+  },
+  "Cost": {
+    "$type": "Core.Costs.StatCost, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Type": 3,
+    "Amount": 5
+  },
+  "Target": {
+    "$type": "SadPumpkin.Util.CombatEngine.TargetCalculators.SelfTargetCalculator, CombatEngine"
+  },
+  "Effect": {
+    "$type": "Core.Effects.CombinedEffect, SadPumpkin.Games.ThirtyDayHero.Core",
+    "ChildEffects": [
+      {
+        "$type": "Core.Effects.StatEffect, SadPumpkin.Games.ThirtyDayHero.Core",
+        "Stat": 5,
+        "EffectType": 0,
+        "BaseAmount": 0,
+        "VariableAmount": 10,
+        "ScalingStat": 0,
+        "ScalingRank": 0
+      },
+      {
+        "$type": "Core.Effects.StatEffect, SadPumpkin.Games.ThirtyDayHero.Core",
+        "Stat": 6,
+        "EffectType": 0,
+        "BaseAmount": 0,
+        "VariableAmount": 10,
+        "ScalingStat": 0,
+        "ScalingRank": 0
+      },
+      {
+        "$type": "Core.Effects.StatEffect, SadPumpkin.Games.ThirtyDayHero.Core",
+        "Stat": 7,
+        "EffectType": 0,
+        "BaseAmount": 0,
+        "VariableAmount": 10,
+        "ScalingStat": 0,
+        "ScalingRank": 0
+      },
+      {
+        "$type": "Core.Effects.StatEffect, SadPumpkin.Games.ThirtyDayHero.Core",
+        "Stat": 8,
+        "EffectType": 0,
+        "BaseAmount": 0,
+        "VariableAmount": -10,
+        "ScalingStat": 0,
+        "ScalingRank": 0
+      },
+      {
+        "$type": "Core.Effects.StatEffect, SadPumpkin.Games.ThirtyDayHero.Core",
+        "Stat": 9,
+        "EffectType": 0,
+        "BaseAmount": 0,
+        "VariableAmount": -10,
+        "ScalingStat": 0,
+        "ScalingRank": 0
+      },
+      {
+        "$type": "Core.Effects.StatEffect, SadPumpkin.Games.ThirtyDayHero.Core",
+        "Stat": 10,
+        "EffectType": 0,
+        "BaseAmount": 0,
+        "VariableAmount": -10,
+        "ScalingStat": 0,
+        "ScalingRank": 0
+      }
+    ]
+  }
+}

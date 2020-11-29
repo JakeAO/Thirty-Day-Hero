@@ -1,0 +1,15 @@
+{
+  "Id": 202,
+  "Name": "Large Stamina Potion",
+  "Desc": "A large bottle containing bluish fluid.",
+  "ArtPath": "Assets/Art/Items/item/consumable/consumable_99.png",
+  "BaseValue": 150,
+  "Rarity": 1,
+  "ItemType": 8,
+  "AddedAbilities": {
+    "$type": "System.Collections.Generic.List`1[[Core.Abilities.IAbility, SadPumpkin.Games.ThirtyDayHero.Core]], mscorlib",
+    "$values": [
+      20005
+    ]
+  }
+}

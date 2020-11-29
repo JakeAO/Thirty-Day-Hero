@@ -1,7 +1,7 @@
 {
-  "Id": 123,
-  "Name": "Mega Punch",
-  "Desc": "A mega punch.",
+  "Id": 10002,
+  "Name": "Chain Lightning",
+  "Desc": "An orcish magic crafting summons powerful bolts of arcing electricity.",
   "Speed": 100,
   "Requirements": {
     "$type": "SadPumpkin.Util.CombatEngine.RequirementCalculators.NoRequirements, CombatEngine"
@@ -9,18 +9,18 @@
   "Cost": {
     "$type": "Core.Costs.StatCost, SadPumpkin.Games.ThirtyDayHero.Core",
     "Type": 3,
-    "Amount": 10
+    "Amount": 25
   },
   "Target": {
-    "$type": "SadPumpkin.Util.CombatEngine.TargetCalculators.SingleEnemyTargetCalculator, CombatEngine"
+    "$type": "SadPumpkin.Util.CombatEngine.TargetCalculators.AllEnemyTargetCalculator, CombatEngine"
   },
   "Effect": {
     "$type": "Core.Effects.StatEffect, SadPumpkin.Games.ThirtyDayHero.Core",
     "Stat": 1,
-    "EffectType": 0,
-    "BaseAmount": -10,
-    "VariableAmount": -5,
-    "ScalingStat": 5,
+    "EffectType": 8,
+    "BaseAmount": 0,
+    "VariableAmount": -25,
+    "ScalingStat": 9,
     "ScalingRank": 1
   }
 }

@@ -6,14 +6,12 @@ using Core.Classes.Player;
 using Core.EquipMap;
 using Core.Etc;
 using Core.StatMap;
-using SadPumpkin.Util.TrackableIds;
 
 namespace Core.Actors
 {
     public static class ActorUtil
     {
         private static readonly Random RANDOM = new Random();
-        private static readonly UintGenerator ID_GENERATOR = new UintGenerator(10000);
 
         public static EnemyCharacter CreateEnemy(
             uint partyId,
@@ -28,7 +26,7 @@ namespace Core.Actors
             }
 
             return new EnemyCharacter(
-                ID_GENERATOR.GetNext(), 
+                (uint) Guid.NewGuid().GetHashCode(),
                 partyId,
                 enemyClass.NameGenerator.GetName(),
                 enemyClass,
@@ -50,7 +48,7 @@ namespace Core.Actors
             IEquipMap equipment = playerClass.StartingEquipment.Generate(RANDOM);
 
             return new PlayerCharacter(
-                ID_GENERATOR.GetNext(), 
+                (uint) Guid.NewGuid().GetHashCode(),
                 partyId,
                 playerClass.NameGenerator.GetName(),
                 playerClass,

@@ -1,0 +1,27 @@
+{
+  "Id": 300,
+  "Name": "Thrust",
+  "Desc": "A well-timed thrust gouges into your opponent's meats.",
+  "Speed": 100,
+  "Requirements": {
+    "$type": "Core.Requirements.EquippedWeaponRequirement, SadPumpkin.Games.ThirtyDayHero.Core",
+    "RequiredType": 17
+  },
+  "Cost": {
+    "$type": "Core.Costs.StatCost, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Type": 3,
+    "Amount": 10
+  },
+  "Target": {
+    "$type": "SadPumpkin.Util.CombatEngine.TargetCalculators.SingleEnemyTargetCalculator, CombatEngine"
+  },
+  "Effect": {
+    "$type": "Core.Effects.StatEffect, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Stat": 1,
+    "EffectType": 1,
+    "BaseAmount": -5,
+    "VariableAmount": -30,
+    "ScalingStat": 5,
+    "ScalingRank": 3
+  }
+}

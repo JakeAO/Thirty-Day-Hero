@@ -1,0 +1,24 @@
+{
+  "Id": 6,
+  "Name": "Attack (DEX)",
+  "Desc": "A standard weapon attack.",
+  "Speed": 100,
+  "Requirements": {
+    "$type": "SadPumpkin.Util.CombatEngine.RequirementCalculators.NoRequirements, CombatEngine"
+  },
+  "Cost": {
+    "$type": "SadPumpkin.Util.CombatEngine.CostCalculators.NoCost, CombatEngine"
+  },
+  "Target": {
+    "$type": "SadPumpkin.Util.CombatEngine.TargetCalculators.SingleEnemyTargetCalculator, CombatEngine"
+  },
+  "Effect": {
+    "$type": "Core.Effects.StatEffect, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Stat": 1,
+    "EffectType": 1,
+    "BaseAmount": -12,
+    "VariableAmount": -24,
+    "ScalingStat": 6,
+    "ScalingRank": 3
+  }
+}

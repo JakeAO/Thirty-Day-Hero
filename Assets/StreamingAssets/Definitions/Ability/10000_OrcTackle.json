@@ -1,0 +1,26 @@
+{
+  "Id": 10000,
+  "Name": "Orc Tackle",
+  "Desc": "A powerful diving tackle.",
+  "Speed": 150,
+  "Requirements": {
+    "$type": "SadPumpkin.Util.CombatEngine.RequirementCalculators.NoRequirements, CombatEngine"
+  },
+  "Cost": {
+    "$type": "Core.Costs.StatCost, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Type": 3,
+    "Amount": 15
+  },
+  "Target": {
+    "$type": "SadPumpkin.Util.CombatEngine.TargetCalculators.SingleEnemyTargetCalculator, CombatEngine"
+  },
+  "Effect": {
+    "$type": "Core.Effects.StatEffect, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Stat": 1,
+    "EffectType": 1,
+    "BaseAmount": -10,
+    "VariableAmount": -20,
+    "ScalingStat": 5,
+    "ScalingRank": 1
+  }
+}

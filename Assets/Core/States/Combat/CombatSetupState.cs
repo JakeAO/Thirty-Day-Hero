@@ -42,7 +42,7 @@ namespace Core.States.Combat
                     partyDataWrapper.Characters),
                 new Party.Party(
                     enemyPartyId,
-                    null,
+                    new RandomCharacterController(), 
                     enemies)
             };
 

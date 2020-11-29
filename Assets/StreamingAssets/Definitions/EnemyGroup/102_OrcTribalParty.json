@@ -1,0 +1,10 @@
+{
+  "Id": 102,
+  "Name": "Orc Tribal Party",
+  "Desc": "A gathering of orcish tribal leaders.",
+  "Rarity": 3,
+  "EnemyTypes": [
+    101,
+    102
+  ]
+}

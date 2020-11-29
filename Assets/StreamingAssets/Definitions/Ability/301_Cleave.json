@@ -1,0 +1,27 @@
+{
+  "Id": 301,
+  "Name": "Cleave",
+  "Desc": "Take a wild swing and cleave through the enemy lines.",
+  "Speed": 120,
+  "Requirements": {
+    "$type": "Core.Requirements.EquippedWeaponRequirement, SadPumpkin.Games.ThirtyDayHero.Core",
+    "RequiredType": 15
+  },
+  "Cost": {
+    "$type": "Core.Costs.StatCost, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Type": 3,
+    "Amount": 25
+  },
+  "Target": {
+    "$type": "SadPumpkin.Util.CombatEngine.TargetCalculators.AllEnemyTargetCalculator, CombatEngine"
+  },
+  "Effect": {
+    "$type": "Core.Effects.StatEffect, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Stat": 1,
+    "EffectType": 1,
+    "BaseAmount": -20,
+    "VariableAmount": -30,
+    "ScalingStat": 5,
+    "ScalingRank": 1
+  }
+}

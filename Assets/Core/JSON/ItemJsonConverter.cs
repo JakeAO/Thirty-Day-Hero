@@ -46,23 +46,46 @@ namespace Core.JSON
                 serializer.Converters.Add(this);
                 return item;
             }
+
+            // We're reading a reference to the object.
+            uint id;
+
+            if (reader.TokenType == JsonToken.Integer &&
+                Convert.ToUInt32(reader.Value) is uint uintValue)
+            {
+                id = uintValue;
+            }
+            else if (reader.TokenType == JsonToken.String &&
+                     reader.Value is string stringValue &&
+                     uint.TryParse(stringValue, out uintValue))
+            {
+                id = uintValue;
+            }
+            else if (reader.TokenType == JsonToken.Null ||
+                     reader.TokenType == JsonToken.String &&
+                     reader.Value == null)
+            {
+                return null;
+            }
             else
             {
-                // We're reading a reference to the object.
-                uint id = Convert.ToUInt32(reader?.Value ?? 0);
-
-                if (typeof(IWeapon).IsAssignableFrom(objectType))
-                {
-                    return _weaponDatabase.GetSpecific(id);
-                }
-
-                if (typeof(IArmor).IsAssignableFrom(objectType))
-                {
-                    return _armorDatabase.GetSpecific(id);
-                }
-
-                return _itemDatabase.GetSpecific(id);
+                throw new ArgumentException($"Invalid JSON provided to ItemJsonConverter: [{reader.TokenType}] {reader.Value}");
             }
+
+            if (objectType.IsAssignableFrom(typeof(IWeapon)))
+            {
+                IWeapon result = _weaponDatabase.GetSpecific(id);
+                if (result != null)
+                    return result;
+            }
+            if (objectType.IsAssignableFrom(typeof(IArmor)))
+            {
+                IArmor result = _armorDatabase.GetSpecific(id);
+                if (result != null)
+                    return result;
+            }
+            
+            return _itemDatabase.GetSpecific(id);
         }
     }
 }

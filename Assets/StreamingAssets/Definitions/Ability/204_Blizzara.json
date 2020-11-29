@@ -1,0 +1,26 @@
+{
+  "Id": 204,
+  "Name": "Blizzara",
+  "Desc": "A hail of snow and ice blasts your enemy.",
+  "Speed": 100,
+  "Requirements": {
+    "$type": "SadPumpkin.Util.CombatEngine.RequirementCalculators.NoRequirements, CombatEngine"
+  },
+  "Cost": {
+    "$type": "Core.Costs.StatCost, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Type": 3,
+    "Amount": 15
+  },
+  "Target": {
+    "$type": "SadPumpkin.Util.CombatEngine.TargetCalculators.SingleEnemyTargetCalculator, CombatEngine"
+  },
+  "Effect": {
+    "$type": "Core.Effects.StatEffect, SadPumpkin.Games.ThirtyDayHero.Core",
+    "Stat": 1,
+    "EffectType": 4,
+    "BaseAmount": -20,
+    "VariableAmount": -20,
+    "ScalingStat": 9,
+    "ScalingRank": 2
+  }
+}

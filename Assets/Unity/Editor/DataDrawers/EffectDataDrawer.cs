@@ -36,6 +36,37 @@ namespace Unity.Editor.DataDrawers
                         statEffect.ScalingRank = (RankPriority) EditorGUILayout.EnumPopup("Scaling Rank:", statEffect.ScalingRank);
                         break;
                     }
+                    case CombinedEffect combinedEffect:
+                    {
+                        for (int i = 0; i < combinedEffect.ChildEffects.Count; i++)
+                        {
+                            IEffectCalc childEffect = combinedEffect.ChildEffects[i];
+                            
+                            GUILayout.BeginHorizontal();
+                            int cacheIndex = i;
+                            DrawGUI(childEffect, context, newChild => combinedEffect.ChildEffects[cacheIndex] = newChild);
+                            GUI.color = Color.red;
+                            if (GUILayout.Button("X", GUILayout.ExpandWidth(false)))
+                            {
+                                combinedEffect.ChildEffects.RemoveAt(i);
+                                i--;
+                            }
+                            GUI.color = Color.white;
+                            GUILayout.EndHorizontal();
+                        }
+
+                        GUILayout.BeginHorizontal();
+                        GUILayout.FlexibleSpace();
+                        GUI.color = Color.green;
+                        if (GUILayout.Button("+", GUILayout.ExpandWidth(false)))
+                        {
+                            combinedEffect.ChildEffects.Add(new NoEffect());
+                        }
+                        GUI.color = Color.white;
+                        GUILayout.EndHorizontal();
+                        
+                        break;
+                    }
                     case NoEffect noEffect:
                     {
                         EditorGUILayout.HelpBox(

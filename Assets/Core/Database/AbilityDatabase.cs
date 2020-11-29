@@ -33,11 +33,6 @@ namespace Core.Database
                 }
             }
 
-            if (data.Count == 0)
-            {
-                data.AddRange(HackDefinitions.Get());
-            }
-
             return new AbilityDatabase(data);
         }
 
@@ -63,24 +58,9 @@ namespace Core.Database
                 : null;
         }
 
-        private static class HackDefinitions
+        public IEnumerable<IAbility> EnumerateAll()
         {
-            public static IEnumerable<IAbility> Get()
-            {
-                yield return
-                    new Ability(
-                        Constants.ABILITY_ATTACK,
-                        "Attack",
-                        "Swing that sword.",
-                        100,
-                        NoRequirements.Instance,
-                        NoCost.Instance,
-                        SingleEnemyTargetCalculator.Instance,
-                        new StatEffect(
-                            StatType.HP,
-                            10,
-                            5));
-            }
+            return _allData.Values;
         }
     }
 }

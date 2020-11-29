@@ -1,0 +1,15 @@
+{
+  "Id": 102,
+  "Name": "Large Health Potion",
+  "Desc": "A large potion containing red fluid.",
+  "ArtPath": "Assets/Art/Items/item/consumable/consumable_98.png",
+  "BaseValue": 125,
+  "Rarity": 1,
+  "ItemType": 8,
+  "AddedAbilities": {
+    "$type": "System.Collections.Generic.List`1[[Core.Abilities.IAbility, SadPumpkin.Games.ThirtyDayHero.Core]], mscorlib",
+    "$values": [
+      20002
+    ]
+  }
+}

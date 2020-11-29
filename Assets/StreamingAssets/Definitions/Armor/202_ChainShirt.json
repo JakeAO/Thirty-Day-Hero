@@ -1,0 +1,14 @@
+{
+  "Id": 202,
+  "Name": "Chain Shirt",
+  "Desc": "A shirt made of interlocking metal rings.",
+  "ArtPath": "Assets/Art/Items/armor/medium/chest_21.png",
+  "BaseValue": 200,
+  "Rarity": 1,
+  "ItemType": 2,
+  "ArmorType": 2,
+  "DamageModifiers": {
+    "$type": "System.Collections.Generic.Dictionary`2[[Core.Etc.DamageType, SadPumpkin.Games.ThirtyDayHero.Core],[System.Single, mscorlib]], mscorlib",
+    "Normal": 0.75
+  }
+}
