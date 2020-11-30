@@ -10,8 +10,8 @@ namespace Core.StatMap
         {
         }
         
-        public uint this[StatType statType] => 0u;
-        public uint GetStat(StatType statType) => 0u;
+        public uint this[StatType statType] => 1u;
+        public uint GetStat(StatType statType) => 1u;
 
         public void ModifyStat(StatType statType, int change)
         {

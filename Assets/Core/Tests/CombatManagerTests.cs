@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Core.Actors;
 using Core.Actors.Enemy;
 using Core.Classes.Enemy;
@@ -64,6 +63,34 @@ public class CombatManagerTests
             null);
 
         Task.Run(() => combatManager.Start(false));
+        
+        Assert.Pass();
+    }
+
+    [Test]
+    public void can_start_auto_thread()
+    {
+        CombatManager combatManager = new CombatManager(
+            new[]
+            {
+                new Party(1,
+                    new RandomCharacterController(),
+                    new ICharacterActor[]
+                    {
+                        new EnemyCharacter(10, 1, "Geoff", NullEnemyClass.Instance, NullStatMap.Instance),
+                    }),
+                new Party(2,
+                    new RandomCharacterController(),
+                    new ICharacterActor[]
+                    {
+                        new EnemyCharacter(11, 2, "Jeff", NullEnemyClass.Instance, NullStatMap.Instance),
+                    }),
+            },
+            new NullStandardActionGenerator(),
+            null,
+            null);
+        
+        combatManager.Start(true);
         
         Assert.Pass();
     }

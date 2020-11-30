@@ -3,6 +3,10 @@ using Core.Abilities;
 using Core.Etc;
 using Core.Naming;
 using Core.StatMap;
+using SadPumpkin.Util.CombatEngine.CostCalculators;
+using SadPumpkin.Util.CombatEngine.EffectCalculators;
+using SadPumpkin.Util.CombatEngine.RequirementCalculators;
+using SadPumpkin.Util.CombatEngine.TargetCalculators;
 
 namespace Core.Classes.Enemy
 {
@@ -27,7 +31,18 @@ namespace Core.Classes.Enemy
 
         public IReadOnlyCollection<IAbility> GetAllAbilities(uint level)
         {
-            return new IAbility[] { };
+            return new IAbility[]
+            {
+                new Ability(
+                    0u,
+                    "null",
+                    "null",
+                    100,
+                    NoRequirements.Instance,
+                    NoCost.Instance,
+                    new SelfTargetCalculator(),
+                    NoEffect.Instance),
+            };
         }
     }
 }
