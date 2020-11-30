@@ -26,7 +26,7 @@ namespace Core.States.Combat
         {
             PartyDataWrapper partyDataWrapper = SharedContext.Get<PartyDataWrapper>();
 
-            uint enemyPartyId = (uint)System.Guid.NewGuid().GetHashCode();
+            uint enemyPartyId = (uint) System.Guid.NewGuid().GetHashCode();
 
             List<EnemyCharacter> enemies = GenerateEnemies(partyDataWrapper, enemyPartyId);
             SetupEnemies(enemies);
@@ -42,7 +42,7 @@ namespace Core.States.Combat
                     partyDataWrapper.Characters),
                 new Party.Party(
                     enemyPartyId,
-                    new RandomCharacterController(), 
+                    new RandomCharacterController(),
                     enemies)
             };
 
