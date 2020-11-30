@@ -1,10 +1,12 @@
 ﻿using Core.Actors;
 using Core.Actors.Enemy;
 using Core.Actors.Player;
-using Core.CombatSettings;
 using Core.Etc;
 using Core.States.Combat;
 using Core.Wrappers;
+using SadPumpkin.Util.CombatEngine;
+using SadPumpkin.Util.CombatEngine.Actor;
+using SadPumpkin.Util.CombatEngine.GameState;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,13 +14,45 @@ namespace Unity.Scenes
 {
     public class CombatScene : SceneRootBase<CombatMainState>
     {
+        private IGameState _currentGameState => State.CurrentGameState;
+
         protected override void OnGUIContentForState()
         {
-            CombatSettings combatSettings = SharedContext.Get<CombatSettings>();
             PartyDataWrapper partyDataWrapper = SharedContext.Get<PartyDataWrapper>();
 
-            RenderEnemies(combatSettings.Enemies);
+            RenderInitiative(_currentGameState.InitiativeOrder);
+            RenderEnemies(State.Settings.Enemies);
             RenderPartyCharacters(partyDataWrapper.Characters);
+        }
+
+        private Vector2 _initiativeScroll = new Vector2(0, 0);
+        private void RenderInitiative(IEnumerable<IInitiativePair> initiativePairs)
+        {
+            GUILayout.Label("Initiative:");
+            
+            _initiativeScroll = GUILayout.BeginScrollView(_initiativeScroll, GUI.skin.box, GUILayout.Width(500));
+            {
+                GUILayout.BeginHorizontal();
+                {
+                    foreach (InitiativePair pair in initiativePairs)
+                    {
+                        TextAnchor prvAnchor = GUI.skin.label.alignment;
+                        GUI.skin.label.alignment = TextAnchor.MiddleCenter;
+
+                        GUILayout.BeginVertical(GUI.skin.box);
+                        {
+                            GUI.color = ActorColor(pair.Entity);
+                            GUILayout.Label(pair.Entity.Name, GUILayout.Height(40));
+                            GUI.color = Color.white;
+                        }
+                        GUILayout.EndVertical();
+
+                        GUI.skin.label.alignment = prvAnchor;
+                    }
+                }
+                GUILayout.EndHorizontal();
+            }
+            GUILayout.EndScrollView();
         }
 
         private void RenderEnemies(IEnumerable<IEnemyCharacterActor> enemies)
@@ -53,9 +87,11 @@ namespace Unity.Scenes
             GUI.color = Color.white;
         }
 
-        private UnityEngine.Color ActorColor(ICharacterActor actor)
+        private UnityEngine.Color ActorColor(IInitiativeActor actor)
         {
-            if(actor == State.ActivePlayer)
+            uint activeActorId = _currentGameState.ActiveActor != null ? _currentGameState.ActiveActor.Id : 0;
+
+            if (actor.Id == activeActorId)
             {
                 return Color.green;
             }

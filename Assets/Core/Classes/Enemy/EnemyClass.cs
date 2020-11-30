@@ -73,8 +73,7 @@ namespace Core.Classes.Enemy
 
     public class Dorp : IEnemyClass
     {
-        private const string name = "DORP";
-        public string Name => "DORP";
+        public string Name => "Dorp";
 
         public string Desc => "You're not sure it can be considered intelligent";
         public string ArtPath => "";
