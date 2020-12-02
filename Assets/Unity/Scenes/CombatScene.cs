@@ -105,7 +105,7 @@ namespace Unity.Scenes
 
         private void RenderActor(ICharacterActor actor)
         {
-            GUI.backgroundColor = ActorColor(actor);
+            GUI.color = ActorColor(actor);
             GUILayout.BeginVertical(GUI.skin.box);
             {
                 if (actor is IEnemyCharacterActor enemyActor &&
@@ -120,7 +120,7 @@ namespace Unity.Scenes
                 GUILayout.Label($"STA [{actor.Stats[StatType.STA]} / {actor.Stats[StatType.HP_Max]}]");
             }
             GUILayout.EndVertical();
-            GUI.backgroundColor = Color.white;
+            GUI.color = Color.white;
         }
 
         private Color ActorColor(IInitiativeActor actor)
