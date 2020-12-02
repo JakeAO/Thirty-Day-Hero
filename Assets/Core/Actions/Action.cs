@@ -19,6 +19,7 @@ namespace Core.Actions
         public ICostCalc Cost { get; set; }
         public IEffectCalc Effect { get; set; }
         public IIdTracked ActionSource { get; set; }
+        public IIdTracked ActionProvider { get; set; }
 
         public Action(
             uint id,
@@ -26,7 +27,8 @@ namespace Core.Actions
             IAbility ability,
             IInitiativeActor source,
             IReadOnlyCollection<ITargetableActor> targets,
-            IIdTracked actionSource)
+            IIdTracked actionSource,
+            IIdTracked actionProvider)
         {
             Id = id;
             Available = available;
@@ -37,6 +39,7 @@ namespace Core.Actions
             Cost = ability.Cost;
             Effect = ability.Effect;
             ActionSource = actionSource;
+            ActionProvider = actionProvider;
         }
     }
 }

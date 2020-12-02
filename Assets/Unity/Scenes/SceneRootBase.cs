@@ -75,11 +75,7 @@ namespace Unity.Scenes
 
                                             if (eventOption.Context != null)
                                             {
-                                                GUILayout.BeginVertical(GUI.skin.box);
-                                                {
-                                                    OnGUIContentForContext(eventOption.Context);
-                                                }
-                                                GUILayout.EndVertical();
+                                                OnGUIContentForContext(eventOption.Context);
                                             }
 
                                             if (!eventOption.Disabled)
@@ -87,7 +83,7 @@ namespace Unity.Scenes
                                                 GUI.color = Color.green;
                                             }
 
-                                            if (GUILayout.Button(eventOption.Text))
+                                            if (GUILayout.Button(GetGuiContentForOption(eventOption)))
                                             {
                                                 eventOption.SelectOption?.Invoke();
                                             }
@@ -129,10 +125,17 @@ namespace Unity.Scenes
         {
 
         }
-
+        
         protected virtual void OnGUIContentForContext(object context)
         {
 
+        }
+
+        protected virtual GUIContent GetGuiContentForOption(IEventOption option)
+        {
+            return new GUIContent(
+                option.Text,
+                option.Category);
         }
     }
 }

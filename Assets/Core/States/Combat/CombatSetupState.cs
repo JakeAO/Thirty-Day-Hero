@@ -1,15 +1,10 @@
+using System;
 using System.Collections.Generic;
-using Core.Actors;
-using Core.Actors.Enemy;
 using Core.CharacterControllers;
-using Core.Classes.Enemy;
-using Core.CombatSettings;
 using Core.EventOptions;
 using Core.Signals;
-using Core.StatMap;
 using Core.Wrappers;
 using SadPumpkin.Util.CombatEngine;
-using SadPumpkin.Util.CombatEngine.CharacterControllers;
 using SadPumpkin.Util.CombatEngine.Party;
 using SadPumpkin.Util.StateMachine;
 using SadPumpkin.Util.StateMachine.States;
@@ -18,71 +13,60 @@ namespace Core.States.Combat
 {
     public class CombatSetupState : TDHStateBase
     {
-        private IStateMachine _stateMachine = null;
+        public readonly CombatSettings.CombatSettings CombatSettings = null;
+
         private PartyDataWrapper _partyDataWrapper = null;
 
-        public override IEnumerable<IEventOption> GetOptions()
+        private CombatManager _combatManager = null;
+        private PlayerCharacterController _playerController = null;
+
+        public CombatSetupState(CombatSettings.CombatSettings combatSettings)
         {
-            yield return new EventOption("Begin Fight", GoToCombatMain);
+            CombatSettings = combatSettings;
         }
 
         public override void OnEnter(IState fromState)
         {
-            _stateMachine = SharedContext.Get<IStateMachine>();
-            if(_stateMachine == null)
-                throw new System.ArgumentException("Entered CombatSetupState without setting IStateMachine in Context!");
-
             _partyDataWrapper = SharedContext.Get<PartyDataWrapper>();
             if (_partyDataWrapper == null)
-                throw new System.ArgumentException("Entered CombatSetupState without setting PartyDataWrapper in Context!");
+                throw new ArgumentException("Entered CombatSetupState without setting PartyDataWrapper in Context!");
         }
 
-        private void GoToCombatMain()
+        public override void OnContent()
         {
-            uint enemyPartyId = (uint) System.Guid.NewGuid().GetHashCode();
+            // Create Player Party
+            _playerController = new PlayerCharacterController(_partyDataWrapper, SharedContext.Get<ActiveCharacterChangedSignal>());
+            IParty playerParty = new Party.Party(
+                _partyDataWrapper.PartyId,
+                _playerController,
+                _partyDataWrapper.Characters);
 
-            List<EnemyCharacter> enemies = GenerateEnemies(_partyDataWrapper, enemyPartyId);
-            SetupEnemies(enemies);
+            // Create Enemy Party
+            IParty enemyParty = new Party.Party(
+                CombatSettings.EnemyPartyId,
+                CombatSettings.Controller,
+                CombatSettings.Enemies);
 
-            PlayerCharacterController playerCharacterController = new PlayerCharacterController(_partyDataWrapper, SharedContext.Get<ActiveCharacterChangedSignal>());
-
-            CombatSettings.CombatSettings combatSettings = new CombatSettings.CombatSettings(enemies, playerCharacterController);
-
-            IParty[] parties = new IParty[2]
-            {
-                new Party.Party(
-                    _partyDataWrapper.PartyId,
-                    playerCharacterController,
-                    _partyDataWrapper.Characters),
-                new Party.Party(
-                    enemyPartyId,
-                    new RandomCharacterController(), 
-                    enemies)
-            };
-
-            CombatManager combatManager = new CombatManager(
-                parties,
+            // Create CombatManager
+            _combatManager = new CombatManager(
+                new[] {playerParty, enemyParty},
                 new Actions.StandardActionGenerator(),
-                playerCharacterController.GameStateUpdatedSignal,
-                playerCharacterController.CombatCompleteSignal);
-
-            CombatMainState combatState = new CombatMainState(combatManager, combatSettings, playerCharacterController, _stateMachine);
-
-            SharedContext.Get<IStateMachine>().ChangeState(combatState);
+                _playerController.GameStateUpdatedSignal,
+                _playerController.CombatCompleteSignal);
         }
 
-        private List<EnemyCharacter> GenerateEnemies(PartyDataWrapper partyDataWrapper, uint partyId)
+        public override IEnumerable<IEventOption> GetOptions()
         {
-            EnemyGroupWrapper debugEnemyGroup = new EnemyGroupWrapper(0, Etc.RarityCategory.Common, new Dorp());
-
-            IReadOnlyCollection<IEnemyClass> enemyClasses = CombatSettingsGenerator.EnemyClassFromGroup(debugEnemyGroup, Etc.CombatDifficulty.Easy, partyDataWrapper);
-            return CombatSettingsGenerator.GenerateEnemies(enemyClasses, partyId);
+            yield return new EventOption("Begin Combat", BeginCombat);
         }
 
-        private void SetupEnemies(List<EnemyCharacter> enemies)
+        private void BeginCombat()
         {
-            //TODO: Address Combat Difficulty
-            //CombatSettingsGenerator.SetEnemyDifficulty(Etc.CombatDifficulty.Easy, partyDataWrapper, enemyCharacters);
+            SharedContext.Get<IStateMachine>().ChangeState(
+                new CombatMainState(
+                    _combatManager,
+                    CombatSettings,
+                    _playerController));
         }
     }
 }

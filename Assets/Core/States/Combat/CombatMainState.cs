@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Core.CharacterControllers;
 using Core.Etc;
 using Core.EventOptions;
@@ -15,7 +16,8 @@ namespace Core.States.Combat
     {
         private readonly CombatManager _combatManager = null;
         private readonly PlayerCharacterController _controller = null;
-        private readonly IStateMachine _stateMachine = null;
+        
+        private IStateMachine _stateMachine = null;
 
         public CombatSettings.CombatSettings Settings { get; private set; }
 
@@ -25,19 +27,18 @@ namespace Core.States.Combat
         public CombatMainState(
             CombatManager combatManager,
             CombatSettings.CombatSettings settings,
-            PlayerCharacterController controller,
-            IStateMachine stateMachine)
+            PlayerCharacterController controller)
         {
             _combatManager = combatManager;
             Settings = settings;
             _controller = controller;
-            _stateMachine = stateMachine;
 
             CurrentGameState = _combatManager.CurrentGameState;
         }
 
         public override void OnEnter(IState fromState)
         {
+            _stateMachine = SharedContext.Get<IStateMachine>();
             _combatManager.GameStateUpdated.Listen(OnGamestateUpdated);
             _combatManager.CombatComplete.Listen(OnCombatComplete);
         }
@@ -63,22 +64,13 @@ namespace Core.States.Combat
             GoToCombatEnd();
         }
 
-        private Dictionary<uint, IAction> _tmpActions = new Dictionary<uint, IAction>();
         public override IEnumerable<IEventOption> GetOptions()
         {
             const string ACTION_CATEGORY_DEBUG = "Debug";
-            const string ACTION_CATEGORY_PLAYER = "Actions";
 
-            if(_controller != null && _controller.AvailableActions != null)
+            if (_controller != null && _controller.AvailableActions != null)
             {
-                _tmpActions.Clear();
-
-                foreach(var kvp in _controller.AvailableActions)
-                {
-                    _tmpActions[kvp.Key] = kvp.Value;
-                }
-
-                foreach (var kvp in _tmpActions)
+                foreach (var kvp in _controller.AvailableActions)
                 {
                     IAction action = kvp.Value;
 
@@ -87,7 +79,8 @@ namespace Core.States.Combat
                         yield return new EventOption(
                             GetActionTextFromAction(action),
                             () => OnActionSelected(action),
-                            ACTION_CATEGORY_PLAYER);
+                            (action.ActionProvider as INamed)?.Name ?? "Other",
+                            context: action);
                     }
                 }
             }
@@ -104,16 +97,16 @@ namespace Core.States.Combat
 
         private string GetActionTextFromAction(IAction action)
         {
-            if(action is INamed named)
+            if (action?.ActionSource is INamed named)
             {
-                return named.Name;
+                return $"{named.Name}: {string.Join(", ", action.Targets.Select(x => x.Name))}";
             }
             else
             {
-                return $"ACTION ID {action.Id}";
+                return $"ACTION {action.Id}: {string.Join(", ", action.Targets.Select(x => x.Name))}";
             }
         }
-
+        
         private void OnActionSelected(IAction action)
         {
             _controller.SubmitActionResponse(action.Id);

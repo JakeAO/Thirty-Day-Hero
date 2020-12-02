@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Core.CombatSettings;
 using Core.Etc;
 using Core.EventOptions;
 using Core.States.Combat;
@@ -47,16 +48,20 @@ namespace Core.States
                 GoToPatrol,
                 priority: 2);
             yield return new EventOption(
+                "Face the Calamity EARLY",
+                GoToCalamity,
+                priority: 3);
+            yield return new EventOption(
                 "Search Area (Encounter)",
                 GoToEncounter,
-                priority: 3);
+                priority: 4);
         }
 
         private void GoToRest()
         {
             SharedContext.Get<IStateMachine>().ChangeState<RestState>();
         }
-        
+
         private void GoToTownHub()
         {
             SharedContext.Get<IStateMachine>().ChangeState<TownHubState>();
@@ -74,7 +79,11 @@ namespace Core.States
 
         private void GoToCalamity()
         {
-            SharedContext.Get<IStateMachine>().ChangeState<CombatSetupState>();
+            SharedContext.Get<IStateMachine>().ChangeState(
+                new CombatSetupState(
+                    SharedContext.Get<CombatSettingsGenerator>().CreateFromEnemies(
+                        PartyData.Calamity.Party,
+                        new[] {PartyData.Calamity})));
         }
     }
 }

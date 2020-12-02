@@ -31,24 +31,35 @@ namespace Core.Wrappers
             Id = id;
             Rarity = rarity;
             EnemyTypes = new List<IEnemyClass>(enemyClasses);
-            
-            List<ILootEntry> lootEntries = new List<ILootEntry>(enemyClasses.Length);
-            foreach (IEnemyClass enemyClass in enemyClasses)
+        }
+
+        private LootTable GetTable()
+        {
+            if (_lootTable == null ||
+                _lootTable.Entries.Count != EnemyTypes.Count)
             {
-                lootEntries.Add(new ValueLootEntry<IEnemyClass>(
-                    enemyClass,
-                    Constants.RARITY_WEIGHT[enemyClass.Rarity]));
+                List<ILootEntry> lootEntries = new List<ILootEntry>(EnemyTypes.Count);
+                foreach (IEnemyClass enemyClass in EnemyTypes)
+                {
+                    lootEntries.Add(new ValueLootEntry<IEnemyClass>(
+                        enemyClass,
+                        Constants.RARITY_WEIGHT[enemyClass.Rarity]));
+                }
+
+                _lootTable = new LootTable(1, lootEntries);
             }
 
-            _lootTable = new LootTable(3, lootEntries);
+            return _lootTable;
         }
 
         public IReadOnlyCollection<IEnemyClass> GetEnemyClasses(int count)
         {
             List<IEnemyClass> results = new List<IEnemyClass>(count);
 
-            _lootTable.Count = count;
-            IReadOnlyCollection<ILootEntry> lootResults = _lootTable.GetLoot();
+            LootTable lootTable = GetTable();
+            lootTable.Count = count;
+
+            IReadOnlyCollection<ILootEntry> lootResults = lootTable.GetLoot();
             foreach (ILootEntry lootEntry in lootResults)
             {
                 if (lootEntry is IValueLootEntry<IEnemyClass> enemyEntry)

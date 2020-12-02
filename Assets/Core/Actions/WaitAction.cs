@@ -8,11 +8,13 @@ using SadPumpkin.Util.CombatEngine.EffectCalculators;
 
 namespace Core.Actions
 {
-    public class WaitAction : IAction
+    public class WaitAction : IAction, INamed, IIdTracked
     {
         private static readonly IReadOnlyCollection<ITargetableActor> NoTargets = new ITargetableActor[0];
 
         public uint Id { get; } = Constants.ACTION_WAIT;
+        public string Name { get; } = "Wait";
+        public string Desc { get; } = "Take no action.";
         public bool Available { get; } = true;
         public IInitiativeActor Source { get; }
         public IReadOnlyCollection<ITargetableActor> Targets { get; } = NoTargets;
@@ -20,13 +22,14 @@ namespace Core.Actions
         public uint Speed { get; } = 50u;
         public ICostCalc Cost { get; } = NoCost.Instance;
         public IEffectCalc Effect { get; } = NoEffect.Instance;
-        
-        public IIdTracked ActionSource { get; }
+
+        public IIdTracked ActionSource { get; } = null;
+        public IIdTracked ActionProvider { get; } = null;
 
         public WaitAction(IInitiativeActor actor)
         {
             Source = actor;
-            ActionSource = null;
+            ActionSource = this;
         }
     }
 }

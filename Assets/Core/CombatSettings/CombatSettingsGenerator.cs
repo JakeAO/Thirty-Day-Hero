@@ -21,17 +21,18 @@ namespace Core.CombatSettings
             _enemyGroupDatabase = enemyGroupDatabase;
         }
 
-        public CombatSettings CreateFromEnemies(IReadOnlyCollection<IEnemyCharacterActor> enemies)
+        public CombatSettings CreateFromEnemies(uint partyId, IReadOnlyCollection<IEnemyCharacterActor> enemies)
         {
-            return new CombatSettings(enemies, new RandomCharacterController());
+            return new CombatSettings(partyId, enemies, new RandomCharacterController());
         }
 
         public CombatSettings CreateFromEnemyTypes(IReadOnlyCollection<IEnemyClass> enemyTypes, CombatDifficulty difficulty, PartyDataWrapper playerParty)
         {
-            List<EnemyCharacter> enemies = GenerateEnemies(enemyTypes, (uint)Guid.NewGuid().GetHashCode());
+            uint partyId = (uint) Guid.NewGuid().GetHashCode();
+            List<EnemyCharacter> enemies = GenerateEnemies(enemyTypes, partyId);
             SetEnemyDifficulty(difficulty, playerParty, enemies);
 
-            return CreateFromEnemies(enemies);
+            return CreateFromEnemies(partyId, enemies);
         }
 
         public CombatSettings CreateFromEnemyGroup(EnemyGroupWrapper enemyGroup, CombatDifficulty difficulty, PartyDataWrapper playerParty)
@@ -50,7 +51,7 @@ namespace Core.CombatSettings
                 playerParty);
         }
 
-        public static IReadOnlyCollection<IEnemyClass> EnemyClassFromGroup(EnemyGroupWrapper enemyGroup, CombatDifficulty difficulty, PartyDataWrapper playerParty)
+        private static IReadOnlyCollection<IEnemyClass> EnemyClassFromGroup(EnemyGroupWrapper enemyGroup, CombatDifficulty difficulty, PartyDataWrapper playerParty)
         {
             int enemyCount = 1;
             switch (difficulty)
@@ -70,7 +71,7 @@ namespace Core.CombatSettings
             return enemyTypes;
         }
 
-        public static List<EnemyCharacter> GenerateEnemies(IReadOnlyCollection<IEnemyClass> enemyTypes, uint partyId)
+        private static List<EnemyCharacter> GenerateEnemies(IReadOnlyCollection<IEnemyClass> enemyTypes, uint partyId)
         {
             List<EnemyCharacter> enemies = new List<EnemyCharacter>(enemyTypes.Count);
             foreach (IEnemyClass enemyDefinition in enemyTypes)
@@ -84,7 +85,7 @@ namespace Core.CombatSettings
             return enemies;
         }
 
-        public static void SetEnemyDifficulty(CombatDifficulty difficulty, PartyDataWrapper playerParty, List<EnemyCharacter> enemies)
+        private static void SetEnemyDifficulty(CombatDifficulty difficulty, PartyDataWrapper playerParty, List<EnemyCharacter> enemies)
         {
             uint GetStatTotal(IReadOnlyCollection<ICharacterActor> actors)
             {

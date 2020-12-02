@@ -1,4 +1,7 @@
+using Core.Actors.Enemy;
+using Core.Etc;
 using Core.States.Combat;
+using UnityEngine;
 
 namespace Unity.Scenes
 {
@@ -6,11 +9,16 @@ namespace Unity.Scenes
     {
         protected override void OnGUIContentForState()
         {
-            //CombatSettings combatSettings = SharedContext.Get<CombatSettings>();
-            //PartyDataWrapper partyDataWrapper = SharedContext.Get<PartyDataWrapper>();
-
-            //RenderEnemies(combatSettings != null ? combatSettings.Enemies : null);
-            //RenderPartyCharacters(partyDataWrapper.Characters);
+            GUILayout.Label("Enemy Party", new GUIStyle(GUI.skin.label) {fontStyle = FontStyle.Bold});
+            GUILayout.BeginVertical(GUI.skin.box);
+            {
+                foreach (IEnemyCharacterActor enemy in State.CombatSettings.Enemies)
+                {
+                    GUILayout.Label(enemy.Name, new GUIStyle(GUI.skin.label) {fontStyle = FontStyle.Bold});
+                    GUILayout.Label($"Lvl {enemy.Stats[StatType.LVL]} {enemy.Class.Name}");
+                }
+            }
+            GUILayout.EndVertical();
         }
     }
 }

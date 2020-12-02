@@ -47,14 +47,14 @@ namespace Core.JSON
             {
                 // We're reading a reference to the object.
                 uint id = Convert.ToUInt32(reader?.Value ?? 0);
-                if (objectType.IsAssignableFrom(typeof(ICalamityClass)))
+                if (typeof(ICalamityClass).IsAssignableFrom(objectType))
                 {
-                    ICalamityClass result = _calamityDatabase.GetSpecific(id);
-                    if (result != null)
-                        return result;
+                    return _calamityDatabase.GetSpecific(id);
                 }
-
-                return _enemyDatabase.GetSpecific(id);
+                else
+                {
+                    return _enemyDatabase.GetSpecific(id);
+                }
             }
         }
     }

@@ -14,18 +14,18 @@ namespace Core.Actions
 
         public static IReadOnlyCollection<IAction> GetActionsFromAbility(
             IInitiativeActor sourceActor,
-            IIdTracked actionSource,
+            IIdTracked actionProvider,
             IAbility ability,
             IReadOnlyCollection<ITargetableActor> possibleTargets)
         {
             List<IAction> actions = new List<IAction>();
             if (sourceActor != null &&
-                actionSource != null &&
+                actionProvider != null &&
                 ability != null &&
                 possibleTargets != null)
             {
                 if (ability.Requirements.MeetsRequirement(sourceActor) &&
-                    ability.Cost.CanAfford(sourceActor, actionSource) &&
+                    ability.Cost.CanAfford(sourceActor, actionProvider) &&
                     ability.Target.GetTargetOptions(sourceActor, possibleTargets) is var targetGroups &&
                     targetGroups.Count > 0)
                 {
@@ -37,7 +37,8 @@ namespace Core.Actions
                             ability,
                             sourceActor,
                             targetGroup,
-                            actionSource));
+                            ability,
+                            actionProvider));
                     }
                 }
                 else
@@ -48,7 +49,8 @@ namespace Core.Actions
                         ability,
                         sourceActor,
                         null,
-                        actionSource));
+                        ability,
+                        actionProvider));
                 }
             }
 
