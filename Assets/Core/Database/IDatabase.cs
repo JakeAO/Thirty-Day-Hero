@@ -5,7 +5,6 @@ namespace Core.Database
 {
     public interface IDatabase<T> where T : IIdTracked
     {
-        T GetRandom();
         T GetSpecific(uint id);
         IEnumerable<T> EnumerateAll();
     }

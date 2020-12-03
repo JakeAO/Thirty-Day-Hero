@@ -15,7 +15,7 @@ using SadPumpkin.Util.LootTable;
 
 namespace Core.Database
 {
-    public class EnemyClassDatabase : IDatabase<IEnemyClass>
+    public class EnemyClassDatabase : IDatabase<IEnemyClass>, IRandomItemProvider<IEnemyClass>
     {
         public static EnemyClassDatabase LoadFromDisk(string directoryPath, JsonSerializerSettings jsonSettings)
         {
@@ -71,6 +71,22 @@ namespace Core.Database
             }
 
             return null;
+        }
+
+        public IReadOnlyCollection<IEnemyClass> GetRandom(uint count)
+        {
+            List<IEnemyClass> results = new List<IEnemyClass>((int) count);
+
+            _lootTable.Count = (int) count;
+            foreach (ILootEntry lootEntry in _lootTable.GetLoot())
+            {
+                if (lootEntry is IValueLootEntry<IEnemyClass> valueEntry)
+                {
+                    results.Add(valueEntry.Value);
+                }
+            }
+
+            return results;
         }
 
         public IEnemyClass GetSpecific(uint id)

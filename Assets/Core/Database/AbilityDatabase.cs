@@ -46,11 +46,6 @@ namespace Core.Database
             }
         }
 
-        public IAbility GetRandom()
-        {
-            return null;
-        }
-
         public IAbility GetSpecific(uint id)
         {
             return _allData.TryGetValue(id, out var result)

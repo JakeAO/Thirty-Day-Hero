@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Core.Actors.Player;
 using Core.CombatSettings;
 using Core.Etc;
 using Core.EventOptions;
@@ -14,15 +16,15 @@ namespace Core.States
     {
         public PartyDataWrapper PartyData { get; private set; }
 
-        public override void OnContent()
+        public override void OnEnter(IState fromState)
         {
             PartyData = SharedContext.Get<PartyDataWrapper>();
-        }
 
-        public override void OnExit(IState toState)
-        {
-            PartyData.IncrementTime();
-            SaveLoadHelper.SavePartyData(SharedContext);
+            if (!(fromState is PreGameState))
+            {
+                PartyData.IncrementTime();
+                SaveLoadHelper.SavePartyData(SharedContext);
+            }
         }
 
         public override IEnumerable<IEventOption> GetOptions()
@@ -31,7 +33,7 @@ namespace Core.States
             {
                 yield return new EventOption(
                     "Face the Calamity",
-                    GoToCalamity);
+                    DebugGoToCalamity);
                 yield break;
             }
 
@@ -48,13 +50,18 @@ namespace Core.States
                 GoToPatrol,
                 priority: 2);
             yield return new EventOption(
-                "Face the Calamity EARLY",
-                GoToCalamity,
-                priority: 3);
-            yield return new EventOption(
                 "Search Area (Encounter)",
                 GoToEncounter,
                 priority: 4);
+            
+            yield return new EventOption(
+                "Face the Calamity EARLY",
+                DebugGoToCalamity,
+                "DEBUG");
+            yield return new EventOption(
+                "Gain EXP + 25",
+                DebugGainExp,
+                "DEBUG");
         }
 
         private void GoToRest()
@@ -77,13 +84,29 @@ namespace Core.States
             SharedContext.Get<IStateMachine>().ChangeState<EncounterState>();
         }
 
-        private void GoToCalamity()
+        private void DebugGoToCalamity()
         {
             SharedContext.Get<IStateMachine>().ChangeState(
                 new CombatSetupState(
                     SharedContext.Get<CombatSettingsGenerator>().CreateFromEnemies(
                         PartyData.Calamity.Party,
                         new[] {PartyData.Calamity})));
+        }
+
+        private void DebugGainExp()
+        {
+            Random random = new Random();
+            foreach (PlayerCharacter playerCharacter in PartyData.Characters)
+            {
+                uint level = playerCharacter.Stats[StatType.LVL];
+                playerCharacter.Stats.ModifyStat(StatType.EXP, 25);
+                uint newLevel = playerCharacter.Stats[StatType.LVL];
+                while (level < newLevel)
+                {
+                    playerCharacter.Stats = playerCharacter.Class.LevelUpStats.Increment(playerCharacter.Stats, random);
+                    level++;
+                }
+            }
         }
     }
 }

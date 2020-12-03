@@ -13,7 +13,7 @@ using SadPumpkin.Util.LootTable;
 
 namespace Core.Database
 {
-    public class WeaponDatabase : IDatabase<IWeapon>
+    public class WeaponDatabase : IDatabase<IWeapon>, IRandomItemProvider<IWeapon>
     {
         public static WeaponDatabase LoadFromDisk(string directoryPath, JsonSerializerSettings jsonSettings)
         {
@@ -70,6 +70,22 @@ namespace Core.Database
             }
 
             return null;
+        }
+
+        public IReadOnlyCollection<IWeapon> GetRandom(uint count)
+        {
+            List<IWeapon> results = new List<IWeapon>((int) count);
+
+            _lootTable.Count = (int) count;
+            foreach (ILootEntry lootEntry in _lootTable.GetLoot())
+            {
+                if (lootEntry is IValueLootEntry<IWeapon> valueEntry)
+                {
+                    results.Add(valueEntry.Value);
+                }
+            }
+
+            return results;
         }
 
         public IWeapon GetSpecific(uint id)

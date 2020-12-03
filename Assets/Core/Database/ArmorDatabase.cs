@@ -9,7 +9,7 @@ using SadPumpkin.Util.LootTable;
 
 namespace Core.Database
 {
-    public class ArmorDatabase : IDatabase<IArmor>
+    public class ArmorDatabase : IDatabase<IArmor>, IRandomItemProvider<IArmor>
     {
         public static ArmorDatabase LoadFromDisk(string directoryPath, JsonSerializerSettings jsonSettings)
         {
@@ -66,6 +66,22 @@ namespace Core.Database
             }
 
             return null;
+        }
+
+        public IReadOnlyCollection<IArmor> GetRandom(uint count)
+        {
+            List<IArmor> results = new List<IArmor>((int) count);
+
+            _lootTable.Count = (int) count;
+            foreach (ILootEntry lootEntry in _lootTable.GetLoot())
+            {
+                if (lootEntry is IValueLootEntry<IArmor> valueEntry)
+                {
+                    results.Add(valueEntry.Value);
+                }
+            }
+
+            return results;
         }
 
         public IArmor GetSpecific(uint id)

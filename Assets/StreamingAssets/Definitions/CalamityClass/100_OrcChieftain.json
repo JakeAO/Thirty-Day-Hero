@@ -16,12 +16,12 @@
   },
   "StartingStats": {
     "$type": "Core.StatMap.StatMapBuilder, SadPumpkin.Games.ThirtyDayHero.Core",
-    "Total": 30,
+    "Total": 60,
     "MinPerStat": 3,
     "Priorities": {
       "STR": 1,
       "DEX": 3,
-      "CON": 3,
+      "CON": 2,
       "INT": 3,
       "MAG": 3,
       "CHA": 3
@@ -29,19 +29,19 @@
   },
   "LevelUpStats": {
     "$type": "Core.StatMap.StatMapIncrementor, SadPumpkin.Games.ThirtyDayHero.Core",
-    "Total": 7,
+    "Total": 10,
     "MinPerStat": 0,
     "Priorities": {
       "STR": 2,
       "DEX": 3,
-      "CON": 3,
+      "CON": 1,
       "INT": 3,
       "MAG": 3,
       "CHA": 3
     }
   },
   "AbilitiesPerLevel": {
-    "$type": "System.Collections.Generic.SortedDictionary`2[[System.UInt32, mscorlib],[System.Collections.Generic.IReadOnlyCollection`1[[Core.Abilities.IAbility, SadPumpkin.Games.ThirtyDayHero.Core]], mscorlib]], System",
+    "$type": "System.Collections.Generic.Dictionary`2[[System.UInt32, mscorlib],[System.Collections.Generic.IReadOnlyCollection`1[[Core.Abilities.IAbility, SadPumpkin.Games.ThirtyDayHero.Core]], mscorlib]], mscorlib",
     "0": {
       "$type": "System.Collections.Generic.List`1[[Core.Abilities.IAbility, SadPumpkin.Games.ThirtyDayHero.Core]], mscorlib",
       "$values": [

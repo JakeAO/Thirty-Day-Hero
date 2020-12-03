@@ -117,7 +117,7 @@ namespace Unity.Scenes
                 GUILayout.Label(actor.Name, new GUIStyle(GUI.skin.label) {fontStyle = FontStyle.Bold});
                 GUILayout.Label($"Lvl {actor.Stats[StatType.LVL]} {actor.Class.Name}");
                 GUILayout.Label($"HP [{actor.Stats[StatType.HP]} / {actor.Stats[StatType.HP_Max]}]");
-                GUILayout.Label($"STA [{actor.Stats[StatType.STA]} / {actor.Stats[StatType.HP_Max]}]");
+                GUILayout.Label($"STA [{actor.Stats[StatType.STA]} / {actor.Stats[StatType.STA_Max]}]");
             }
             GUILayout.EndVertical();
             GUI.color = Color.white;
@@ -127,7 +127,18 @@ namespace Unity.Scenes
         {
             uint activeActorId = _currentGameState.ActiveActor != null ? _currentGameState.ActiveActor.Id : 0;
 
-            if (actor.Id == activeActorId)
+            if (!actor.IsAlive())
+            {
+                if (actor.Id == activeActorId)
+                {
+                    return Color.Lerp(Color.green, Color.red, 0.5f);
+                }
+                else
+                {
+                    return Color.red;
+                }
+            }
+            else if (actor.Id == activeActorId)
             {
                 return Color.green;
             }

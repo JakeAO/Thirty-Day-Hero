@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Core.Actors;
-using Core.Actors.Enemy;
+using Core.Actors.Calamity;
 using Core.Actors.Player;
-using Core.Classes.Enemy;
+using Core.Classes.Calamity;
 using Core.Classes.Player;
 using Core.Database;
 using Core.Etc;
@@ -70,7 +70,7 @@ namespace Core.States
             _unassignedCharacterPool.AddRange(CreateRandomActorPool(partyId, playerClassDatabase));
 
             // Create random Calamity this party needs to fight
-            EnemyCharacter calamityActor = CreateRandomCalamity(calamityClassDatabase);
+            CalamityCharacter calamityActor = CreateRandomCalamity(calamityClassDatabase);
 
             // Initialize the PartyData
             PartyData = new PartyDataWrapper(partyId, new PlayerCharacter[0], new IItem[0], calamityActor, PartyUpdatedSignal);
@@ -154,9 +154,9 @@ namespace Core.States
 
         private static IEnumerable<PlayerCharacter> CreateRandomActorPool(uint partyId, PlayerClassDatabase playerClassDatabase)
         {
-            for (int i = 0; i < Constants.CREATE_PARTY_POOL_SIZE; i++)
+            IReadOnlyCollection<IPlayerClass> randomClasses = playerClassDatabase.GetRandom(Constants.CREATE_PARTY_POOL_SIZE);
+            foreach (IPlayerClass randomClass in randomClasses)
             {
-                IPlayerClass randomClass = playerClassDatabase.GetRandom();
                 PlayerCharacter newCharacter = ActorUtil.CreatePlayer(
                     partyId,
                     randomClass,
@@ -165,10 +165,10 @@ namespace Core.States
             }
         }
 
-        private static EnemyCharacter CreateRandomCalamity(CalamityClassDatabase calamityClassDatabase)
+        private static CalamityCharacter CreateRandomCalamity(CalamityClassDatabase calamityClassDatabase)
         {
-            IEnemyClass randomClass = calamityClassDatabase.GetRandom();
-            EnemyCharacter newCharacter = ActorUtil.CreateEnemy(
+            ICalamityClass randomClass = calamityClassDatabase.GetRandom();
+            CalamityCharacter newCharacter = ActorUtil.CreateCalamity(
                 (uint) Guid.NewGuid().GetHashCode(),
                 randomClass,
                 Constants.CALAMITY_LEVEL);

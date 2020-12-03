@@ -8,7 +8,7 @@ using SadPumpkin.Util.LootTable;
 
 namespace Core.Database
 {
-    public class EnemyGroupWrapperDatabase : IDatabase<EnemyGroupWrapper>
+    public class EnemyGroupWrapperDatabase : IDatabase<EnemyGroupWrapper>, IRandomItemProvider<EnemyGroupWrapper>
     {
         public static EnemyGroupWrapperDatabase LoadFromDisk(string directoryPath, JsonSerializerSettings jsonSettings)
         {
@@ -65,6 +65,22 @@ namespace Core.Database
             }
 
             return null;
+        }
+
+        public IReadOnlyCollection<EnemyGroupWrapper> GetRandom(uint count)
+        {
+            List<EnemyGroupWrapper> results = new List<EnemyGroupWrapper>((int) count);
+
+            _lootTable.Count = (int) count;
+            foreach (ILootEntry lootEntry in _lootTable.GetLoot())
+            {
+                if (lootEntry is IValueLootEntry<EnemyGroupWrapper> valueEntry)
+                {
+                    results.Add(valueEntry.Value);
+                }
+            }
+
+            return results;
         }
 
         public EnemyGroupWrapper GetSpecific(uint id)

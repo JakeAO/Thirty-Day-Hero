@@ -1,6 +1,8 @@
 ﻿using System;
+using Core.Actors.Calamity;
 using Core.Actors.Enemy;
 using Core.Actors.Player;
+using Core.Classes.Calamity;
 using Core.Classes.Enemy;
 using Core.Classes.Player;
 using Core.EquipMap;
@@ -30,6 +32,26 @@ namespace Core.Actors
                 partyId,
                 enemyClass.NameGenerator.GetName(),
                 enemyClass,
+                stats);
+        }
+
+        public static CalamityCharacter CreateCalamity(
+            uint partyId,
+            ICalamityClass calamityClass,
+            uint level = 1)
+        {
+            IStatMap stats = calamityClass.StartingStats.Generate(RANDOM);
+            for (uint i = 1; i < level; i++)
+            {
+                stats.ModifyStat(StatType.LVL, 1);
+                stats = calamityClass.LevelUpStats.Increment(stats, RANDOM);
+            }
+
+            return new CalamityCharacter(
+                (uint) Guid.NewGuid().GetHashCode(),
+                partyId,
+                calamityClass.NameGenerator.GetName(),
+                calamityClass,
                 stats);
         }
 

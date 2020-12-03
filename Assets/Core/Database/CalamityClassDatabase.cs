@@ -8,7 +8,7 @@ using SadPumpkin.Util.LootTable;
 
 namespace Core.Database
 {
-    public class CalamityClassDatabase : IDatabase<ICalamityClass>
+    public class CalamityClassDatabase : IDatabase<ICalamityClass>, IRandomItemProvider<ICalamityClass>
     {
         public static CalamityClassDatabase LoadFromDisk(string directoryPath, JsonSerializerSettings jsonSettings)
         {
@@ -64,6 +64,22 @@ namespace Core.Database
             }
 
             return null;
+        }
+
+        public IReadOnlyCollection<ICalamityClass> GetRandom(uint count)
+        {
+            List<ICalamityClass> results = new List<ICalamityClass>((int) count);
+
+            _lootTable.Count = (int) count;
+            foreach (ILootEntry lootEntry in _lootTable.GetLoot())
+            {
+                if (lootEntry is IValueLootEntry<ICalamityClass> valueEntry)
+                {
+                    results.Add(valueEntry.Value);
+                }
+            }
+
+            return results;
         }
 
         public ICalamityClass GetSpecific(uint id)

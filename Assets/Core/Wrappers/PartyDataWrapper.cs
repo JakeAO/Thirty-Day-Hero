@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Core.Actors.Calamity;
 using Core.Actors.Enemy;
 using Core.Actors.Player;
 using Core.Etc;
@@ -20,7 +21,7 @@ namespace Core.Wrappers
         private uint _gold;
         private List<PlayerCharacter> _characters;
         private List<IItem> _inventory;
-        private EnemyCharacter _calamity;
+        private CalamityCharacter _calamity;
         private bool _calamityDefeated;
 
         public uint PartyId
@@ -83,7 +84,7 @@ namespace Core.Wrappers
             }
         }
 
-        public EnemyCharacter Calamity
+        public CalamityCharacter Calamity
         {
             get => _calamity;
             set
@@ -114,7 +115,7 @@ namespace Core.Wrappers
             uint partyId,
             IReadOnlyCollection<PlayerCharacter> characters,
             IReadOnlyCollection<IItem> inventory,
-            EnemyCharacter calamity,
+            CalamityCharacter calamity,
             ISignal updateSignal)
         {
             UpdateSignal = updateSignal ?? new PartyDataUpdatedSignal();

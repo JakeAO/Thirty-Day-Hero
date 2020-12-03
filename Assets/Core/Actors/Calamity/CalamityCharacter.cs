@@ -1,10 +1,11 @@
+using Core.Actors.Enemy;
 using Core.Classes.Calamity;
 using Core.StatMap;
 using SadPumpkin.Util.CombatEngine.Actor;
 
 namespace Core.Actors.Calamity
 {
-    public class CalamityCharacter : CharacterActor, ICalamityCharacterActor
+    public class CalamityCharacter : EnemyCharacter, ICalamityCharacterActor
     {
         public new ICalamityClass Class
         {

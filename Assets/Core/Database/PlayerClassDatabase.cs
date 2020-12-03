@@ -19,7 +19,7 @@ using SadPumpkin.Util.LootTable;
 
 namespace Core.Database
 {
-    public class PlayerClassDatabase : IDatabase<IPlayerClass>
+    public class PlayerClassDatabase : IDatabase<IPlayerClass>, IRandomItemProvider<IPlayerClass>
     {
         public static PlayerClassDatabase LoadFromDisk(string directoryPath, JsonSerializerSettings jsonSettings)
         {
@@ -76,6 +76,22 @@ namespace Core.Database
             }
 
             return null;
+        }
+
+        public IReadOnlyCollection<IPlayerClass> GetRandom(uint count)
+        {
+            List<IPlayerClass> results = new List<IPlayerClass>((int) count);
+
+            _lootTable.Count = (int) count;
+            foreach (ILootEntry lootEntry in _lootTable.GetLoot())
+            {
+                if (lootEntry is IValueLootEntry<IPlayerClass> valueEntry)
+                {
+                    results.Add(valueEntry.Value);
+                }
+            }
+
+            return results;
         }
 
         public IPlayerClass GetSpecific(uint id)

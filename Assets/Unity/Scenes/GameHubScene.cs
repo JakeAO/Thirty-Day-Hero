@@ -17,12 +17,24 @@ namespace Unity.Scenes
             GUILayout.Label($"Calamity: {partyDataWrapper.Calamity.Name} ({partyDataWrapper.Calamity.Class.Name})");
             GUILayout.Label($"Day: {partyDataWrapper.Day} ({partyDataWrapper.Time})");
             GUILayout.Label($"Gold: {partyDataWrapper.Gold}");
-            GUILayout.Label("Party:");
-            foreach (PlayerCharacter character in partyDataWrapper.Characters)
+            GUILayout.Label("Party:", new GUIStyle(GUI.skin.label) {fontStyle = FontStyle.Bold});
+            GUILayout.BeginHorizontal();
             {
-                GUILayout.Label($"    {character.Name} (Lvl {character.Stats[StatType.LVL]} {character.Class.Name})");
+                foreach (PlayerCharacter character in partyDataWrapper.Characters)
+                {
+                    GUILayout.BeginVertical(GUI.skin.box);
+                    {
+                        GUILayout.Label(character.Name, new GUIStyle(GUI.skin.label) {fontStyle = FontStyle.Bold});
+                        GUILayout.Label($"Lvl {character.Stats[StatType.LVL]} {character.Class.Name}");
+                        GUILayout.Label($"HP [{character.Stats[StatType.HP]} / {character.Stats[StatType.HP_Max]}]");
+                        GUILayout.Label($"STA [{character.Stats[StatType.STA]} / {character.Stats[StatType.STA_Max]}]");
+                        GUILayout.Label($"XP [{character.Stats[StatType.EXP]} / 100]");
+                    }
+                    GUILayout.EndVertical();
+                }
             }
-            GUILayout.Label("Inventory:");
+            GUILayout.EndHorizontal();
+            GUILayout.Label("Inventory:", new GUIStyle(GUI.skin.label) {fontStyle = FontStyle.Bold});
             foreach (IItem item in partyDataWrapper.Inventory)
             {
                 GUILayout.Label($"    {item.Name}");

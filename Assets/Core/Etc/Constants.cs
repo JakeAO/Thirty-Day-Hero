@@ -47,7 +47,7 @@ namespace Core.Etc
         public const uint PARTY_SIZE_MAX = 3;
         public const uint CREATE_PARTY_POOL_SIZE = 5;
 
-        public const uint CALAMITY_LEVEL = 10u;
+        public const uint CALAMITY_LEVEL = 20u;
         public const uint DAYS_TO_PREPARE = 30u;
         
         public const uint ACTION = 10000;
