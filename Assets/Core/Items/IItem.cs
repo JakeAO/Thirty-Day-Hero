@@ -9,7 +9,7 @@ using ICharacterActor = Core.Actors.ICharacterActor;
 
 namespace Core.Items
 {
-    public interface IItem : IIdTracked, INamed
+    public interface IItem : IIdTracked, INamed, ICopyable<IItem>
     {
         string ArtPath { get; }
         uint BaseValue { get; }

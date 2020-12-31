@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Core.Abilities;
 using Core.Etc;
+using SadPumpkin.Util.CombatEngine;
 using SadPumpkin.Util.CombatEngine.Action;
 using SadPumpkin.Util.CombatEngine.Actor;
 
@@ -108,5 +109,18 @@ namespace Core.Items.Armors
                 return damageAmount;
             }
         }
+
+        public IArmor Copy() => new Armor(
+            Id,
+            Name,
+            Desc,
+            ArtPath,
+            BaseValue,
+            Rarity,
+            ArmorType,
+            DamageModifiers,
+            AddedAbilities);
+
+        IItem ICopyable<IItem>.Copy() => Copy();
     }
 }

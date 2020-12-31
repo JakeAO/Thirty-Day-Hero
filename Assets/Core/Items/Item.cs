@@ -74,5 +74,15 @@ namespace Core.Items
 
             return actions;
         }
+
+        public IItem Copy() => new Item(
+            Id,
+            Name,
+            Desc,
+            ArtPath,
+            BaseValue,
+            Rarity,
+            ItemType,
+            AddedAbilities);
     }
 }
