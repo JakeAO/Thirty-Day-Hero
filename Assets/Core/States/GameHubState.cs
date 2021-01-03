@@ -4,6 +4,7 @@ using Core.Actors.Player;
 using Core.CombatSettings;
 using Core.Etc;
 using Core.EventOptions;
+using Core.States.BaseClasses;
 using Core.States.Combat;
 using Core.States.Town;
 using Core.Wrappers;
@@ -14,6 +15,9 @@ namespace Core.States
 {
     public class GameHubState : TDHStateBase
     {
+        public const string CATEGORY_DEFAULT = "";
+        public const string CATEGORY_DEBUG = "Debug";
+        
         public PartyDataWrapper PartyData { get; private set; }
 
         public override void OnEnter(IState fromState)
@@ -27,41 +31,57 @@ namespace Core.States
             }
         }
 
-        public override IEnumerable<IEventOption> GetOptions()
+        public override void OnContent()
         {
-            if (PartyData.Day >= Constants.DAYS_TO_PREPARE)
-            {
-                yield return new EventOption(
-                    "Face the Calamity",
-                    DebugGoToCalamity);
-                yield break;
-            }
+            if (!_currentOptions.TryGetValue(CATEGORY_DEBUG, out var debugList))
+                _currentOptions[CATEGORY_DEBUG] = debugList = new List<IEventOption>(2);
 
-            yield return new EventOption(
-                "Rest at Camp",
-                GoToRest,
-                priority: 0);
-            yield return new EventOption(
-                "Enter Town",
-                GoToTownHub,
-                priority: 1);
-            yield return new EventOption(
-                "Patrol Area",
-                GoToPatrol,
-                priority: 2);
-            yield return new EventOption(
-                "Search Area (Encounter)",
-                GoToEncounter,
-                priority: 4);
-            
-            yield return new EventOption(
+            debugList.Add(new EventOption(
                 "Face the Calamity EARLY",
                 DebugGoToCalamity,
-                "DEBUG");
-            yield return new EventOption(
+                CATEGORY_DEBUG));
+            debugList.Add(new EventOption(
                 "Gain EXP + 25",
                 DebugGainExp,
-                "DEBUG");
+                CATEGORY_DEBUG));
+
+            if (PartyData.Day >= Constants.DAYS_TO_PREPARE)
+            {
+                _currentOptions[CATEGORY_DEFAULT] = new List<IEventOption>()
+                {
+                    new EventOption(
+                        "Face the Calamity",
+                        DebugGoToCalamity,
+                        CATEGORY_DEFAULT)
+                };
+            }
+            else
+            {
+                if (!_currentOptions.TryGetValue(CATEGORY_DEFAULT, out var defaultList))
+                    _currentOptions[CATEGORY_DEFAULT] = defaultList = new List<IEventOption>(5);
+
+                defaultList.Clear();
+                defaultList.Add(new EventOption(
+                    "Rest at Camp",
+                    GoToRest,
+                    CATEGORY_DEFAULT,
+                    0));
+                defaultList.Add(new EventOption(
+                    "Enter Town",
+                    GoToTownHub,
+                    CATEGORY_DEFAULT,
+                    1));
+                defaultList.Add(new EventOption(
+                    "Patrol Area",
+                    GoToPatrol,
+                    CATEGORY_DEFAULT,
+                    2));
+                defaultList.Add(new EventOption(
+                    "Search Area (Encounter)",
+                    GoToEncounter,
+                    CATEGORY_DEFAULT,
+                    4));
+            }
         }
 
         private void GoToRest()

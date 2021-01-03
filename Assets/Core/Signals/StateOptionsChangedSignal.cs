@@ -1,5 +1,6 @@
 using System;
 using Core.States;
+using Core.States.BaseClasses;
 using SadPumpkin.Util.Signals;
 
 namespace Core.Signals

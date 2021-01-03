@@ -1,22 +1,28 @@
 using System.Collections.Generic;
 using Core.EventOptions;
+using Core.States.BaseClasses;
 using SadPumpkin.Util.StateMachine;
 
 namespace Core.States.Combat
 {
     public class CombatEndState : TDHStateBase
     {
-        public override IEnumerable<IEventOption> GetOptions()
+        public const string CATEGORY_DEFAULT = "";
+
+        public override void OnContent()
         {
-            yield return new EventOption(
-                "Continue",
-                GoToGameHub);
-            yield return new EventOption(
-                "Continue (All Dead)",
-                GoToDefeat);
-            yield return new EventOption(
-                "Continue (Calamity Vanquished)",
-                GoToVictory);
+            _currentOptions[CATEGORY_DEFAULT] = new List<IEventOption>(3)
+            {
+                new EventOption(
+                    "Continue",
+                    GoToGameHub),
+                new EventOption(
+                    "Continue (All Dead)",
+                    GoToDefeat),
+                new EventOption(
+                    "Continue (Calamity Vanquished)",
+                    GoToVictory)
+            };
         }
 
         private void GoToGameHub()

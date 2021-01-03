@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Core.Actors.Player;
 using Core.Etc;
 using Core.EventOptions;
+using Core.States.BaseClasses;
 using Core.Wrappers;
 using SadPumpkin.Util.StateMachine;
 using SadPumpkin.Util.StateMachine.States;
@@ -11,6 +12,8 @@ namespace Core.States
 {
     public class RestState : TDHStateBase
     {
+        public const string CATEGORY_DEFAULT = "";
+        
         public class RestProvider
         {
             private double _hpRestore;
@@ -65,13 +68,13 @@ namespace Core.States
         public override void OnContent()
         {
             _restProvider.RestParty(PartyData, out RestoredStats);
-        }
 
-        public override IEnumerable<IEventOption> GetOptions()
-        {
-            yield return new EventOption(
-                "Continue",
-                GoToGameHub);
+            _currentOptions[CATEGORY_DEFAULT] = new List<IEventOption>()
+            {
+                new EventOption(
+                    "Continue",
+                    GoToGameHub)
+            };
         }
 
         private void GoToGameHub()

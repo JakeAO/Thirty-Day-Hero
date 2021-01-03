@@ -5,6 +5,7 @@ using Core.EventOptions;
 using Core.Items;
 using Core.Items.Armors;
 using Core.Items.Weapons;
+using Core.States.BaseClasses;
 using Core.Wrappers;
 using SadPumpkin.Util.StateMachine;
 using SadPumpkin.Util.StateMachine.States;
@@ -13,6 +14,8 @@ namespace Core.States.Town
 {
     public class TownHubState : TDHStateBase
     {
+        public const string CATEGORY_DEFAULT = "";
+
         private class TownDetails
         {
             public readonly List<IItem> ItemShopInventory = new List<IItem>(10);
@@ -73,52 +76,54 @@ namespace Core.States.Town
             }
         }
 
-        public override IEnumerable<IEventOption> GetOptions()
+        public override void OnContent()
         {
+            _currentOptions[CATEGORY_DEFAULT] = new List<IEventOption>(5);
+
             if (_lastTownDetails.HasItemShop)
             {
-                yield return new EventOption(
+                _currentOptions[CATEGORY_DEFAULT].Add(new EventOption(
                     "Enter Item Shop",
                     GoToItemShop,
-                    priority: 0);
+                    priority: 0));
             }
 
             if (_lastTownDetails.HasArmorShop)
             {
-                yield return new EventOption(
+                _currentOptions[CATEGORY_DEFAULT].Add(new EventOption(
                     "Enter Armor Shop",
                     GoToArmorShop,
-                    priority: 1);
+                    priority: 1));
             }
 
             if (_lastTownDetails.HasWeaponShop)
             {
-                yield return new EventOption(
+                _currentOptions[CATEGORY_DEFAULT].Add(new EventOption(
                     "Enter Weapon Shop",
                     GoToWeaponShop,
-                    priority: 2);
+                    priority: 2));
             }
 
             if (_lastTownDetails.HasDojo)
             {
-                yield return new EventOption(
+                _currentOptions[CATEGORY_DEFAULT].Add(new EventOption(
                     "Enter Dojo",
                     GoToDojo,
-                    priority: 4);
+                    priority: 4));
             }
 
             if (_lastTownDetails.HasInn)
             {
-                yield return new EventOption(
+                _currentOptions[CATEGORY_DEFAULT].Add(new EventOption(
                     "Enter Inn",
                     GoToInn,
-                    priority: 5);
+                    priority: 5));
             }
 
-            yield return new EventOption(
+            _currentOptions[CATEGORY_DEFAULT].Add(new EventOption(
                 "Leave Town",
                 GoToGameHub,
-                priority: 99);
+                priority: 99));
         }
 
         private void GoToGameHub()

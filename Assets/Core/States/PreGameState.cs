@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Core.EventOptions;
+using Core.States.BaseClasses;
 using Core.Wrappers;
 using SadPumpkin.Util.StateMachine;
 using SadPumpkin.Util.StateMachine.States;
@@ -9,6 +10,8 @@ namespace Core.States
 {
     public class PreGameState : TDHStateBase
     {
+        public const string CATEGORY_DEFAULT = "";
+
         public override void OnEnter(IState fromState)
         {
             if (SharedContext.Get<PlayerDataWrapper>() == null)
@@ -17,11 +20,14 @@ namespace Core.States
                 throw new ArgumentException("Entered PreGameState without an active Party profile!");
         }
 
-        public override IEnumerable<IEventOption> GetOptions()
+        public override void OnContent()
         {
-            yield return new EventOption(
-                "Continue",
-                GoToGameHub);
+            _currentOptions[CATEGORY_DEFAULT] = new List<IEventOption>()
+            {
+                new EventOption(
+                    "Continue",
+                    GoToGameHub)
+            };
         }
 
         private void GoToGameHub()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Core.CharacterControllers;
 using Core.EventOptions;
 using Core.Signals;
+using Core.States.BaseClasses;
 using Core.Wrappers;
 using SadPumpkin.Util.CombatEngine;
 using SadPumpkin.Util.CombatEngine.Party;
@@ -13,6 +14,8 @@ namespace Core.States.Combat
 {
     public class CombatSetupState : TDHStateBase
     {
+        public const string CATEGORY_DEFAULT = "";
+        
         public readonly CombatSettings.CombatSettings CombatSettings = null;
 
         private PartyDataWrapper _partyDataWrapper = null;
@@ -53,11 +56,13 @@ namespace Core.States.Combat
                 new Actions.StandardActionGenerator(),
                 _playerController.GameStateUpdatedSignal,
                 _playerController.CombatCompleteSignal);
-        }
 
-        public override IEnumerable<IEventOption> GetOptions()
-        {
-            yield return new EventOption("Begin Combat", BeginCombat);
+            _currentOptions[CATEGORY_DEFAULT] = new List<IEventOption>()
+            {
+                new EventOption(
+                    "Begin Combat",
+                    BeginCombat)
+            };
         }
 
         private void BeginCombat()

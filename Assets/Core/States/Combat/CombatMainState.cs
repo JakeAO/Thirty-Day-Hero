@@ -3,6 +3,7 @@ using System.Linq;
 using Core.CharacterControllers;
 using Core.Etc;
 using Core.EventOptions;
+using Core.States.BaseClasses;
 using SadPumpkin.Util.CombatEngine;
 using SadPumpkin.Util.CombatEngine.Action;
 using SadPumpkin.Util.CombatEngine.Actor;
@@ -14,6 +15,9 @@ namespace Core.States.Combat
 {
     public class CombatMainState : TDHStateBase
     {
+        public const string CATEGORY_DEFAULT = "";
+        public const string CATEGORY_DEBUG = "Debug";
+        
         private readonly CombatManager _combatManager = null;
         private readonly PlayerCharacterController _controller = null;
         
@@ -34,6 +38,8 @@ namespace Core.States.Combat
             _controller = controller;
 
             CurrentGameState = _combatManager.CurrentGameState;
+
+            _controller.ActiveCharacterChanged.Listen(newActor => UpdateOptions());
         }
 
         public override void OnEnter(IState fromState)
@@ -45,6 +51,8 @@ namespace Core.States.Combat
 
         public override void OnContent()
         {
+            UpdateOptions();
+
             _combatManager.Start(true);
         }
 
@@ -64,35 +72,46 @@ namespace Core.States.Combat
             GoToCombatEnd();
         }
 
-        public override IEnumerable<IEventOption> GetOptions()
+        private void UpdateOptions()
         {
-            const string ACTION_CATEGORY_DEBUG = "Debug";
+            _currentOptions.Clear();
 
-            if (_controller != null && _controller.AvailableActions != null)
+            if (_controller?.AvailableActions != null)
             {
                 foreach (var kvp in _controller.AvailableActions)
                 {
                     IAction action = kvp.Value;
 
+                    string category = (action.ActionProvider as INamed)?.Name ?? "Other";
+                    if (!_currentOptions.TryGetValue(category, out var categoryList))
+                        _currentOptions[category] = categoryList = new List<IEventOption>(5);
+
                     if (action.Available)
                     {
-                        yield return new EventOption(
+                        categoryList.Add(new EventOption(
                             GetActionTextFromAction(action),
                             () => OnActionSelected(action),
-                            (action.ActionProvider as INamed)?.Name ?? "Other",
-                            context: action);
+                            category,
+                            0u,
+                            !action.Available,
+                            action));
                     }
                 }
             }
 
-            yield return new EventOption(
+            if (!_currentOptions.TryGetValue(CATEGORY_DEBUG, out var debugList))
+                _currentOptions[CATEGORY_DEBUG] = debugList = new List<IEventOption>(2);
+
+            debugList.Add(new EventOption(
                 "Win Combat",
                 GoToCombatEnd,
-                ACTION_CATEGORY_DEBUG);
-            yield return new EventOption(
+                CATEGORY_DEBUG));
+            debugList.Add(new EventOption(
                 "Lose Combat",
                 GoToCombatEnd,
-                ACTION_CATEGORY_DEBUG);
+                CATEGORY_DEBUG));
+
+            OptionsChangedSignal?.Fire(this);
         }
 
         private string GetActionTextFromAction(IAction action)

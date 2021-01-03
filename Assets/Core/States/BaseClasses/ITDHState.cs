@@ -1,11 +1,10 @@
 using System.Collections.Generic;
-using Core.Etc;
 using Core.EventOptions;
 using Core.Signals;
 using SadPumpkin.Util.Context;
 using SadPumpkin.Util.StateMachine.States;
 
-namespace Core.States
+namespace Core.States.BaseClasses
 {
     public interface ITDHState : IState
     {

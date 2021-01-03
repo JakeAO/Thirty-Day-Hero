@@ -10,6 +10,7 @@ using Core.Etc;
 using Core.EventOptions;
 using Core.Items;
 using Core.Signals;
+using Core.States.BaseClasses;
 using Core.Wrappers;
 using SadPumpkin.Util.StateMachine;
 using SadPumpkin.Util.StateMachine.States;
@@ -32,6 +33,10 @@ namespace Core.States
     /// </summary>
     public class CreatePartyState : TDHStateBase
     {
+        public const string CATEGORY_CONTINUE = "Continue";
+        public const string CATEGORY_ADD = "Add Hero";
+        public const string CATEGORY_REMOVE = "Remove Hero";
+        
         public PartyDataWrapper PartyData { get; private set; }
         public PartyDataUpdatedSignal PartyUpdatedSignal { get; private set; }
         public IReadOnlyList<PlayerCharacter> UnassignedCharacterPool => _unassignedCharacterPool;
@@ -74,37 +79,56 @@ namespace Core.States
 
             // Initialize the PartyData
             PartyData = new PartyDataWrapper(partyId, new PlayerCharacter[0], new IItem[0], calamityActor, PartyUpdatedSignal);
+
+            SetupOptions();
         }
 
-        public override IEnumerable<IEventOption> GetOptions()
+        private void SetupOptions()
         {
+            // Pull/Create lists
+            if (!_currentOptions.TryGetValue(CATEGORY_CONTINUE, out var continueList))
+                _currentOptions[CATEGORY_CONTINUE] = continueList = new List<IEventOption>(1);
+            if (!_currentOptions.TryGetValue(CATEGORY_REMOVE, out var removeList))
+                _currentOptions[CATEGORY_REMOVE] = removeList = new List<IEventOption>((int) Constants.CREATE_PARTY_POOL_SIZE);
+            if (!_currentOptions.TryGetValue(CATEGORY_ADD, out var addList))
+                _currentOptions[CATEGORY_ADD] = addList = new List<IEventOption>((int) Constants.CREATE_PARTY_POOL_SIZE);
+
+            // Clear lists
+            continueList.Clear();
+            removeList.Clear();
+            addList.Clear();
+
+            // Generate options
             bool canSubmit = PartyData.Characters.Count >= Constants.PARTY_SIZE_MIN &&
                              PartyData.Characters.Count <= Constants.PARTY_SIZE_MAX;
-            yield return new EventOption(
+            continueList.Add(new EventOption(
                 "Begin Adventure",
                 SubmitParty,
-                priority: 99,
-                disabled: !canSubmit);
+                CATEGORY_CONTINUE,
+                99,
+                !canSubmit));
 
             foreach (PlayerCharacter character in PartyData.Characters)
             {
                 uint characterId = character.Id;
-                yield return new EventOption(
+                removeList.Add(new EventOption(
                     "Remove Hero",
                     () => RemoveActorById(characterId),
-                    "Active Party",
-                    context: character);
+                    CATEGORY_REMOVE,
+                    context: character));
             }
 
             foreach (PlayerCharacter character in _unassignedCharacterPool)
             {
                 uint characterId = character.Id;
-                yield return new EventOption(
+                addList.Add(new EventOption(
                     "Add Hero",
                     () => AddActorById(characterId),
-                    "Available Heroes",
-                    context: character);
+                    CATEGORY_ADD,
+                    context: character));
             }
+
+            OptionsChangedSignal?.Fire(this);
         }
 
         private void AddActorById(uint actorId)
@@ -115,7 +139,7 @@ namespace Core.States
                 _unassignedCharacterPool.Remove(actorInPool);
                 PartyData.Characters.Add(actorInPool);
 
-                OptionsChangedSignal?.Fire(this);
+                SetupOptions();
             }
         }
 
@@ -127,7 +151,7 @@ namespace Core.States
                 PartyData.Characters.Remove(actorInParty);
                 _unassignedCharacterPool.Add(actorInParty);
                 
-                OptionsChangedSignal?.Fire(this);
+                SetupOptions();
             }
         }
 

@@ -4,6 +4,7 @@ using Core.CombatSettings;
 using Core.Database;
 using Core.Etc;
 using Core.EventOptions;
+using Core.States.BaseClasses;
 using Core.States.Combat;
 using Core.Wrappers;
 using SadPumpkin.Util.StateMachine;
@@ -12,6 +13,8 @@ namespace Core.States
 {
     public class PatrolState : TDHStateBase
     {
+        public const string CATEGORY_DEFAULT = "";
+        
         public EnemyGroupWrapper EnemyGroup { get; private set; }
         public CombatDifficulty Difficulty { get; private set; }
         public CombatSettings.CombatSettings Settings { get; private set; }
@@ -32,18 +35,18 @@ namespace Core.States
                 EnemyGroup,
                 Difficulty,
                 SharedContext.Get<PartyDataWrapper>());
-        }
 
-        public override IEnumerable<IEventOption> GetOptions()
-        {
-            yield return new EventOption(
-                "Fight",
-                GoToCombat,
-                priority: 0);
-            yield return new EventOption(
-                "Run",
-                GoToGameHub,
-                priority: 1);
+            _currentOptions[CATEGORY_DEFAULT] = new List<IEventOption>
+            {
+                new EventOption(
+                    "Fight",
+                    GoToCombat,
+                    priority: 0),
+                new EventOption(
+                    "Run",
+                    GoToGameHub,
+                    priority: 1)
+            };
         }
 
         private void GoToCombat()

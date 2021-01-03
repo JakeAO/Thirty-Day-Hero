@@ -1,16 +1,22 @@
 using System.Collections.Generic;
 using Core.EventOptions;
+using Core.States.BaseClasses;
 using SadPumpkin.Util.StateMachine;
 
 namespace Core.States
 {
     public class EncounterState : TDHStateBase
     {
-        public override IEnumerable<IEventOption> GetOptions()
+        public const string CATEGORY_CONTINUE = "Continue";
+
+        public override void OnContent()
         {
-            yield return new EventOption(
-                "Leave Encounter",
-                GoToGameHub);
+            _currentOptions[CATEGORY_CONTINUE] = new List<IEventOption>()
+            {
+                new EventOption(
+                    "Leave Encounter",
+                    GoToGameHub, CATEGORY_CONTINUE)
+            };
         }
 
         private void GoToGameHub()

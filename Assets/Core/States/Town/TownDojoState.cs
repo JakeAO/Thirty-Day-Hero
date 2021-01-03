@@ -1,16 +1,22 @@
 using System.Collections.Generic;
 using Core.EventOptions;
+using Core.States.BaseClasses;
 using SadPumpkin.Util.StateMachine;
 
 namespace Core.States.Town
 {
     public class TownDojoState : TDHStateBase
     {
-        public override IEnumerable<IEventOption> GetOptions()
+        public const string CATEGORY_DEFAULT = "";
+
+        public override void OnContent()
         {
-            yield return new EventOption(
-                "Leave",
-                GoToTownHub);
+            _currentOptions[CATEGORY_DEFAULT] = new List<IEventOption>()
+            {
+                new EventOption(
+                    "Leave",
+                    GoToTownHub)
+            };
         }
 
         private void GoToTownHub()

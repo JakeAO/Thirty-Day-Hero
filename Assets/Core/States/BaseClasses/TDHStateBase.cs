@@ -1,16 +1,22 @@
 using System.Collections.Generic;
-using Core.Etc;
+using System.Linq;
 using Core.EventOptions;
 using Core.Signals;
 using SadPumpkin.Util.Context;
 using SadPumpkin.Util.StateMachine.States;
 
-namespace Core.States
+namespace Core.States.BaseClasses
 {
     public abstract class TDHStateBase : ITDHState
     {
         public IContext SharedContext { get; private set; }
         public StateOptionsChangedSignal OptionsChangedSignal { get; private set; }
+
+        public IReadOnlyDictionary<string, List<IEventOption>> CurrentOptions => _currentOptions;
+
+        protected readonly Dictionary<string, List<IEventOption>> _currentOptions = new Dictionary<string, List<IEventOption>>(10);
+
+        public IEnumerable<IEventOption> GetOptions() => CurrentOptions.Values.SelectMany(x => x);
 
         public void PerformSetup(IContext context, IState previousState)
         {
@@ -50,7 +56,5 @@ namespace Core.States
         {
             // Intentionally left blank.
         }
-
-        public abstract IEnumerable<IEventOption> GetOptions();
     }
 }

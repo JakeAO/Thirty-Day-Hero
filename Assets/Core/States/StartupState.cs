@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using Core.CombatSettings;
 using Core.Database;
 using Core.Etc;
 using Core.EventOptions;
-using Core.JSON;
+using Core.States.BaseClasses;
 using Core.Wrappers;
 using Newtonsoft.Json;
 using SadPumpkin.Util.Context;
@@ -31,6 +29,9 @@ namespace Core.States
 
     public class StartupState : TDHStateBase
     {
+        public const string CATEGORY_CONTINUE = "Continue";
+        public const string CATEGORY_DEBUG = "Debug";
+        
         private bool _isFullyLoaded = false;
 
         public override void OnEnter(IState fromState)
@@ -41,6 +42,8 @@ namespace Core.States
 
         public override void OnContent()
         {
+            SetupOptions();
+
             // Load JsonSettings
             DataLoadHelper.LoadJsonSettings(SharedContext);
 
@@ -59,46 +62,53 @@ namespace Core.States
 
             _isFullyLoaded = true;
             OptionsChangedSignal?.Fire(this);
+
+            SetupOptions();
         }
 
-        public override IEnumerable<IEventOption> GetOptions()
+        private void SetupOptions()
         {
+            // LOADING (NULL) OPTION
             if (!_isFullyLoaded)
             {
-                yield return new EventOption(
-                    "Continue",
-                    () => { },
-                    disabled: true);
-                yield break;
+                _currentOptions[CATEGORY_CONTINUE] = new List<IEventOption>()
+                {
+                    new EventOption("Play", () => { }, CATEGORY_CONTINUE, disabled: true)
+                };
+                return;
             }
 
+            // CONTINUE OPTION
             if (SharedContext.TryGet(out PartyDataWrapper _))
             {
-                yield return new EventOption(
-                    "Continue",
-                    GoToPreGame);
+                _currentOptions[CATEGORY_CONTINUE] = new List<IEventOption>()
+                {
+                    new EventOption("Play", GoToPreGame, CATEGORY_CONTINUE)
+                };
             }
             else
             {
-                yield return new EventOption(
-                    "Create Party",
-                    GoToCreateParty);
+                _currentOptions[CATEGORY_CONTINUE] = new List<IEventOption>()
+                {
+                    new EventOption("Play", GoToCreateParty, CATEGORY_CONTINUE)
+                };
             }
 
+            // DEBUG OPTIONS
+            _currentOptions[CATEGORY_DEBUG] = new List<IEventOption>(2);
             if (SharedContext.TryGet(out PlayerDataWrapper _))
             {
-                yield return new EventOption(
-                    "Reset All Data",
-                    ResetPlayerData,
-                    "DEBUG");
+                _currentOptions[CATEGORY_DEBUG] = new List<IEventOption>()
+                {
+                    new EventOption("Reset", ResetPlayerData, CATEGORY_DEBUG)
+                };
             }
-
             if (SharedContext.TryGet(out PartyDataWrapper _))
             {
-                yield return new EventOption(
-                    "Retire Current Party",
-                    ResetPartyData,
-                    "DEBUG");
+                _currentOptions[CATEGORY_DEBUG] = new List<IEventOption>()
+                {
+                    new EventOption("Retire", ResetPartyData, CATEGORY_DEBUG)
+                };
             }
         }
 

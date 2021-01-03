@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Core.Etc;
 using Core.EventOptions;
+using Core.States.BaseClasses;
 using Core.Wrappers;
 using SadPumpkin.Util.StateMachine;
 
@@ -8,6 +9,8 @@ namespace Core.States
 {
     public class DefeatState : TDHStateBase
     {
+        public const string CATEGORY_CONTINUE = "Continue";
+
         public override void OnContent()
         {
             PlayerDataWrapper playerDataWrapper = SharedContext.Get<PlayerDataWrapper>();
@@ -23,13 +26,14 @@ namespace Core.States
 
             // Clear Party Data
             SharedContext.Clear<PartyDataWrapper>();
-        }
 
-        public override IEnumerable<IEventOption> GetOptions()
-        {
-            yield return new EventOption(
-                "New Party",
-                GoToCreateParty);
+            _currentOptions[CATEGORY_CONTINUE] = new List<IEventOption>()
+            {
+                new EventOption(
+                    "New Party",
+                    GoToCreateParty,
+                    CATEGORY_CONTINUE)
+            };
         }
 
         private void GoToCreateParty()
