@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using Core.Actors.Player;
 using Core.Etc;
 using Core.EventOptions;
 using Core.States.BaseClasses;
@@ -13,68 +11,61 @@ namespace Core.States
     public class RestState : TDHStateBase
     {
         public const string CATEGORY_DEFAULT = "";
-        
-        public class RestProvider
-        {
-            private double _hpRestore;
-            private double _staRestore;
 
-            public RestProvider(double hpRestorationPercent, double staRestorationPercent)
-            {
-                _hpRestore = hpRestorationPercent;
-                _staRestore = staRestorationPercent;
-            }
+        public IReadOnlyDictionary<uint, (uint hp, uint sta)> RestoredStats { get; private set; }
 
-            public void RestParty(PartyDataWrapper partyDataWrapper, out IReadOnlyDictionary<uint, (uint hp, uint sta)> restoredStatsByActor)
-            {
-                Dictionary<uint, (uint hp, uint sta)> restoredStats = new Dictionary<uint, (uint hp, uint sta)>(partyDataWrapper.Characters.Count);
-                restoredStatsByActor = restoredStats;
-
-                foreach (PlayerCharacter playerCharacter in partyDataWrapper.Characters)
-                {
-                    if (!playerCharacter.IsAlive())
-                        continue;
-
-                    uint hpBoost = (uint) Math.Round(playerCharacter.Stats[StatType.HP_Max] * _hpRestore);
-                    uint staBoost = (uint) Math.Round(playerCharacter.Stats[StatType.STA_Max] * _staRestore);
-
-                    hpBoost = Math.Min(hpBoost, playerCharacter.Stats[StatType.HP_Max] - playerCharacter.Stats[StatType.HP]);
-                    staBoost = Math.Min(staBoost, playerCharacter.Stats[StatType.STA_Max] - playerCharacter.Stats[StatType.STA]);
-
-                    playerCharacter.Stats.ModifyStat(StatType.HP, (int) hpBoost);
-                    playerCharacter.Stats.ModifyStat(StatType.STA, (int) staBoost);
-
-                    restoredStats[playerCharacter.Id] = (hpBoost, staBoost);
-                }
-            }
-        }
-
-        public PartyDataWrapper PartyData;
-        public TimeOfDay TimeOfDay;
-        public IReadOnlyDictionary<uint, (uint hp, uint sta)> RestoredStats;
+        private PartyDataWrapper _partyData;
 
         private RestProvider _restProvider = null;
 
         public override void OnEnter(IState fromState)
         {
-            PartyData = SharedContext.Get<PartyDataWrapper>();
-            _restProvider = PartyData.Time == TimeOfDay.Night
+            _partyData = SharedContext.Get<PartyDataWrapper>();
+            _restProvider = _partyData.Time == TimeOfDay.Night
                 ? new RestProvider(0.5, 0.5)
                 : new RestProvider(0.2, 0.2);
 
-            TimeOfDay = PartyData.Time;
         }
 
         public override void OnContent()
         {
-            _restProvider.RestParty(PartyData, out RestoredStats);
+            SetupOptions();
+        }
 
-            _currentOptions[CATEGORY_DEFAULT] = new List<IEventOption>()
-            {
-                new EventOption(
-                    "Continue",
-                    GoToGameHub)
-            };
+        private void SetupOptions()
+        {
+            if (!_currentOptions.TryGetValue(CATEGORY_DEFAULT, out var defaultList))
+                _currentOptions[CATEGORY_DEFAULT] = defaultList = new List<IEventOption>(3);
+
+            defaultList.Clear();
+
+            defaultList.Add(new EventOption(
+                "Rest",
+                OnRest,
+                disabled: RestoredStats != null));
+            defaultList.Add(new EventOption(
+                "Talk",
+                OnTalk,
+                disabled: _partyData.Characters.Count == 1));
+            defaultList.Add(new EventOption(
+                "Leave",
+                GoToGameHub));
+
+            OptionsChangedSignal?.Fire(this);
+        }
+
+        private void OnRest()
+        {
+            _restProvider.RestParty(_partyData, out var restoredStats);
+
+            RestoredStats = restoredStats;
+
+            SetupOptions();
+        }
+
+        private void OnTalk()
+        {
+            // TODO
         }
 
         private void GoToGameHub()

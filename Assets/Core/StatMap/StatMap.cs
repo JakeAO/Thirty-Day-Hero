@@ -79,6 +79,7 @@ namespace Core.StatMap
                         ModifyStat(StatType.LVL, (int) levelsUp);
                         currentValue %= 100;
                     }
+
                     break;
                 default:
                     currentValue = (uint) Math.Max(currentValue + change, 0u);

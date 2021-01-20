@@ -160,6 +160,9 @@ namespace Core.States
             if (PartyData.Characters.Count >= Constants.PARTY_SIZE_MIN &&
                 PartyData.Characters.Count <= Constants.PARTY_SIZE_MAX)
             {
+                // Set Initial Gold
+                PartyData.Gold = (uint) (new Random().Next(100, 300));
+                
                 // Add Party to Context
                 SharedContext.Set(PartyData);
 

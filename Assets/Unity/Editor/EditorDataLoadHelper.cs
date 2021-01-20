@@ -1,12 +1,19 @@
 using System.IO;
 using Core.Etc;
 using SadPumpkin.Util.Context;
+using UnityEditor;
 using UnityEngine;
 
 namespace Unity.Editor
 {
     public static class EditorDataLoadHelper
     {
+        [MenuItem("SadPumpkin/Open SaveData", false, 0)]
+        private static void OpenDefaultSaveDataFolder()
+        {
+            Application.OpenURL(Path.Combine(Application.persistentDataPath, "SaveData"));
+        }
+
         public static IContext LoadEditorContext()
         {
             PathUtility pathUtility = new PathUtility(

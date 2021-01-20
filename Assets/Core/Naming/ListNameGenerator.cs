@@ -5,9 +5,9 @@ namespace Core.Naming
 {
     public class ListNameGenerator : INameGenerator
     {
-        public List<string> Names { get; set; }
+        private static readonly Random _random = new Random();
 
-        private readonly Random _random = new Random();
+        public List<string> Names { get; set; }
 
         public ListNameGenerator()
         {

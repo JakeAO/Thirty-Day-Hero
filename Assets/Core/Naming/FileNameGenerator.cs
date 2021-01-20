@@ -7,9 +7,10 @@ namespace Core.Naming
 {
     public class FileNameGenerator : INameGenerator
     {
+        private static readonly Random _random = new Random();
+        
         public string FilePath { get; set; }
 
-        private readonly Random _random = new Random();
         private IReadOnlyList<string> _nameEntries;
 
         public string GetName()

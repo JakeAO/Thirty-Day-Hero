@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Core.CharacterControllers;
+using Core.CombatSettings;
 using Core.Etc;
 using Core.EventOptions;
 using Core.States.BaseClasses;
+using Core.Wrappers;
 using SadPumpkin.Util.CombatEngine;
 using SadPumpkin.Util.CombatEngine.Action;
 using SadPumpkin.Util.CombatEngine.Actor;
@@ -17,16 +19,19 @@ namespace Core.States.Combat
     {
         public const string CATEGORY_DEFAULT = "";
         public const string CATEGORY_DEBUG = "Debug";
-        
+
         private readonly CombatManager _combatManager = null;
         private readonly PlayerCharacterController _controller = null;
-        
+
         private IStateMachine _stateMachine = null;
+        private PartyDataWrapper _partyData = null;
 
         public CombatSettings.CombatSettings Settings { get; private set; }
 
         public IGameState CurrentGameState { get; private set; }
         public IInitiativeActor ActiveActor => CurrentGameState != null ? CurrentGameState.ActiveActor : null; //probably use a null obj here
+
+        private CombatResults _results;
 
         public CombatMainState(
             CombatManager combatManager,
@@ -45,8 +50,9 @@ namespace Core.States.Combat
         public override void OnEnter(IState fromState)
         {
             _stateMachine = SharedContext.Get<IStateMachine>();
+            _partyData = SharedContext.Get<PartyDataWrapper>();
             _combatManager.GameStateUpdated.Listen(OnGamestateUpdated);
-            _combatManager.CombatComplete.Listen(OnCombatComplete);
+            _combatManager.CombatComplete.Listen(OnCombatCompleted);
         }
 
         public override void OnContent()
@@ -59,22 +65,45 @@ namespace Core.States.Combat
         public override void OnExit(IState toState)
         {
             _combatManager.GameStateUpdated.Unlisten(OnGamestateUpdated);
-            _combatManager.CombatComplete.Unlisten(OnCombatComplete);
+            _combatManager.CombatComplete.Unlisten(OnCombatCompleted);
         }
 
-        public void OnGamestateUpdated(IGameState gameState)
+        private void OnGamestateUpdated(IGameState gameState)
         {
             CurrentGameState = gameState;
         }
 
-        public void OnCombatComplete(uint winningPartyId)
+        private void OnCombatCompleted(uint winningPartyId)
         {
-            GoToCombatEnd();
+            if (_controller.PartyId == winningPartyId)
+            {
+                _results = CombatResults.CreateSuccess(
+                    Settings.Enemies,
+                    _partyData);
+            }
+            else
+            {
+                _results = CombatResults.CreateFailure();
+            }
+
+            UpdateOptions();
         }
 
         private void UpdateOptions()
         {
             _currentOptions.Clear();
+
+            if (_results != null)
+            {
+                if (!_currentOptions.TryGetValue(CATEGORY_DEFAULT, out var defaultList))
+                    _currentOptions[CATEGORY_DEFAULT] = defaultList = new List<IEventOption>(1);
+
+                defaultList.Add(new EventOption(
+                    "Exit Combat",
+                    GoToCombatEnd,
+                    CATEGORY_DEFAULT));
+                return;
+            }
 
             if (_controller?.AvailableActions != null)
             {
@@ -104,11 +133,19 @@ namespace Core.States.Combat
 
             debugList.Add(new EventOption(
                 "Win Combat",
-                GoToCombatEnd,
+                () =>
+                {
+                    _results = CombatResults.CreateSuccess(Settings.Enemies, _partyData);
+                    GoToCombatEnd();
+                },
                 CATEGORY_DEBUG));
             debugList.Add(new EventOption(
                 "Lose Combat",
-                GoToCombatEnd,
+                () =>
+                {
+                    _results = CombatResults.CreateFailure();
+                    GoToCombatEnd();
+                },
                 CATEGORY_DEBUG));
 
             OptionsChangedSignal?.Fire(this);
@@ -125,7 +162,7 @@ namespace Core.States.Combat
                 return $"ACTION {action.Id}: {string.Join(", ", action.Targets.Select(x => x.Name))}";
             }
         }
-        
+
         private void OnActionSelected(IAction action)
         {
             _controller.SubmitActionResponse(action.Id);
@@ -133,7 +170,10 @@ namespace Core.States.Combat
 
         private void GoToCombatEnd()
         {
-            _stateMachine.ChangeState<CombatEndState>();
+            _stateMachine.ChangeState(
+                new CombatEndState(
+                    Settings,
+                    _results));
         }
     }
 }

@@ -100,14 +100,14 @@ namespace Core.States
             {
                 _currentOptions[CATEGORY_DEBUG] = new List<IEventOption>()
                 {
-                    new EventOption("Reset", ResetPlayerData, CATEGORY_DEBUG)
+                    new EventOption("Reset Player", ResetPlayerData, CATEGORY_DEBUG)
                 };
             }
             if (SharedContext.TryGet(out PartyDataWrapper _))
             {
                 _currentOptions[CATEGORY_DEBUG] = new List<IEventOption>()
                 {
-                    new EventOption("Retire", ResetPartyData, CATEGORY_DEBUG)
+                    new EventOption("Retire Party", ResetPartyData, CATEGORY_DEBUG)
                 };
             }
         }
@@ -128,10 +128,20 @@ namespace Core.States
             SharedContext.Clear<PartyDataWrapper>();
 
             PathUtility pathUtility = SharedContext.Get<PathUtility>();
-            File.Delete(pathUtility.GetPlayerDataPath());
-            Directory.Delete(pathUtility.GetPlayerDataPath().Replace(".json", ""));
 
-            SharedContext.Get<IStateMachine>().ChangeState<StartupState>();
+            string filePath = pathUtility.GetPlayerDataPath();
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
+            string folderPath = filePath.Replace(".json", "");
+            if (Directory.Exists(folderPath))
+            {
+                Directory.Delete(folderPath, true);
+            }
+
+            OnContent();
         }
 
         private void ResetPartyData()
@@ -144,8 +154,8 @@ namespace Core.States
             File.WriteAllText(pathUtility.GetPlayerDataPath(), JsonConvert.SerializeObject(playerDataWrapper, jsonSettings));
 
             SharedContext.Clear<PartyDataWrapper>();
-
-            OptionsChangedSignal?.Fire(this);
+            
+            OnContent();
         }
 
         private static PlayerDataWrapper LoadPlayerData(IContext context)

@@ -21,7 +21,7 @@ namespace Core.States.Town
             public readonly List<IItem> ItemShopInventory = new List<IItem>(10);
             public readonly List<IItem> ArmorShopInventory = new List<IItem>(10);
             public readonly List<IItem> WeaponShopInventory = new List<IItem>(10);
-            
+
             public bool HasItemShop = true;
             public bool HasArmorShop = true;
             public bool HasWeaponShop = true;
@@ -162,7 +162,8 @@ namespace Core.States.Town
 
         private void GoToInn()
         {
-            SharedContext.Get<IStateMachine>().ChangeState<TownInnState>();
+            SharedContext.Get<IStateMachine>().ChangeState(
+                new TownInnState("Inn"));
         }
     }
 }
