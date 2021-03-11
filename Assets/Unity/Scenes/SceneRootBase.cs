@@ -37,6 +37,7 @@ namespace Unity.Scenes
             {
                 GUILayout.Label($"Debug Flow ({GetType().Name})", new GUIStyle(GUI.skin.label) {fontStyle = FontStyle.Bold});
 
+                _scrollPos = GUILayout.BeginScrollView(_scrollPos);
                 GUILayout.BeginVertical(GUI.skin.box);
                 {
                     OnGUIContentForState();
@@ -47,7 +48,6 @@ namespace Unity.Scenes
                 {
                     if (State != null)
                     {
-                        _scrollPos = GUILayout.BeginScrollView(_scrollPos);
                         GUILayout.BeginHorizontal(GUI.skin.box);
                         {
                             foreach (var eventGroup in State
@@ -99,7 +99,6 @@ namespace Unity.Scenes
                             }
                         }
                         GUILayout.EndHorizontal();
-                        GUILayout.EndScrollView();
                     }
                     else
                     {
@@ -110,6 +109,7 @@ namespace Unity.Scenes
                     }
                 }
                 GUILayout.EndVertical();
+                GUILayout.EndScrollView();
             }
             GUILayout.EndVertical();
         }

@@ -6,6 +6,7 @@ using Core.Items;
 using Core.Items.Armors;
 using Core.Items.Weapons;
 using Core.States.BaseClasses;
+using Core.States.SubStates;
 using Core.Wrappers;
 using SadPumpkin.Util.StateMachine;
 using SadPumpkin.Util.StateMachine.States;
@@ -35,6 +36,8 @@ namespace Core.States.Town
         private static TownDetails _lastTownDetails = null;
 
         private PartyDataWrapper _partyData = null;
+
+        public EquipmentSubState EquipmentSubState { get; private set; }
 
         public override void OnEnter(IState fromState)
         {
@@ -74,56 +77,108 @@ namespace Core.States.Town
                     _lastTownDetails.WeaponShopInventory.AddRange(SharedContext.Get<WeaponDatabase>().GetRandom(weaponsInInventory));
                 }
             }
+
+            EquipmentSubState = new EquipmentSubState(SharedContext);
         }
 
         public override void OnContent()
         {
-            _currentOptions[CATEGORY_DEFAULT] = new List<IEventOption>(5);
+            SetupOptions();
+        }
+
+        private void SetupOptions()
+        {
+            _currentOptions.Clear();
+
+            if (EquipmentSubState.Active)
+            {
+                SetupOptions_ChangeEquipment();
+            }
+            else
+            {
+                SetupOptions_Default();
+            }
+        }
+
+        private void SetupOptions_Default()
+        {
+            var defaultList = _currentOptions[CATEGORY_DEFAULT] = new List<IEventOption>(5);
+            
+            defaultList.Add(new EventOption(
+                "Change Equipment",
+                OpenEquipment,
+                CATEGORY_DEFAULT));
 
             if (_lastTownDetails.HasItemShop)
             {
-                _currentOptions[CATEGORY_DEFAULT].Add(new EventOption(
+                defaultList.Add(new EventOption(
                     "Enter Item Shop",
                     GoToItemShop,
-                    priority: 0));
+                    CATEGORY_DEFAULT));
             }
 
             if (_lastTownDetails.HasArmorShop)
             {
-                _currentOptions[CATEGORY_DEFAULT].Add(new EventOption(
+                defaultList.Add(new EventOption(
                     "Enter Armor Shop",
                     GoToArmorShop,
-                    priority: 1));
+                    CATEGORY_DEFAULT));
             }
 
             if (_lastTownDetails.HasWeaponShop)
             {
-                _currentOptions[CATEGORY_DEFAULT].Add(new EventOption(
+                defaultList.Add(new EventOption(
                     "Enter Weapon Shop",
                     GoToWeaponShop,
-                    priority: 2));
+                    CATEGORY_DEFAULT));
             }
 
             if (_lastTownDetails.HasDojo)
             {
-                _currentOptions[CATEGORY_DEFAULT].Add(new EventOption(
+                defaultList.Add(new EventOption(
                     "Enter Dojo",
                     GoToDojo,
-                    priority: 4));
+                    CATEGORY_DEFAULT));
             }
 
             if (_lastTownDetails.HasInn)
             {
-                _currentOptions[CATEGORY_DEFAULT].Add(new EventOption(
+                defaultList.Add(new EventOption(
                     "Enter Inn",
                     GoToInn,
-                    priority: 5));
+                    CATEGORY_DEFAULT));
             }
 
-            _currentOptions[CATEGORY_DEFAULT].Add(new EventOption(
+            defaultList.Add(new EventOption(
                 "Leave Town",
                 GoToGameHub,
-                priority: 99));
+                CATEGORY_DEFAULT));
+        }
+
+        private void SetupOptions_ChangeEquipment()
+        {
+            foreach (var optionsKvp in EquipmentSubState.CurrentOptions)
+            {
+                _currentOptions[optionsKvp.Key] = optionsKvp.Value;
+            }
+
+            var defaultList = _currentOptions[CATEGORY_DEFAULT] = new List<IEventOption>(5);
+            defaultList.Add(new EventOption(
+                "Stop Equipping",
+                CloseEquipment,
+                CATEGORY_DEFAULT));
+        }
+
+        private void OpenEquipment()
+        {
+            EquipmentSubState.Active = true;
+            SetupOptions();
+        }
+
+        private void CloseEquipment()
+        {
+            EquipmentSubState.Active = false;
+            SetupOptions();
         }
 
         private void GoToGameHub()

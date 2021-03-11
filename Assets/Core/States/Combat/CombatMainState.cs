@@ -24,13 +24,15 @@ namespace Core.States.Combat
         private readonly PlayerCharacterController _controller = null;
 
         private IStateMachine _stateMachine = null;
-        private PartyDataWrapper _partyData = null;
-
+        
+        public PartyDataWrapper PartyData { get; private set; }
         public CombatSettings.CombatSettings Settings { get; private set; }
 
         public IGameState CurrentGameState { get; private set; }
-        public IInitiativeActor ActiveActor => CurrentGameState != null ? CurrentGameState.ActiveActor : null; //probably use a null obj here
+        public IInitiativeActor ActiveActor => CurrentGameState?.ActiveActor;
 
+        public bool GameStateDirtied { get; set; }
+        
         private CombatResults _results;
 
         public CombatMainState(
@@ -50,7 +52,7 @@ namespace Core.States.Combat
         public override void OnEnter(IState fromState)
         {
             _stateMachine = SharedContext.Get<IStateMachine>();
-            _partyData = SharedContext.Get<PartyDataWrapper>();
+            PartyData = SharedContext.Get<PartyDataWrapper>();
             _combatManager.GameStateUpdated.Listen(OnGamestateUpdated);
             _combatManager.CombatComplete.Listen(OnCombatCompleted);
         }
@@ -71,6 +73,7 @@ namespace Core.States.Combat
         private void OnGamestateUpdated(IGameState gameState)
         {
             CurrentGameState = gameState;
+            GameStateDirtied = true;
         }
 
         private void OnCombatCompleted(uint winningPartyId)
@@ -79,7 +82,7 @@ namespace Core.States.Combat
             {
                 _results = CombatResults.CreateSuccess(
                     Settings.Enemies,
-                    _partyData);
+                    PartyData);
             }
             else
             {
@@ -135,7 +138,7 @@ namespace Core.States.Combat
                 "Win Combat",
                 () =>
                 {
-                    _results = CombatResults.CreateSuccess(Settings.Enemies, _partyData);
+                    _results = CombatResults.CreateSuccess(Settings.Enemies, PartyData);
                     GoToCombatEnd();
                 },
                 CATEGORY_DEBUG));

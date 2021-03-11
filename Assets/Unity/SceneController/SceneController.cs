@@ -42,12 +42,14 @@ namespace Unity.Scenes
             _context.Get<StateChanged>().Listen(OnStateChanged);
 
             SceneManager.sceneLoaded += OnSceneLoaded;
+            SceneManager.sceneUnloaded += OnSceneUnloaded;
         }
 
         public void Dispose()
         {
             _context?.Get<StateChanged>()?.Unlisten(OnStateChanged);
             SceneManager.sceneLoaded -= OnSceneLoaded;
+            SceneManager.sceneUnloaded -= OnSceneUnloaded;
         }
 
         private void OnStateChanged(IState newState)
@@ -64,6 +66,16 @@ namespace Unity.Scenes
             ISceneRoot sceneRoot = scene.GetSceneComponent<ISceneRoot>();
 
             sceneRoot?.InjectContext(_context);
+        }
+
+        private void OnSceneUnloaded(Scene scene)
+        {
+            if (scene.Equals(default(Scene)))
+                return;
+
+            ISceneRoot sceneRoot = scene.GetSceneComponent<ISceneRoot>();
+
+            sceneRoot?.Dispose();
         }
     }
 }

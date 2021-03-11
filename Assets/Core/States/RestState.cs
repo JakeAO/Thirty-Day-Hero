@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Core.Etc;
 using Core.EventOptions;
 using Core.States.BaseClasses;
+using Core.States.SubStates;
 using Core.Wrappers;
 using SadPumpkin.Util.StateMachine;
 using SadPumpkin.Util.StateMachine.States;
@@ -18,6 +19,8 @@ namespace Core.States
 
         private RestProvider _restProvider = null;
 
+        public EquipmentSubState EquipmentSubState { get; private set; }
+
         public override void OnEnter(IState fromState)
         {
             _partyData = SharedContext.Get<PartyDataWrapper>();
@@ -25,6 +28,7 @@ namespace Core.States
                 ? new RestProvider(0.5, 0.5)
                 : new RestProvider(0.2, 0.2);
 
+            EquipmentSubState = new EquipmentSubState(SharedContext);
         }
 
         public override void OnContent()
@@ -34,24 +38,67 @@ namespace Core.States
 
         private void SetupOptions()
         {
-            if (!_currentOptions.TryGetValue(CATEGORY_DEFAULT, out var defaultList))
-                _currentOptions[CATEGORY_DEFAULT] = defaultList = new List<IEventOption>(3);
+            _currentOptions.Clear();
+            if (EquipmentSubState.Active)
+            {
+                SetupOptions_ChangeEquipment();
+            }
+            else
+            {
+                SetupOptions_Default();
+            }
 
-            defaultList.Clear();
+            OptionsChangedSignal?.Fire(this);
+        }
 
+        private void SetupOptions_Default()
+        {
+            var defaultList = _currentOptions[CATEGORY_DEFAULT] = new List<IEventOption>(5);
+            defaultList.Add(new EventOption(
+                "Change Equipment",
+                OpenEquipment,
+                CATEGORY_DEFAULT));
             defaultList.Add(new EventOption(
                 "Rest",
                 OnRest,
+                CATEGORY_DEFAULT,
                 disabled: RestoredStats != null));
             defaultList.Add(new EventOption(
                 "Talk",
                 OnTalk,
+                CATEGORY_DEFAULT,
                 disabled: _partyData.Characters.Count == 1));
             defaultList.Add(new EventOption(
                 "Leave",
-                GoToGameHub));
+                GoToGameHub,
+                CATEGORY_DEFAULT));
+        }
 
-            OptionsChangedSignal?.Fire(this);
+        private void SetupOptions_ChangeEquipment()
+        {
+            var defaultList = _currentOptions[CATEGORY_DEFAULT] = new List<IEventOption>(5);
+            foreach (var optionsKvp in EquipmentSubState.CurrentOptions)
+            {
+                _currentOptions[optionsKvp.Key] = optionsKvp.Value;
+            }
+
+            defaultList.Clear();
+            defaultList.Add(new EventOption(
+                "Stop Equipping",
+                CloseEquipment,
+                CATEGORY_DEFAULT));
+        }
+
+        private void OpenEquipment()
+        {
+            EquipmentSubState.Active = true;
+            SetupOptions();
+        }
+
+        private void CloseEquipment()
+        {
+            EquipmentSubState.Active = false;
+            SetupOptions();
         }
 
         private void OnRest()

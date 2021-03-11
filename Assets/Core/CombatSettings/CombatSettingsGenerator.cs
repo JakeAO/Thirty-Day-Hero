@@ -106,12 +106,12 @@ namespace Core.CombatSettings
                 switch (diff)
                 {
                     case CombatDifficulty.Hard:
-                        return (uint)(totalStats * 1f);
+                        return (uint) (totalStats * 0.75f);
                     case CombatDifficulty.Normal:
-                        return (uint)(totalStats * 0.75f);
+                        return (uint) (totalStats * 0.5f);
                     case CombatDifficulty.Easy:
                     default:
-                        return (uint)(totalStats * 0.5f);
+                        return (uint) (totalStats * 0.25f);
                 }
             }
 

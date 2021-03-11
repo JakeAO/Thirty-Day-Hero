@@ -9,6 +9,8 @@ namespace Unity.Scenes
 {
     public class GameHubScene : SceneRootBase<GameHubState>
     {
+        private bool _inventoryToggle = false;
+        
         protected override void OnGUIContentForState()
         {
             PartyDataWrapper partyDataWrapper = SharedContext.Get<PartyDataWrapper>();
@@ -34,10 +36,14 @@ namespace Unity.Scenes
                 }
             }
             GUILayout.EndHorizontal();
-            GUILayout.Label("Inventory:", new GUIStyle(GUI.skin.label) {fontStyle = FontStyle.Bold});
-            foreach (IItem item in partyDataWrapper.Inventory)
+
+            _inventoryToggle = GUILayout.Toggle(_inventoryToggle, "Inventory:", new GUIStyle(GUI.skin.label) {fontStyle = FontStyle.Bold});
+            if (_inventoryToggle)
             {
-                GUILayout.Label($"    {item.Name}");
+                foreach (IItem item in partyDataWrapper.Inventory)
+                {
+                    GUILayout.Label($"    {item.Name}");
+                }
             }
         }
     }

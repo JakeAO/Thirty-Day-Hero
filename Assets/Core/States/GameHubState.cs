@@ -6,6 +6,7 @@ using Core.Etc;
 using Core.EventOptions;
 using Core.States.BaseClasses;
 using Core.States.Combat;
+using Core.States.SubStates;
 using Core.States.Town;
 using Core.Wrappers;
 using SadPumpkin.Util.StateMachine;
@@ -17,8 +18,10 @@ namespace Core.States
     {
         public const string CATEGORY_DEFAULT = "";
         public const string CATEGORY_DEBUG = "Debug";
-        
+
         public PartyDataWrapper PartyData { get; private set; }
+
+        public EquipmentSubState EquipmentSubState { get; private set; }
 
         public override void OnEnter(IState fromState)
         {
@@ -29,59 +32,108 @@ namespace Core.States
                 PartyData.IncrementTime();
                 SaveLoadHelper.SavePartyData(SharedContext);
             }
+
+            EquipmentSubState = new EquipmentSubState(SharedContext);
         }
 
         public override void OnContent()
         {
-            if (!_currentOptions.TryGetValue(CATEGORY_DEBUG, out var debugList))
-                _currentOptions[CATEGORY_DEBUG] = debugList = new List<IEventOption>(2);
+            SetupOptions();
+        }
 
-            debugList.Add(new EventOption(
-                "Face the Calamity EARLY",
-                DebugGoToCalamity,
-                CATEGORY_DEBUG));
-            debugList.Add(new EventOption(
-                "Gain EXP + 25",
-                DebugGainExp,
-                CATEGORY_DEBUG));
-
-            if (PartyData.Day >= Constants.DAYS_TO_PREPARE)
+        private void SetupOptions()
+        {
+            _currentOptions.Clear();
+            if (EquipmentSubState.Active)
             {
-                _currentOptions[CATEGORY_DEFAULT] = new List<IEventOption>()
-                {
-                    new EventOption(
-                        "Face the Calamity",
-                        DebugGoToCalamity,
-                        CATEGORY_DEFAULT)
-                };
+                SetupOptions_ChangeEquipment();
+            }
+            else if (PartyData.Day >= Constants.DAYS_TO_PREPARE)
+            {
+                SetupOptions_Calamity();
             }
             else
             {
-                if (!_currentOptions.TryGetValue(CATEGORY_DEFAULT, out var defaultList))
-                    _currentOptions[CATEGORY_DEFAULT] = defaultList = new List<IEventOption>(5);
-
-                defaultList.Clear();
-                defaultList.Add(new EventOption(
-                    "Rest at Camp",
-                    GoToRest,
-                    CATEGORY_DEFAULT,
-                    0));
-                defaultList.Add(new EventOption(
-                    "Enter Town",
-                    GoToTownHub,
-                    CATEGORY_DEFAULT,
-                    1));
-                defaultList.Add(new EventOption(
-                    "Patrol Area",
-                    GoToPatrol,
-                    CATEGORY_DEFAULT,
-                    2));
-                defaultList.Add(new EventOption(
-                    "Search Area (Encounter)",
-                    GoToEncounter,
-                    CATEGORY_DEFAULT,
-                    4));
+                SetupOptions_Default();
             }
+
+            OptionsChangedSignal?.Fire(this);
+        }
+
+        private void SetupOptions_Default()
+        {
+            var debugList = _currentOptions[CATEGORY_DEBUG] = new List<IEventOption>(5);
+            debugList.Add(new EventOption(
+                "Day + 1",
+                DebugSkipDay,
+                CATEGORY_DEBUG));
+            debugList.Add(new EventOption(
+                "EXP + 50",
+                DebugGainExp,
+                CATEGORY_DEBUG));
+
+            var defaultList = _currentOptions[CATEGORY_DEFAULT] = new List<IEventOption>(5);
+            defaultList.Add(new EventOption(
+                "Change Equipment",
+                OpenEquipment,
+                CATEGORY_DEFAULT,
+                0));
+            defaultList.Add(new EventOption(
+                "Rest at Camp",
+                GoToRest,
+                CATEGORY_DEFAULT,
+                0));
+            defaultList.Add(new EventOption(
+                "Enter Town",
+                GoToTownHub,
+                CATEGORY_DEFAULT,
+                1));
+            defaultList.Add(new EventOption(
+                "Patrol Area",
+                GoToPatrol,
+                CATEGORY_DEFAULT,
+                2));
+            defaultList.Add(new EventOption(
+                "Search Area (Encounter)",
+                GoToEncounter,
+                CATEGORY_DEFAULT,
+                4));
+        }
+
+        private void SetupOptions_Calamity()
+        {
+            var defaultList = _currentOptions[CATEGORY_DEFAULT] = new List<IEventOption>(5);
+            defaultList.Add(new EventOption(
+                "Face the Calamity",
+                GoToCalamity,
+                CATEGORY_DEFAULT));
+        }
+
+        private void SetupOptions_ChangeEquipment()
+        {
+            var defaultList = _currentOptions[CATEGORY_DEFAULT] = new List<IEventOption>(5);
+            foreach (var optionsKvp in EquipmentSubState.CurrentOptions)
+            {
+                _currentOptions[optionsKvp.Key] = optionsKvp.Value;
+            }
+
+            defaultList.Clear();
+            defaultList.Add(new EventOption(
+                "Stop Equipping",
+                CloseEquipment,
+                CATEGORY_DEFAULT));
+        }
+
+        private void OpenEquipment()
+        {
+            EquipmentSubState.Active = true;
+            SetupOptions();
+        }
+
+        private void CloseEquipment()
+        {
+            EquipmentSubState.Active = false;
+            SetupOptions();
         }
 
         private void GoToRest()
@@ -104,7 +156,7 @@ namespace Core.States
             SharedContext.Get<IStateMachine>().ChangeState<EncounterState>();
         }
 
-        private void DebugGoToCalamity()
+        private void GoToCalamity()
         {
             SharedContext.Get<IStateMachine>().ChangeState(
                 new CombatSetupState(
@@ -113,13 +165,19 @@ namespace Core.States
                         new[] {PartyData.Calamity})));
         }
 
+        private void DebugSkipDay()
+        {
+            PartyData.Day += 1;
+            SetupOptions();
+        }
+
         private void DebugGainExp()
         {
             Random random = new Random();
             foreach (PlayerCharacter playerCharacter in PartyData.Characters)
             {
                 uint level = playerCharacter.Stats[StatType.LVL];
-                playerCharacter.Stats.ModifyStat(StatType.EXP, 25);
+                playerCharacter.Stats.ModifyStat(StatType.EXP, 50);
                 uint newLevel = playerCharacter.Stats[StatType.LVL];
                 while (level < newLevel)
                 {
@@ -127,6 +185,8 @@ namespace Core.States
                     level++;
                 }
             }
+
+            SetupOptions();
         }
     }
 }
