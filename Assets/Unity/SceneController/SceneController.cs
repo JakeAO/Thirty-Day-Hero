@@ -27,9 +27,7 @@ namespace Unity.Scenes
             {typeof(TownInnState), "TownInn"},
             {typeof(TownShopState), "TownShop"},
             {typeof(TownDojoState), "TownDojo"},
-            {typeof(CombatSetupState), "CombatSetup"},
-            {typeof(CombatMainState), "Combat"},
-            {typeof(CombatEndState), "CombatResults"},
+            {typeof(CombatState), "Combat"},
             {typeof(VictoryState), "Victory"},
             {typeof(DefeatState), "Defeat"},
         };

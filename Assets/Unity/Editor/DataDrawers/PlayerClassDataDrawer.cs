@@ -40,6 +40,16 @@ namespace Unity.Editor.DataDrawers
             value.Rarity = (RarityCategory) EditorGUILayout.EnumPopup("Rarity:", value.Rarity);
             value.WeaponProficiency = (WeaponType) EditorGUILayout.EnumFlagsField("Weapons:", value.WeaponProficiency);
             value.ArmorProficiency = (ArmorType) EditorGUILayout.EnumFlagsField("Armor:", value.ArmorProficiency);
+
+            GUILayout.BeginHorizontal();
+            value.ArtPath = EditorGUILayout.TextField("Art Id:", value.ArtPath);
+            Sprite artTexture = AssetDatabase.LoadAssetAtPath<Sprite>(value.ArtPath);
+            Sprite newArtTexture = (Sprite) EditorGUILayout.ObjectField(artTexture, typeof(Sprite), false, GUILayout.ExpandWidth(false));
+            if (artTexture != newArtTexture)
+            {
+                value.ArtPath = AssetDatabase.GetAssetPath(newArtTexture);
+            }
+            GUILayout.EndHorizontal();
             
             GUILayout.BeginHorizontal();
             GUILayout.Label("Naming:", GUILayout.ExpandWidth(false));

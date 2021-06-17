@@ -1,9 +1,8 @@
-using Core.Actors.Enemy;
 using Core.Classes.Calamity;
 
 namespace Core.Actors.Calamity
 {
-    public interface ICalamityCharacterActor : IEnemyCharacterActor
+    public interface ICalamityCharacterActor : ICharacterActor
     {
         new ICalamityClass Class { get; }
     }

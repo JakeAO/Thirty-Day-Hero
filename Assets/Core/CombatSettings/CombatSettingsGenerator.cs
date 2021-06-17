@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Core.Actors;
+using Core.Actors.Calamity;
 using Core.Actors.Enemy;
 using Core.Classes.Enemy;
 using Core.Database;
@@ -21,7 +22,7 @@ namespace Core.CombatSettings
             _enemyGroupDatabase = enemyGroupDatabase;
         }
 
-        public CombatSettings CreateFromEnemies(uint partyId, IReadOnlyCollection<IEnemyCharacterActor> enemies)
+        public CombatSettings CreateFromEnemies(uint partyId, IReadOnlyCollection<ICharacterActor> enemies)
         {
             return new CombatSettings(partyId, enemies, new RandomCharacterController());
         }

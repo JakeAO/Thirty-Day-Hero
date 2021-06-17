@@ -88,6 +88,7 @@
     "$type": "System.Collections.Generic.Dictionary`2[[Core.Etc.DamageType, SadPumpkin.Games.ThirtyDayHero.Core],[System.Single, mscorlib]], mscorlib",
     "Dark": 0.5
   },
+  "ArtPath": "Assets/Art/Characters/BlackMage_Sheet.png",
   "WeaponProficiency": 64,
   "ArmorProficiency": 0,
   "StartingEquipment": {

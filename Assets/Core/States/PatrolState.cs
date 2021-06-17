@@ -52,7 +52,7 @@ namespace Core.States
         private void GoToCombat()
         {
             SharedContext.Get<IStateMachine>().ChangeState(
-                new CombatSetupState(Settings));
+                new CombatState(Settings));
         }
 
         private void GoToGameHub()

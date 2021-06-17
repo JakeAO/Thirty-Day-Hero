@@ -16,5 +16,6 @@ namespace Core.States.BaseClasses
         void OnEnter(IState fromState);
         void OnContent();
         void OnExit(IState toState);
+        void OnUpdate(float deltaTime);
     }
 }

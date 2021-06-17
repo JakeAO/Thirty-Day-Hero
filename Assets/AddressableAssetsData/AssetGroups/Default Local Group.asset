@@ -6269,6 +6269,54 @@ MonoBehaviour:
     m_SerializedLabels: []
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
+  - m_GUID: 69227510e8419f24e9e467db5256f659
+    m_Address: Assets/Unity/Scenes/Shared/Entities/EnemyActorView.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: 3c9d2f4afe786a34e80d9854e0ed90f9
+    m_Address: Assets/Unity/Scenes/Shared/Entities/PlayerActorView.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: 2ec64f6bac2322f4283f160aff0147a7
+    m_Address: Assets/Unity/Scenes/Shared/Entities/CalamityActorView.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: 44ded9e15c9b0424b917b8a4b5ccae5e
+    m_Address: Assets/Art/Characters/BlackMage_Sheet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: e3fa16e2fe09a7f4098351946f1f9fdf
+    m_Address: Assets/Art/Characters/WhiteMage_Sheet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: 87e252e5c603c9e44971061d0f802c9e
+    m_Address: Assets/Art/Characters/Fighter_Sheet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: 886e380b7cde9a14b9ff4a53f192e450
+    m_Address: Assets/Art/Characters/RedMage_Sheet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: f09c70bcfa425e145b3e024990ed6cc4
+    m_Address: Assets/Art/Characters/Rogue_Sheet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 7d11fa22998c3ce499c7f74e960c27df, type: 2}
   m_SchemaSet:

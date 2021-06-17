@@ -18,6 +18,7 @@ namespace Core.Classes.Player
         public IStatMapIncrementor LevelUpStats { get; set; }
         public IReadOnlyDictionary<uint, IReadOnlyCollection<IAbility>> AbilitiesPerLevel { get; set; }
         public IReadOnlyDictionary<DamageType, float> IntrinsicDamageModification { get; set; }
+        public string ArtPath { get; set; }
         public WeaponType WeaponProficiency { get; set; }
         public ArmorType ArmorProficiency { get; set; }
         public IEquipMapBuilder StartingEquipment { get; set; }
@@ -25,6 +26,7 @@ namespace Core.Classes.Player
         public PlayerClass()
             : this(
                 0u,
+                string.Empty,
                 string.Empty,
                 string.Empty,
                 NullNameGenerator.Instance,
@@ -42,6 +44,7 @@ namespace Core.Classes.Player
             uint id,
             string name,
             string desc,
+            string artPath,
             INameGenerator nameGenerator,
             IStatMapBuilder startingStats,
             IStatMapIncrementor levelUpStats,
@@ -54,6 +57,7 @@ namespace Core.Classes.Player
             Id = id;
             Name = name;
             Desc = desc;
+            ArtPath = artPath;
             NameGenerator = nameGenerator;
             StartingStats = startingStats;
             LevelUpStats = levelUpStats;

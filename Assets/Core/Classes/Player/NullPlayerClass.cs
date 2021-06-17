@@ -23,6 +23,7 @@ namespace Core.Classes.Player
         public IReadOnlyDictionary<DamageType, float> IntrinsicDamageModification { get; } = new Dictionary<DamageType, float>();
         public IStatMapBuilder StartingStats => NullStatMapBuilder.Instance;
         public IStatMapIncrementor LevelUpStats => NullStatMapIncrementor.Instance;
+        public string ArtPath => string.Empty;
         public WeaponType WeaponProficiency => WeaponType.Invalid;
         public ArmorType ArmorProficiency => ArmorType.Invalid;
         public IEquipMapBuilder StartingEquipment => NullEquipMapBuilder.Instance;

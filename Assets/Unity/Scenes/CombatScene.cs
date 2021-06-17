@@ -1,155 +1,87 @@
-﻿using Core.Actors.Enemy;
+﻿using Core.Actors;
 using Core.Actors.Player;
-using Core.States.Combat;
-using SadPumpkin.Util.CombatEngine;
-using SadPumpkin.Util.CombatEngine.Actor;
-using SadPumpkin.Util.CombatEngine.GameState;
-using System.Collections.Generic;
-using System.Linq;
+using Core.States;
+using SadPumpkin.Util.Events;
+using SadPumpkin.Util.UXEventQueue;
 using Unity.Scenes.Combat;
+using Unity.Scenes.Shared.Entities;
+using Unity.Scenes.Shared.Pooling;
+using Unity.Scenes.Shared.Status;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.UI;
 
 namespace Unity.Scenes
 {
-    public class CombatScene : SceneRootBase<CombatMainState>
+    public class CombatScene : SceneRootBase<CombatState>
     {
-        [SerializeField] private LayoutGroup _playerLayoutGroup;
-        [SerializeField] private PlayerCharacterCombatPane _playerCombatPanePrefab;
-        [SerializeField] private LayoutGroup _enemyLayoutGroup;
-        [SerializeField] private EnemyCharacterCombatPane _enemyCombatPanePrefab;
-        
-        private IGameState _currentGameState => State.CurrentGameState;
+        [SerializeField] private Transform _playerRow;
+        [SerializeField] private Transform _enemyRow;
 
-        private Vector2 _initiativeScroll = new Vector2(0, 0);
-        private readonly Dictionary<string, Texture2D> _enemyArtTextures = new Dictionary<string, Texture2D>();
+        public IUXEventQueue UxEventQueue { get; private set; } = new UXEventQueue();
+        public IEventQueue EventQueue { get; private set; }
+        public IUnityPool UnityPool { get; private set; }
+        public IActorViewManager ActorViewManager { get; private set; }
+        public IStatusViewManager StatusViewManager { get; private set; }
 
-        private readonly Dictionary<uint, PlayerCharacterCombatPane> _playerPanes = new Dictionary<uint, PlayerCharacterCombatPane>();
-        private readonly Dictionary<uint, EnemyCharacterCombatPane> _enemyPanes = new Dictionary<uint, EnemyCharacterCombatPane>();
-        
+        private EventDataConverter _eventDataConverter = null;
+
         protected override void OnInject()
         {
-            foreach (string artPath in State.Settings.Enemies
-                .Select(x => x.Class.ArtPath)
-                .Distinct())
+            EventQueue = State.EventQueue;
+
+            // Pull context data
+            UnityPool = SharedContext.Get<IUnityPool>();
+            ActorViewManager = SharedContext.Get<IActorViewManager>();
+            StatusViewManager = SharedContext.Get<IStatusViewManager>();
+
+            // Setup context data
+            SharedContext.Set(UxEventQueue);
+            SharedContext.Set(State.EventQueue);
+
+            _eventDataConverter = new EventDataConverter(SharedContext);
+
+            // Setup scene elements
+            foreach (ICharacterActor actor in State.CombatData.AllActors)
             {
-                if (!string.IsNullOrWhiteSpace(artPath))
+                switch (actor)
                 {
-                    string artPathCache = artPath;
-                    Addressables.LoadAssetAsync<Texture2D>(artPathCache).Completed += delegate(AsyncOperationHandle<Texture2D> handle)
-                    {
-                        Texture2D texture2D = handle.Result;
-                        if (texture2D)
-                            _enemyArtTextures[artPathCache] = handle.Result;
-                    };
+                    case IPlayerCharacterActor _:
+                        ActorViewManager.CreateView(actor, _playerRow);
+                        break;
+                    default:
+                        ActorViewManager.CreateView(actor, _enemyRow);
+                        break;
                 }
             }
-
-            SetupPlayerCharacters(State.PartyData.Characters);
-            SetupEnemyCharacters(State.Settings.Enemies);
         }
 
-        private void SetupPlayerCharacters(IReadOnlyCollection<IPlayerCharacterActor> playerCharacters)
+        protected override void OnUpdate(float deltaTime)
         {
-            foreach (IPlayerCharacterActor character in playerCharacters)
-            {
-                var pane = Instantiate(_playerCombatPanePrefab, _playerLayoutGroup.transform);
-                pane.UpdateCharacter(character);
-                _playerPanes[character.Id] = pane;
-            }
-        }
+            base.OnUpdate(deltaTime);
 
-        private void SetupEnemyCharacters(IReadOnlyCollection<IEnemyCharacterActor> enemyCharacters)
-        {
-            foreach (IEnemyCharacterActor character in enemyCharacters)
-            {
-                var pane = Instantiate(_enemyCombatPanePrefab, _enemyLayoutGroup.transform);
-                pane.UpdateCharacter(character);
-                _enemyPanes[character.Id] = pane;
-            }
-        }
+            // Tick uxEvent queue
+            UxEventQueue.TickUpdate(deltaTime);
 
-        private void Update()
-        {
-            if (State.GameStateDirtied)
+            // Convert events to uxEvents
+            if (State.EventQueue.TryDequeueEvent(out IEventData eventData))
             {
-                foreach (var initiativePair in State.CurrentGameState.InitiativeOrder)
+                foreach (IUXEvent uxEvent in _eventDataConverter.ConvertEvent(eventData))
                 {
-                    switch (initiativePair.Entity)
-                    {
-                        case IPlayerCharacterActor playerCharacterActor:
-                            if (_playerPanes.TryGetValue(playerCharacterActor.Id, out var playerPane))
-                                playerPane.UpdateCharacter(playerCharacterActor);
-                            break;
-                        case IEnemyCharacterActor enemyCharacterActor:
-                            if (_enemyPanes.TryGetValue(enemyCharacterActor.Id, out var enemyPane))
-                                enemyPane.UpdateCharacter(enemyCharacterActor);
-                            break;
-                    }
-                }
-
-                State.GameStateDirtied = false;
-            }
-        }
-
-        protected override void OnGUIContentForState()
-        {
-            RenderInitiative(_currentGameState.InitiativeOrder);
-        }
-
-        private void RenderInitiative(IEnumerable<IInitiativePair> initiativePairs)
-        {
-            GUILayout.Label("Initiative:");
-
-            _initiativeScroll = GUILayout.BeginScrollView(_initiativeScroll, GUI.skin.box, GUILayout.Width(500));
-            {
-                GUILayout.BeginHorizontal();
-                {
-                    foreach (IInitiativePair pair in initiativePairs)
-                    {
-                        TextAnchor prvAnchor = GUI.skin.label.alignment;
-                        GUI.skin.label.alignment = TextAnchor.MiddleCenter;
-
-                        GUILayout.BeginVertical(GUI.skin.box);
-                        {
-                            GUI.color = ActorColor(pair.Entity);
-                            GUILayout.Label(pair.Entity.Name, GUILayout.Height(20));
-                            GUI.color = Color.white;
-                        }
-                        GUILayout.EndVertical();
-
-                        GUI.skin.label.alignment = prvAnchor;
-                    }
-                }
-                GUILayout.EndHorizontal();
-            }
-            GUILayout.EndScrollView();
-        }
-
-        private Color ActorColor(IInitiativeActor actor)
-        {
-            uint activeActorId = _currentGameState.ActiveActor != null ? _currentGameState.ActiveActor.Id : 0;
-
-            if (!actor.IsAlive())
-            {
-                if (actor.Id == activeActorId)
-                {
-                    return Color.Lerp(Color.green, Color.red, 0.5f);
-                }
-                else
-                {
-                    return Color.red;
+                    UxEventQueue.AddEvent(uxEvent);
                 }
             }
-            else if (actor.Id == activeActorId)
+        }
+
+        protected override void OnDispose()
+        {
+            base.OnDispose();
+
+            SharedContext.Clear<IUXEventQueue>();
+            SharedContext.Clear<IEventQueue>();
+            
+            // Teardown scene elements
+            foreach (ICharacterActor actor in State.CombatData.AllActors)
             {
-                return Color.green;
-            }
-            else
-            {
-                return Color.white;
+                ActorViewManager.DeleteView(actor);
             }
         }
     }

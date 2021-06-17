@@ -5,16 +5,25 @@ using Core.States;
 using Core.States.BaseClasses;
 using Core.Wrappers;
 using SadPumpkin.Util.Context;
+using SadPumpkin.Util.Events;
 using SadPumpkin.Util.StateMachine;
 using SadPumpkin.Util.StateMachine.Signals;
+using SadPumpkin.Util.UXEventQueue;
 using Unity.Extensions;
 using Unity.Interface;
+using Unity.Scenes.Shared.Entities;
+using Unity.Scenes.Shared.Pooling;
+using Unity.Utility;
 using UnityEngine;
 
 namespace Unity.Scenes
 {
     public class BootScene : SceneRootBase<StartupState>
     {
+        [SerializeField] private PlayerActorView _playerActorView;
+        [SerializeField] private EnemyActorView _enemyActorView;
+        [SerializeField] private CalamityActorView _calamityActorView;
+        
         [SerializeField] private ButtonWithLabel _playButton;
 
         private void Start()
@@ -25,6 +34,23 @@ namespace Unity.Scenes
             // Create context
             SharedContext = new Context();
             State = new StartupState();
+
+            // Create and add UpdateTickerComponent
+            UpdateTickerComponent updateTickerComponent = new GameObject(
+                    "UpdateTicker",
+                    typeof(UpdateTickerComponent),
+                    typeof(DontDestroyOnLoadObject))
+                .GetComponent<UpdateTickerComponent>();
+            SharedContext.Set(updateTickerComponent);
+
+            // Create and add EventQueue
+            IEventQueue eventQueue = new EventQueue();
+            SharedContext.Set(eventQueue);
+            
+            // Create and add UXEventQueue
+            IUXEventQueue uxEventQueue = new UXEventQueue();
+            updateTickerComponent.DeltaTimeTick += uxEventQueue.TickUpdate;
+            SharedContext.Set(uxEventQueue);
 
             // Create and add PathUtility
             PathUtility pathUtility = new PathUtility(
@@ -39,7 +65,19 @@ namespace Unity.Scenes
                 Path.Combine(Application.streamingAssetsPath, "Definitions", "Weapon"),
                 Path.Combine(Application.streamingAssetsPath, "Definitions", "Armor"));
             SharedContext.Set(pathUtility);
-
+            
+            // Create and add UnityPool
+            IUnityPool unityPool = UnityPool.CreatePool();
+            SharedContext.Set(unityPool);
+            
+            // Create and add default ActorViewManager
+            IActorViewManager actorViewManager = new ActorViewManager(
+                unityPool,
+                _playerActorView,
+                _enemyActorView,
+                _calamityActorView);
+            SharedContext.Set(actorViewManager);
+            
             StateChanged stateChangedSignal = new StateChanged();
             SharedContext.Set(stateChangedSignal);
             stateChangedSignal.Listen(newState => Debug.Log($"[StateMachine] Changed state to {newState.GetType()}"));

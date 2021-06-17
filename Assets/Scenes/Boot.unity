@@ -590,6 +590,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5749234663261981742, guid: 10204e12914d20746b4240828e201348,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 10204e12914d20746b4240828e201348, type: 3}
 --- !u!224 &1115714020 stripped
@@ -761,6 +766,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39d7b00755f132f49b7030871ad105b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerActorView: {fileID: 8670433279264686989, guid: 3c9d2f4afe786a34e80d9854e0ed90f9,
+    type: 3}
+  _enemyActorView: {fileID: 4506993460749549923, guid: 69227510e8419f24e9e467db5256f659,
+    type: 3}
+  _calamityActorView: {fileID: 239933613094830210, guid: 2ec64f6bac2322f4283f160aff0147a7,
+    type: 3}
   _playButton: {fileID: 2139084898}
 --- !u!4 &1751944671
 Transform:

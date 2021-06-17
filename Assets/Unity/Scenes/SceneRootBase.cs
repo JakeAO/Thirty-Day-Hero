@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Core.EventOptions;
-using Core.States;
 using Core.States.BaseClasses;
 using SadPumpkin.Util.Context;
 using SadPumpkin.Util.StateMachine.States;
@@ -29,6 +28,12 @@ namespace Unity.Scenes
 
             SharedContext = null;
             State = default;
+        }
+
+        private void Update()
+        {
+            OnUpdate(Time.deltaTime);
+            State.OnUpdate(Time.deltaTime);
         }
 
         private void OnGUI()
@@ -122,6 +127,10 @@ namespace Unity.Scenes
         {
         }
 
+        protected virtual void OnUpdate(float deltaTime)
+        {
+        }
+        
         protected virtual void OnGUIContentForState()
         {
 

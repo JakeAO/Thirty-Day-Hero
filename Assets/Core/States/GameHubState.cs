@@ -159,7 +159,7 @@ namespace Core.States
         private void GoToCalamity()
         {
             SharedContext.Get<IStateMachine>().ChangeState(
-                new CombatSetupState(
+                new CombatState(
                     SharedContext.Get<CombatSettingsGenerator>().CreateFromEnemies(
                         PartyData.Calamity.Party,
                         new[] {PartyData.Calamity})));

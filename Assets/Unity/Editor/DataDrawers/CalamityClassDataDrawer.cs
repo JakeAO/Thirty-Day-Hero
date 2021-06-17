@@ -37,8 +37,8 @@ namespace Unity.Editor.DataDrawers
 
             GUILayout.BeginHorizontal();
             value.ArtPath = EditorGUILayout.TextField("Art Id:", value.ArtPath);
-            Texture2D artTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(value.ArtPath);
-            Texture2D newArtTexture = (Texture2D) EditorGUILayout.ObjectField(artTexture, typeof(Texture2D), false, GUILayout.ExpandWidth(false));
+            Sprite artTexture = AssetDatabase.LoadAssetAtPath<Sprite>(value.ArtPath);
+            Sprite newArtTexture = (Sprite) EditorGUILayout.ObjectField(artTexture, typeof(Sprite), false, GUILayout.ExpandWidth(false));
             if (artTexture != newArtTexture)
             {
                 value.ArtPath = AssetDatabase.GetAssetPath(newArtTexture);

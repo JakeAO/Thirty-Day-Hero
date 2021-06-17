@@ -85,18 +85,28 @@ namespace Core.StatMap
             uint maxAtkStatAvgWithInt = (maxAtkStat + statChanges[StatType.INT]) / 2;
             uint staGain = Constants.LEVEL_STA_MULTIPLIER * maxAtkStatAvgWithInt;
 
-            statChanges[StatType.HP_Max] = statChanges[StatType.HP] = hpGain;
-            statChanges[StatType.STA_Max] = statChanges[StatType.STA] = staGain;
+            statChanges[StatType.HP_Max] = hpGain;
+            statChanges[StatType.STA_Max] = staGain;
 
             Dictionary<StatType, uint> newStats = new Dictionary<StatType, uint>();
             foreach (var enumValue in Enum.GetValues(typeof(StatType)))
             {
                 StatType statType = (StatType) enumValue;
-                if (statType == StatType.Invalid)
-                    continue;
-                newStats[statType] = statMap.GetStat(statType);
-                if (statChanges.TryGetValue(statType, out uint statChange))
-                    newStats[statType] += statChange;
+                switch (statType)
+                {
+                    case StatType.Invalid:
+                        // nah
+                        break;
+                    case StatType.HP:
+                    case StatType.STA:
+                        // gaining a level doesn't magically heal you
+                        break;
+                    default:
+                        newStats[statType] = statMap.GetStat(statType);
+                        if (statChanges.TryGetValue(statType, out uint statChange))
+                            newStats[statType] += statChange;
+                        break;
+                }
             }
 
             return new StatMap(newStats);

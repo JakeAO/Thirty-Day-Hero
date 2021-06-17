@@ -66,6 +66,7 @@
       ]
     }
   },
+  "ArtPath": "Assets/Art/Characters/BlackMage_Sheet.png",
   "WeaponProficiency": 112,
   "ArmorProficiency": 1,
   "StartingEquipment": {

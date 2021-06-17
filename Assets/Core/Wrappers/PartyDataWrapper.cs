@@ -5,6 +5,8 @@ using Core.Actors.Player;
 using Core.Etc;
 using Core.Items;
 using Core.Signals;
+using SadPumpkin.Util.CombatEngine.CharacterControllers;
+using SadPumpkin.Util.CombatEngine.Party;
 using SadPumpkin.Util.Signals;
 
 namespace Core.Wrappers
@@ -145,5 +147,10 @@ namespace Core.Wrappers
                 Time++;
             }
         }
+
+        public IParty GetAsParty(ICharacterController controller) => new Party.Party(
+            _partyId,
+            controller,
+            _characters);
     }
 }

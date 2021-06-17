@@ -9,7 +9,7 @@ namespace Core.States.BaseClasses
 {
     public abstract class TDHStateBase : ITDHState
     {
-        public IContext SharedContext { get; private set; }
+        public IContext SharedContext { get; protected set; }
         public StateOptionsChangedSignal OptionsChangedSignal { get; private set; }
 
         public IReadOnlyDictionary<string, List<IEventOption>> CurrentOptions => _currentOptions;
@@ -28,17 +28,13 @@ namespace Core.States.BaseClasses
             OnEnter(previousState);
         }
 
-        public void PerformContent(IContext context)
+        public void PerformContent()
         {
-            SharedContext = context;
-
             OnContent();
         }
 
-        public void PerformTeardown(IContext context, IState nextState)
+        public void PerformTeardown(IState nextState)
         {
-            SharedContext = context;
-
             OnExit(nextState);
         }
 
@@ -53,6 +49,11 @@ namespace Core.States.BaseClasses
         }
 
         public virtual void OnExit(IState toState)
+        {
+            // Intentionally left blank.
+        }
+
+        public virtual void OnUpdate(float deltaTime)
         {
             // Intentionally left blank.
         }
