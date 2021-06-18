@@ -6317,6 +6317,18 @@ MonoBehaviour:
     m_SerializedLabels: []
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
+  - m_GUID: 566c4b8ac231d9043a06450550549d51
+    m_Address: Assets/Unity/Scenes/Combat/Battlefield/BattlefieldActorView.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: ab3afc5755b5bba45ac657d041426469
+    m_Address: Assets/Unity/Scenes/Shared/UX/TargetingRing.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 7d11fa22998c3ce499c7f74e960c27df, type: 2}
   m_SchemaSet:
