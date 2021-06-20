@@ -1,5 +1,4 @@
 using System;
-using Core.Classes.Calamity;
 using Core.Classes.Enemy;
 using Core.Database;
 using Newtonsoft.Json;
@@ -9,12 +8,10 @@ namespace Core.JSON
     public class EnemyClassConverter : JsonConverter<IEnemyClass>
     {
         private readonly EnemyClassDatabase _enemyDatabase;
-        private readonly CalamityClassDatabase _calamityDatabase;
 
-        public EnemyClassConverter(EnemyClassDatabase enemyDatabase, CalamityClassDatabase calamityDatabase)
+        public EnemyClassConverter(EnemyClassDatabase enemyDatabase)
         {
             _enemyDatabase = enemyDatabase;
-            _calamityDatabase = calamityDatabase;
         }
 
         public override void WriteJson(JsonWriter writer, IEnemyClass value, JsonSerializer serializer)
@@ -47,14 +44,7 @@ namespace Core.JSON
             {
                 // We're reading a reference to the object.
                 uint id = Convert.ToUInt32(reader?.Value ?? 0);
-                if (typeof(ICalamityClass).IsAssignableFrom(objectType))
-                {
-                    return _calamityDatabase.GetSpecific(id);
-                }
-                else
-                {
-                    return _enemyDatabase.GetSpecific(id);
-                }
+                return _enemyDatabase.GetSpecific(id);
             }
         }
     }

@@ -48,7 +48,7 @@
       ]
     }
   },
-  "ArtPath": "Assets/Art/Characters/Fighter_Sheet.png",
+  "ArtPath": "Assets/Art/ClassIcons/WarriorIcon.PNG",
   "WeaponProficiency": 21,
   "ArmorProficiency": 3,
   "StartingEquipment": {

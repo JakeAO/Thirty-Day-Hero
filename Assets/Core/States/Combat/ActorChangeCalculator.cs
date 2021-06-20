@@ -16,6 +16,8 @@ namespace Core.States.Combat
     {
         public IEnumerable<ICombatEventData> GetChangeEvents(IInitiativeActor before, IInitiativeActor after)
         {
+            if (before == after)
+                throw new ArgumentException("ActorChangeCalculator give reference to same actor for before and after.");
             if (before.Id != after.Id)
                 throw new ArgumentException("[ID MISMATCH] ActorChangeCalculator is meant for changes between old and new versions of the SAME actor!");
 

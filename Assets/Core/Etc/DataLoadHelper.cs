@@ -63,7 +63,8 @@ namespace Core.Etc
             context.Set(enemyClassDatabase);
             context.Set(calamityClassDatabase);
             jsonSettings.Converters.Add(new PlayerClassConverter(playerClassDatabase));
-            jsonSettings.Converters.Add(new EnemyClassConverter(enemyClassDatabase, calamityClassDatabase));
+            jsonSettings.Converters.Add(new EnemyClassConverter(enemyClassDatabase));
+            jsonSettings.Converters.Add(new CalamityClassConverter( calamityClassDatabase));
 
             // Finally load EnemyGroups, which rely upon Enemies
             EnemyGroupWrapperDatabase enemyGroupWrapperDatabase = EnemyGroupWrapperDatabase.LoadFromDisk(pathUtility.EnemyGroupPath, jsonSettings);

@@ -6287,44 +6287,26 @@ MonoBehaviour:
     m_SerializedLabels: []
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
-  - m_GUID: 44ded9e15c9b0424b917b8a4b5ccae5e
-    m_Address: Assets/Art/Characters/BlackMage_Sheet.png
+  - m_GUID: 103e4920c09ce28409232d55ac0fde94
+    m_Address: Assets/Art/ClassIcons/WarriorIcon.PNG
     m_ReadOnly: 0
     m_SerializedLabels: []
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
-  - m_GUID: e3fa16e2fe09a7f4098351946f1f9fdf
-    m_Address: Assets/Art/Characters/WhiteMage_Sheet.png
+  - m_GUID: 5a4892550d8771a49a128f063343ce7f
+    m_Address: Assets/Art/ClassIcons/MageIcon.PNG
     m_ReadOnly: 0
     m_SerializedLabels: []
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
-  - m_GUID: 87e252e5c603c9e44971061d0f802c9e
-    m_Address: Assets/Art/Characters/Fighter_Sheet.png
+  - m_GUID: 342d7cab598c088489d7a8bd3b5ea3d3
+    m_Address: Assets/Art/ClassIcons/RangerIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
-  - m_GUID: 886e380b7cde9a14b9ff4a53f192e450
-    m_Address: Assets/Art/Characters/RedMage_Sheet.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_MainAsset: {fileID: 0}
-    m_TargetAsset: {fileID: 0}
-  - m_GUID: f09c70bcfa425e145b3e024990ed6cc4
-    m_Address: Assets/Art/Characters/Rogue_Sheet.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_MainAsset: {fileID: 0}
-    m_TargetAsset: {fileID: 0}
-  - m_GUID: 566c4b8ac231d9043a06450550549d51
-    m_Address: Assets/Unity/Scenes/Combat/Battlefield/BattlefieldActorView.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_MainAsset: {fileID: 0}
-    m_TargetAsset: {fileID: 0}
-  - m_GUID: ab3afc5755b5bba45ac657d041426469
-    m_Address: Assets/Unity/Scenes/Shared/UX/TargetingRing.prefab
+  - m_GUID: e05e6be4cb0087c48beaf4358834c7e1
+    m_Address: Assets/Art/ClassIcons/RogueIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     m_MainAsset: {fileID: 0}

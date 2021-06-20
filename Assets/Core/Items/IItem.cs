@@ -9,9 +9,8 @@ using ICharacterActor = Core.Actors.ICharacterActor;
 
 namespace Core.Items
 {
-    public interface IItem : IIdTracked, INamed, ICopyable<IItem>
+    public interface IItem : IIdTracked, INamed, IIconProvider, ICopyable<IItem>
     {
-        string ArtPath { get; }
         uint BaseValue { get; }
         RarityCategory Rarity { get; }
         ItemType ItemType { get; }

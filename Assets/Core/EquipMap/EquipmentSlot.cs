@@ -2,9 +2,10 @@
 {
     public enum EquipmentSlot
     {
-        Weapon,
-        Armor,
-        ItemA,
-        ItemB
+        Invalid = 0,
+        Weapon = 1,
+        Armor = 2,
+        ItemA = 3,
+        ItemB = 4
     }
 }

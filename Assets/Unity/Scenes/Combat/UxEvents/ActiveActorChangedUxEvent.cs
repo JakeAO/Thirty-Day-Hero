@@ -1,8 +1,12 @@
-using System;
-using Core.States.Combat;
+using System.Collections.Generic;
+using System.Linq;
+using Core.States.Combat.GameState;
 using SadPumpkin.Util.CombatEngine.Events;
+using SadPumpkin.Util.CombatEngine.Initiatives;
 using SadPumpkin.Util.Context;
-using Unity.Scenes.Shared.Entities;
+using Unity.Scenes.Combat.ActionSelection;
+using Unity.Scenes.Combat.Battlefield;
+using Unity.Scenes.Combat.Etc;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -11,30 +15,52 @@ namespace Unity.Scenes.Combat.UxEvents
     public class ActiveActorChangedUxEvent : BaseCombatUxEvent
     {
         private readonly ActiveActorChangedEvent _eventData;
-        private readonly IActorViewManager _actorViewManager;
-        private readonly CombatDataWrapper _combatDataWrapper;
+        private readonly HighlightManager _highlightManager;
+        private readonly InitiativePanel _initiativePanel;
+        private readonly IInitiativeQueue _initiativeQueue;
+        private readonly IGameState _gameState;
+        private readonly ActionSelectionWorkflow _actionSelectionWorkflow;
 
         public ActiveActorChangedUxEvent(ActiveActorChangedEvent eventData, IContext activeContext)
         {
             _eventData = eventData;
-            _actorViewManager = activeContext.Get<IActorViewManager>();
-            _combatDataWrapper = activeContext.Get<CombatDataWrapper>();
+            _highlightManager = activeContext.Get<HighlightManager>();
+            _initiativePanel = activeContext.Get<InitiativePanel>();
+            _initiativeQueue = activeContext.Get<IInitiativeQueue>();
+            _gameState = activeContext.Get<IGameState>();
+            _actionSelectionWorkflow = activeContext.Get<ActionSelectionWorkflow>();
 
             Assert.AreNotEqual(_eventData, default);
-            Assert.IsNotNull(_actorViewManager);
-            Assert.IsNotNull(_combatDataWrapper);
+            Assert.IsNotNull(_highlightManager);
+            Assert.IsNotNull(_initiativePanel);
+            Assert.IsNotNull(_initiativeQueue);
+            Assert.IsNotNull(_gameState);
+            Assert.IsNotNull(_actionSelectionWorkflow);
         }
 
         protected override void OnRun()
         {
-            // TODO
+            // TODO Remove?
             Debug.Log($"{nameof(ActiveActorChangedUxEvent)} executed. New active actor id: {_eventData.NewActorId}");
 
-            Complete();
-        }
+            // Update Initiative Panel
+            _initiativePanel.UpdateInitiativePreview(_initiativeQueue
+                .GetPreview(10)
+                .Select(x => _gameState.GetActor(x))
+                .Where(x => x != null)
+                .ToArray());
 
-        protected override void OnTickUpdate(float deltaTimeMs)
-        {
+            // Update Highlights
+            _highlightManager.UpdateHighlights(
+                new Dictionary<uint, HighlightType>()
+                {
+                    [_eventData.NewActorId] = HighlightType.Active
+                });
+
+            // Kick Action Workflow
+            _actionSelectionWorkflow.ApplyWorkflow();
+
+            CompleteAfterDelay(1f);
         }
     }
 }

@@ -3,16 +3,14 @@ using UnityEngine;
 
 namespace Unity.Scenes.Shared.Entities
 {
-    public interface IActorViewManager
+    public interface IActorViewManager<out T> where T : MonoBehaviour
     {
-        IActorView CreateView(ICharacterActor actorData, Transform parentTransform);
+        T CreateView(ICharacterActor actorData);
 
         bool TryGetView(uint actorId, out IActorView actorView);
-        bool TryGetView(ICharacterActor actorData, out IActorView actorView);
         
         void UpdateView(ICharacterActor actorData);
 
         void DeleteView(uint actorId);
-        void DeleteView(ICharacterActor actorData);
     }
 }

@@ -13,6 +13,7 @@ using Unity.Extensions;
 using Unity.Interface;
 using Unity.Scenes.Shared.Entities;
 using Unity.Scenes.Shared.Pooling;
+using Unity.Scenes.Shared.UI.Overlay;
 using Unity.Utility;
 using UnityEngine;
 
@@ -20,9 +21,7 @@ namespace Unity.Scenes
 {
     public class BootScene : SceneRootBase<StartupState>
     {
-        [SerializeField] private PlayerActorView _playerActorView;
-        [SerializeField] private EnemyActorView _enemyActorView;
-        [SerializeField] private CalamityActorView _calamityActorView;
+        [SerializeField] private OverlaySystem _overlaySystemPrefab;
         
         [SerializeField] private ButtonWithLabel _playButton;
 
@@ -35,6 +34,9 @@ namespace Unity.Scenes
             SharedContext = new Context();
             State = new StartupState();
 
+            // Create OverlaySystem
+            Instantiate(_overlaySystemPrefab).Inject(SharedContext);
+            
             // Create and add UpdateTickerComponent
             UpdateTickerComponent updateTickerComponent = new GameObject(
                     "UpdateTicker",
@@ -69,14 +71,6 @@ namespace Unity.Scenes
             // Create and add UnityPool
             IUnityPool unityPool = UnityPool.CreatePool();
             SharedContext.Set(unityPool);
-            
-            // Create and add default ActorViewManager
-            IActorViewManager actorViewManager = new ActorViewManager(
-                unityPool,
-                _playerActorView,
-                _enemyActorView,
-                _calamityActorView);
-            SharedContext.Set(actorViewManager);
             
             StateChanged stateChangedSignal = new StateChanged();
             SharedContext.Set(stateChangedSignal);

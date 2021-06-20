@@ -8,6 +8,7 @@ using Core.EventOptions;
 using Core.States.BaseClasses;
 using Core.States.Combat;
 using Core.States.Combat.Events;
+using Core.States.Combat.GameState;
 using Core.Wrappers;
 using SadPumpkin.Util.CombatEngine;
 using SadPumpkin.Util.CombatEngine.Action;
@@ -15,8 +16,8 @@ using SadPumpkin.Util.CombatEngine.Events;
 using SadPumpkin.Util.CombatEngine.Initiatives;
 using SadPumpkin.Util.CombatEngine.TurnController;
 using SadPumpkin.Util.CombatEngine.WinningPartyCalculator;
-using SadPumpkin.Util.Context;
 using SadPumpkin.Util.Events;
+using SadPumpkin.Util.StateMachine;
 using SadPumpkin.Util.StateMachine.States;
 
 namespace Core.States
@@ -34,7 +35,7 @@ namespace Core.States
         public IEventQueue EventQueue { get; private set; }
         public CombatManager CombatManager { get; private set; }
         public CombatResults Results { get; private set; }
-        public CombatDataWrapper CombatData { get; private set; }
+        public GameState GameData { get; private set; }
 
         private IEventQueue _internalEventQueue = new EventQueue();
 
@@ -64,10 +65,13 @@ namespace Core.States
                 new ActorChangeCalculator(),
                 InitiativeQueue,
                 _internalEventQueue);
-            CombatData = new CombatDataWrapper(
+            GameData = new GameState(
                 PartyData.Characters,
                 CombatSettings.Enemies);
-            SharedContext.Set(CombatData);
+
+            // Add necessary items to Context
+            SharedContext.Set<IInitiativeQueue>(InitiativeQueue);
+            SharedContext.Set<IGameState>(GameData);
         }
 
         public override void OnContent()
@@ -82,7 +86,8 @@ namespace Core.States
         {
             base.OnExit(toState);
 
-            SharedContext.Clear<CombatDataWrapper>();
+            SharedContext.Clear<IInitiativeQueue>();
+            SharedContext.Clear<IGameState>();
         }
 
         public override void OnUpdate(float deltaTime)
@@ -109,11 +114,13 @@ namespace Core.States
                     Results = cce.WinningPartyId == PartyData.PartyId
                         ? CombatResults.CreateSuccess(CombatSettings.Enemies, PartyData)
                         : CombatResults.CreateFailure();
-                    EventQueue.EnqueueEvent(new CombatResultsEvent(Results));
+                    EventQueue.EnqueueEvent(new CombatResultsEvent(Results, OnCombatResultsConfirmed));
                     break;
                 }
                 case ActiveActorChangedEvent aace:
                 {
+                    GameData.SetActiveActor(GameData.GetActor(aace.NewActorId));
+
                     UpdateOptions();
                     break;
                 }
@@ -125,44 +132,29 @@ namespace Core.States
             }
         }
 
-        private void UpdateOptions()
+        private void OnCombatResultsConfirmed()
         {
-            string GetActionTextFromAction(IAction action)
+            IStateMachine stateMachine = SharedContext.Get<IStateMachine>();
+            if (Results.Success)
             {
-                if (action?.ActionSource is INamed named)
+                if (CombatSettings.Enemies.Contains(PartyData.Calamity))
                 {
-                    return $"{named.Name}: {string.Join(", ", action.Targets.Select(x => x.Name))}";
+                    stateMachine.ChangeState<VictoryState>();
                 }
                 else
                 {
-                    return $"ACTION {action.Id}: {string.Join(", ", action.Targets.Select(x => x.Name))}";
+                    stateMachine.ChangeState<GameHubState>();
                 }
             }
-
-            _currentOptions.Clear();
-
-            if (PlayerController.ActiveCharacter != null)
+            else
             {
-                foreach (var kvp in PlayerController.AvailableActions)
-                {
-                    IAction action = kvp.Value;
-
-                    string category = (action.ActionProvider as INamed)?.Name ?? "Other";
-                    if (!_currentOptions.TryGetValue(category, out var categoryList))
-                        _currentOptions[category] = categoryList = new List<IEventOption>(5);
-
-                    if (action.Available)
-                    {
-                        categoryList.Add(new EventOption(
-                            GetActionTextFromAction(action),
-                            () => PlayerController.SubmitActionResponse(action.Id),
-                            category,
-                            0u,
-                            !action.Available,
-                            action));
-                    }
-                }
+                stateMachine.ChangeState<DefeatState>();
             }
+        }
+
+        private void UpdateOptions()
+        {
+            _currentOptions.Clear();
 
             if (!_currentOptions.TryGetValue(CATEGORY_DEBUG, out var debugList))
                 _currentOptions[CATEGORY_DEBUG] = debugList = new List<IEventOption>(2);

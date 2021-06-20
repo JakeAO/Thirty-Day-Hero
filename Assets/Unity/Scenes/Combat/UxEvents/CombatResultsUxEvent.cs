@@ -1,11 +1,10 @@
 using System;
 using Core.Etc;
 using Core.Items;
-using Core.States.Combat;
 using Core.States.Combat.Events;
 using Core.Wrappers;
 using SadPumpkin.Util.Context;
-using Unity.Scenes.Shared.Entities;
+using Unity.Scenes.Combat.Results;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -14,21 +13,18 @@ namespace Unity.Scenes.Combat.UxEvents
     public class CombatResultsUxEvent : BaseCombatUxEvent
     {
         private readonly CombatResultsEvent _eventData;
-        private readonly IActorViewManager _actorViewManager;
-        private readonly CombatDataWrapper _combatDataWrapper;
         private readonly PartyDataWrapper _partyDataWrapper;
-        
+        private readonly ResultsPanel _resultsPanel;
+
         public CombatResultsUxEvent(CombatResultsEvent eventData, IContext activeContext)
         {
             _eventData = eventData;
-            _actorViewManager = activeContext.Get<IActorViewManager>();
-            _combatDataWrapper = activeContext.Get<CombatDataWrapper>();
             _partyDataWrapper = activeContext.Get<PartyDataWrapper>();
+            _resultsPanel = activeContext.Get<ResultsPanel>();
 
             Assert.IsNotNull(_eventData);
-            Assert.IsNotNull(_actorViewManager);
-            Assert.IsNotNull(_combatDataWrapper);
             Assert.IsNotNull(_partyDataWrapper);
+            Assert.IsNotNull(_resultsPanel);
         }
 
         protected override void OnRun()
@@ -81,11 +77,7 @@ namespace Unity.Scenes.Combat.UxEvents
                 }
             }
 
-            Complete();
-        }
-
-        protected override void OnTickUpdate(float deltaTimeMs)
-        {
+            _resultsPanel.Show(_eventData.Results, _partyDataWrapper, _eventData.ResultsConfirmed);
         }
     }
 }
