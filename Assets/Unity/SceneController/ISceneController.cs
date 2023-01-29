@@ -1,4 +1,4 @@
-namespace Unity.Scenes
+namespace Unity.SceneController
 {
     public interface ISceneController
     {

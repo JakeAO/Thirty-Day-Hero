@@ -2,7 +2,6 @@
   "Id": 200,
   "Name": "Small Stamina Potion",
   "Desc": "A small bottle containing bluish fluid.",
-  "ArtPath": "Assets/Art/Items/item/consumable/consumable_41.png",
   "BaseValue": 30,
   "Rarity": 1,
   "ItemType": 8,

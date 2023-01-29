@@ -42,7 +42,8 @@ namespace Unity.Scenes.Combat.Battlefield
             }
 
             // Image
-            if (action.ActionProvider is IIconProvider iconSource)
+            if (action.ActionProvider is IIconProvider iconSource &&
+                !string.IsNullOrWhiteSpace(iconSource.ArtPath))
             {
                 Addressables.LoadAssetAsync<Sprite>(iconSource.ArtPath).Completed += OnIconLoaded;
             }

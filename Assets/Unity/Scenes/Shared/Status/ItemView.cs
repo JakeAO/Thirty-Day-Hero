@@ -1,5 +1,6 @@
 using Core.Items;
 using TMPro;
+using Unity.Extensions;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -18,7 +19,14 @@ namespace Unity.Scenes.Shared.Status
             {
                 _name.text = item.Name;
 
-                Addressables.LoadAssetAsync<Sprite>(item.ArtPath).Completed += OnSpriteLoaded;
+                if (!string.IsNullOrWhiteSpace(item.ArtPath))
+                {
+                    Addressables.LoadAssetAsync<Sprite>(item.ArtPath).Completed += OnSpriteLoaded;
+                }
+                else
+                {
+                    _icon.sprite = SpriteExtensions.RedSprite;
+                }
             }
             else
             {

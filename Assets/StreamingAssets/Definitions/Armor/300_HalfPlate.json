@@ -2,7 +2,6 @@
   "Id": 300,
   "Name": "Half Plate",
   "Desc": "Armor made of thick metal plates.",
-  "ArtPath": "Assets/Art/Items/armor/heavy/chest_71.png",
   "BaseValue": 200,
   "Rarity": 2,
   "ItemType": 2,

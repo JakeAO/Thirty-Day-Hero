@@ -84,7 +84,7 @@ namespace Unity.Scenes
             stateMachine.ChangeState(State);
 
             // Setup SceneController AFTER changing to first state, otherwise enter an infinite loop of reloading Boot
-            SharedContext.Set(new SceneController(SharedContext));
+            SharedContext.Set(new SceneController.SceneController(SharedContext));
 
             // Hackily call the Inject method, since we don't go through the normal flow.
             InjectContext(SharedContext);

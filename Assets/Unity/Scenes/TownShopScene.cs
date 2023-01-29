@@ -36,7 +36,8 @@ namespace Unity.Scenes
             
             if (context is IItem baseItem)
             {
-                if (!_itemSprites.ContainsKey(baseItem.ArtPath))
+                if (!string.IsNullOrWhiteSpace(baseItem.ArtPath) &&
+                    !_itemSprites.ContainsKey(baseItem.ArtPath))
                 {
                     _itemSprites[baseItem.ArtPath] = null;
                     Addressables.LoadAssetAsync<Texture2D>(baseItem.ArtPath).Completed +=

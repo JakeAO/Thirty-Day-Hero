@@ -1,16 +1,14 @@
 using System;
 using System.Collections.Generic;
 using Core.States;
-using Core.States.Combat;
 using Core.States.Town;
-
+using SadPumpkin.Util.Context;
 using SadPumpkin.Util.StateMachine.Signals;
 using SadPumpkin.Util.StateMachine.States;
-using SadPumpkin.Util.Context;
 using Unity.Utility;
 using UnityEngine.SceneManagement;
 
-namespace Unity.Scenes
+namespace Unity.SceneController
 {
     public class SceneController : IDisposable
     {

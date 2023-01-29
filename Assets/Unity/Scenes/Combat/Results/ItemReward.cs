@@ -1,5 +1,6 @@
 using Core.Items;
 using TMPro;
+using Unity.Extensions;
 using Unity.Scenes.Shared.Status;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -17,7 +18,14 @@ namespace Unity.Scenes.Combat.Results
         {
             _label.text = item.Name;
 
-            Addressables.LoadAssetAsync<Sprite>(item.ArtPath).Completed += OnSpriteLoaded;
+            if (!string.IsNullOrWhiteSpace(item.ArtPath))
+            {
+                Addressables.LoadAssetAsync<Sprite>(item.ArtPath).Completed += OnSpriteLoaded;
+            }
+            else
+            {
+                _icon.sprite = SpriteExtensions.RedSprite;
+            }
         }
 
         private void OnSpriteLoaded(AsyncOperationHandle<Sprite> handle)

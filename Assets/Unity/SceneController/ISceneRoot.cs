@@ -1,7 +1,7 @@
 ﻿using System;
 using SadPumpkin.Util.Context;
 
-namespace Unity.Scenes
+namespace Unity.SceneController
 {
     public interface ISceneRoot : IDisposable
     {

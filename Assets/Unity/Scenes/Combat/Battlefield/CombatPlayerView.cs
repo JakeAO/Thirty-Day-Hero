@@ -44,7 +44,10 @@ namespace Unity.Scenes.Combat.Battlefield
             _detailsPanel.UpdateModel(actorData);
             _targetingIndicator.SetHighlight(HighlightType.None);
 
-            Addressables.LoadAssetAsync<Sprite>(actorData.Class.ArtPath).Completed += OnSpriteLoaded;
+            if (!string.IsNullOrWhiteSpace(actorData.Class.ArtPath))
+            {
+                Addressables.LoadAssetAsync<Sprite>(actorData.Class.ArtPath).Completed += OnSpriteLoaded;
+            }
         }
 
         public void UpdateModel(ICharacterActor actorData, ActorUpdateContext context)

@@ -2,7 +2,6 @@
   "Id": 101,
   "Name": "Medium Health Potion",
   "Desc": "A medium potion containing red fluid.",
-  "ArtPath": "Assets/Art/Items/item/consumable/consumable_48.png",
   "BaseValue": 75,
   "Rarity": 1,
   "ItemType": 8,

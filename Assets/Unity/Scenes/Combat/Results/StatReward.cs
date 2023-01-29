@@ -28,7 +28,14 @@ namespace Unity.Scenes.Combat.Results
 
         public void Show(IPlayerCharacterActor statChangeActor, int[] statChanges)
         {
-            Addressables.LoadAssetAsync<Sprite>(statChangeActor.Class.ArtPath).Completed += OnSpriteLoaded;
+            if (!string.IsNullOrWhiteSpace(statChangeActor.Class.ArtPath))
+            {
+                Addressables.LoadAssetAsync<Sprite>(statChangeActor.Class.ArtPath).Completed += OnSpriteLoaded;
+            }
+            else
+            {
+                _classIcon.sprite = SpriteExtensions.RedSprite;
+            }
 
             _nameLabel.text = statChangeActor.Name;
             _levelLabel.text = $"+{statChanges[(int) StatType.LVL]}";

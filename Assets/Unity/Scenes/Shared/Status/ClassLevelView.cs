@@ -1,5 +1,6 @@
 using Core.Actors;
 using TMPro;
+using Unity.Extensions;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -18,7 +19,14 @@ namespace Unity.Scenes.Shared.Status
             _className.text = actorData.Class.Name;
             _levelView.UpdateModel(actorData);
 
-            Addressables.LoadAssetAsync<Sprite>(actorData.Class.ArtPath).Completed += OnSpriteLoaded;
+            if (!string.IsNullOrWhiteSpace(actorData.Class.ArtPath))
+            {
+                Addressables.LoadAssetAsync<Sprite>(actorData.Class.ArtPath).Completed += OnSpriteLoaded;
+            }
+            else
+            {
+                _classIcon.sprite = SpriteExtensions.RedSprite;
+            }
         }
 
         private void OnSpriteLoaded(AsyncOperationHandle<Sprite> handle)

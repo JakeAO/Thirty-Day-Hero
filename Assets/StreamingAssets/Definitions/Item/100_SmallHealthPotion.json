@@ -2,7 +2,6 @@
   "Id": 100,
   "Name": "Small Health Potion",
   "Desc": "A small potion containing red fluid.",
-  "ArtPath": "Assets/Art/Items/item/consumable/consumable_40.png",
   "BaseValue": 25,
   "Rarity": 1,
   "ItemType": 8,

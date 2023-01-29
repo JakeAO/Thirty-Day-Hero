@@ -2,7 +2,6 @@
   "Id": 100,
   "Name": "Cloth Tunic",
   "Desc": "A simple cloth tunic that provides little protection.",
-  "ArtPath": "Assets/Art/Items/armor/light/chest_01.png",
   "BaseValue": 10,
   "Rarity": 1,
   "ItemType": 2,

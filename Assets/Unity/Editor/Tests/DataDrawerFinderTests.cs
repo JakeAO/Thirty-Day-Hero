@@ -2,6 +2,7 @@ using NUnit.Framework;
 using Unity.Editor.DataDrawers;
 using UnityEngine;
 using SadPumpkin.Util.CombatEngine.CostCalculators;
+using Unity.Editor.WindowUtilities;
 
 namespace Unity.Editor.Tests
 {

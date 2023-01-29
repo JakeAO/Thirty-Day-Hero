@@ -2,7 +2,6 @@
   "Id": 100,
   "Name": "Orc Chieftain",
   "Desc": "A powerful orcish clan chieftain.",
-  "ArtPath": "Assets/Art/Battlers/Boss Orc Chief Grunt.png",
   "Rarity": 1,
   "NameGenerator": {
     "$type": "Core.Naming.ListNameGenerator, SadPumpkin.Games.ThirtyDayHero.Core",

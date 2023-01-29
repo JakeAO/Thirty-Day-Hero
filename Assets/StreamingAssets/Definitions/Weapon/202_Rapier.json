@@ -2,7 +2,6 @@
   "Id": 202,
   "Name": "Rapier",
   "Desc": "A weighty fencing blade.",
-  "ArtPath": "Assets/Art/Items/weapon/sword/sword_29.png",
   "BaseValue": 150,
   "Rarity": 2,
   "ItemType": 1,

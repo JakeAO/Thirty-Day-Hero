@@ -2,7 +2,6 @@
   "Id": 201,
   "Name": "Plate Leather",
   "Desc": "A suit of hard, boiled leather.",
-  "ArtPath": "Assets/Art/Items/armor/medium/chest_18.png",
   "BaseValue": 60,
   "Rarity": 1,
   "ItemType": 2,

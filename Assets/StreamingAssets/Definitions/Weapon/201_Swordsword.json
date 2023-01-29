@@ -2,7 +2,6 @@
   "Id": 201,
   "Name": "Swordsword",
   "Desc": "A compact, sharp blade.",
-  "ArtPath": "Assets/Art/Items/weapon/sword/sword_18.png",
   "BaseValue": 10,
   "Rarity": 1,
   "ItemType": 1,

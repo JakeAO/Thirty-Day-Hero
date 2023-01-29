@@ -26,7 +26,6 @@ namespace Unity.Editor.DataEntryWindows
                    entry.Id != 0u &&
                    !string.IsNullOrWhiteSpace(entry.Name) &&
                    !string.IsNullOrWhiteSpace(entry.Desc) &&
-                   !string.IsNullOrWhiteSpace(entry.ArtPath) &&
                    entry.ArmorType != ArmorType.Invalid &&
                    entry.ItemType != ItemType.Invalid;
         }

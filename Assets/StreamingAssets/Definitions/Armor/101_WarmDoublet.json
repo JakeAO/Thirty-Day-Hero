@@ -2,7 +2,6 @@
   "Id": 101,
   "Name": "Warm Doublet",
   "Desc": "A warm tunic that provides ample protection from the elements.",
-  "ArtPath": "Assets/Art/Items/armor/light/chest_04.png",
   "BaseValue": 100,
   "Rarity": 1,
   "ItemType": 2,

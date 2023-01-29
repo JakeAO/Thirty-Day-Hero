@@ -2,7 +2,6 @@
   "Id": 101,
   "Name": "Orc Rager",
   "Desc": "A large, heavily armored orc.",
-  "ArtPath": "Assets/Art/Battlers/Orc Sword Warrior.png",
   "Rarity": 2,
   "NameGenerator": {
     "$type": "Core.Naming.FileNameGenerator, SadPumpkin.Games.ThirtyDayHero.Core",

@@ -2,7 +2,6 @@
   "Id": 100,
   "Name": "Orc Scout",
   "Desc": "A smaller wearing little in terms of clothes or armor.",
-  "ArtPath": "Assets/Art/Battlers/Orc Axe Warrior.png",
   "Rarity": 1,
   "NameGenerator": {
     "$type": "Core.Naming.FileNameGenerator, SadPumpkin.Games.ThirtyDayHero.Core",

@@ -2,7 +2,6 @@
   "Id": 102,
   "Name": "Orc Shaman",
   "Desc": "A tribal orc spellcaster.",
-  "ArtPath": "Assets/Art/Battlers/Orc Warlock.png",
   "Rarity": 3,
   "NameGenerator": {
     "$type": "Core.Naming.FileNameGenerator, SadPumpkin.Games.ThirtyDayHero.Core",

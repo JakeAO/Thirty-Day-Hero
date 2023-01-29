@@ -2,7 +2,6 @@
   "Id": 400,
   "Name": "Iron Rod",
   "Desc": "A short rod made of hard iron.",
-  "ArtPath": "Assets/Art/Items/weapon/rod/staff_51.png",
   "BaseValue": 20,
   "Rarity": 1,
   "ItemType": 1,

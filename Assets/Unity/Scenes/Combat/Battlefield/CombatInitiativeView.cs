@@ -1,6 +1,7 @@
 using System;
 using Core.Actors;
 using TMPro;
+using Unity.Extensions;
 using Unity.Scenes.Combat.Etc;
 using Unity.Scenes.Shared.Entities;
 using Unity.Scenes.Shared.UI;
@@ -34,7 +35,14 @@ namespace Unity.Scenes.Combat.Battlefield
             _label.text = actorData.Name;
             _targetingIndicator.SetHighlight(HighlightType.None);
 
-            Addressables.LoadAssetAsync<Sprite>(actorData.Class.ArtPath).Completed += OnSpriteLoaded;
+            if (!string.IsNullOrWhiteSpace(actorData.Class.ArtPath))
+            {
+                Addressables.LoadAssetAsync<Sprite>(actorData.Class.ArtPath).Completed += OnSpriteLoaded;
+            }
+            else
+            {
+                _image.sprite = SpriteExtensions.RedSprite;
+            }
         }
 
         public void UpdateModel(ICharacterActor actorData, ActorUpdateContext context)

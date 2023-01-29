@@ -34,7 +34,14 @@ namespace Unity.Scenes.Combat.Battlefield
             _statsBar.UpdateModel(actorData);
             _targetingRing.SetHighlight(HighlightType.None);
 
-            Addressables.LoadAssetAsync<Sprite>(actorData.Class.ArtPath).Completed += OnSpriteLoaded;
+            if (!string.IsNullOrWhiteSpace(actorData.Class.ArtPath))
+            {
+                Addressables.LoadAssetAsync<Sprite>(actorData.Class.ArtPath).Completed += OnSpriteLoaded;
+            }
+            else
+            {
+                _image.sprite = SpriteExtensions.RedSprite;
+            }
         }
 
         public void UpdateModel(ICharacterActor actorData, ActorUpdateContext context)
